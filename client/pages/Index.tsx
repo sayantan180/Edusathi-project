@@ -229,21 +229,21 @@ export default function Index() {
             </div>
 
             {/* AI Trust Badges */}
-            <div className="flex flex-wrap justify-center gap-6 text-sm animate-in fade-in duration-1000 delay-700">
-              <div className="flex items-center gap-2 text-green-600 font-medium">
-                <Shield className="w-4 h-4" />
+            <div className="flex flex-wrap justify-center gap-8 text-sm animate-in fade-in duration-1000 delay-700">
+              <div className="flex items-center gap-2 text-emerald-700 font-semibold">
+                <Shield className="w-5 h-5" />
                 AI-Secure
               </div>
-              <div className="flex items-center gap-2 text-blue-600 font-medium">
-                <Zap className="w-4 h-4" />
+              <div className="flex items-center gap-2 text-blue-700 font-semibold">
+                <Zap className="w-5 h-5" />
                 Smart Automation
               </div>
-              <div className="flex items-center gap-2 text-purple-600 font-medium">
-                <Brain className="w-4 h-4" />
+              <div className="flex items-center gap-2 text-purple-700 font-semibold">
+                <Brain className="w-5 h-5" />
                 ML-Powered
               </div>
-              <div className="flex items-center gap-2 text-orange-600 font-medium">
-                <Target className="w-4 h-4" />
+              <div className="flex items-center gap-2 text-orange-700 font-semibold">
+                <Target className="w-5 h-5" />
                 Predictive Analytics
               </div>
             </div>
