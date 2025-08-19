@@ -154,15 +154,6 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 relative overflow-hidden">
-      {/* Main Background Pattern */}
-      <div
-        className="absolute inset-0 opacity-5"
-        style={{
-          backgroundImage: `url('https://images.pexels.com/photos/8566445/pexels-photo-8566445.jpeg?auto=compress&cs=tinysrgb&w=800')`,
-          backgroundSize: '400px 400px',
-          backgroundRepeat: 'repeat'
-        }}
-      />
       {/* Floating Background Cards */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {floatingCards.map((card, index) => (
