@@ -69,7 +69,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               <LayoutDashboard className="h-4 w-4" />
             </div>
             <div className="flex flex-col">
-              <span className="text-sm font-semibold">EduCenter</span>
+              <span className="text-sm font-semibold">Edusathi</span>
               <span className="text-xs text-muted-foreground">Dashboard</span>
             </div>
           </div>
