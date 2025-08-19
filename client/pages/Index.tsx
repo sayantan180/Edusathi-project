@@ -249,8 +249,8 @@ export default function Index() {
         </section>
 
         {/* Value Proposition */}
-        <section className="container max-w-7xl mx-auto px-4 py-20">
-          <h1 className='text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent mb-6 text-center leading-tight'>Everything you need to run your institute</h1>
+        <section className="container max-w-7xl mx-auto px-4 py-12 md:py-20">
+          <h1 className='text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent mb-6 text-center leading-tight'>Everything you need to run your institute</h1>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
