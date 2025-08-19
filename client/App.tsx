@@ -12,6 +12,8 @@ import Dashboard from "./pages/Dashboard";
 import CreateCenter from "./pages/CreateCenter";
 import CenterList from "./pages/CenterList";
 import Pricing from "./pages/Pricing";
+import AboutUs from "./pages/AboutUs";
+import ContactUs from "./pages/ContactUs";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
