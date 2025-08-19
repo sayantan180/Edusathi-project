@@ -1,6 +1,13 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { ChevronDown, ChevronRight, LayoutDashboard, Building, Plus, List } from 'lucide-react';
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import {
+  ChevronDown,
+  ChevronRight,
+  LayoutDashboard,
+  Building,
+  Plus,
+  List,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -18,9 +25,9 @@ import {
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
-} from '@/components/ui/sidebar';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
+} from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -32,29 +39,29 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const navigationItems = [
     {
-      title: 'Dashboard',
-      href: '/dashboard',
+      title: "Dashboard",
+      href: "/dashboard",
       icon: LayoutDashboard,
-      isActive: location.pathname === '/dashboard',
+      isActive: location.pathname === "/dashboard",
     },
     {
-      title: 'Center Management',
+      title: "Center Management",
       icon: Building,
       isExpandable: true,
       isOpen: centerManagementOpen,
       onToggle: () => setCenterManagementOpen(!centerManagementOpen),
       subItems: [
         {
-          title: 'Create Center',
-          href: '/dashboard/centers/create',
+          title: "Create Center",
+          href: "/dashboard/centers/create",
           icon: Plus,
-          isActive: location.pathname === '/dashboard/centers/create',
+          isActive: location.pathname === "/dashboard/centers/create",
         },
         {
-          title: 'Center List',
-          href: '/dashboard/centers',
+          title: "Center List",
+          href: "/dashboard/centers",
           icon: List,
-          isActive: location.pathname === '/dashboard/centers',
+          isActive: location.pathname === "/dashboard/centers",
         },
       ],
     },
@@ -139,9 +146,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             <h1 className="text-lg font-semibold">Educational Dashboard</h1>
           </div>
         </header>
-        <main className="flex-1 p-6">
-          {children}
-        </main>
+        <main className="flex-1 p-6">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

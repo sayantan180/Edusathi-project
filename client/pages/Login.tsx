@@ -1,16 +1,22 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { GraduationCap, Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { GraduationCap, Eye, EyeOff, Mail, Lock } from "lucide-react";
 
 export default function Login() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -18,7 +24,7 @@ export default function Login() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -31,13 +37,13 @@ export default function Login() {
       // For demo purposes, accept any email/password
       if (formData.email && formData.password) {
         // Store login state
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('userEmail', formData.email);
-        
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("userEmail", formData.email);
+
         // Redirect to dashboard
-        navigate('/dashboard');
+        navigate("/dashboard");
       } else {
-        alert('Please enter both email and password');
+        alert("Please enter both email and password");
       }
       setIsLoading(false);
     }, 1000);
@@ -58,7 +64,9 @@ export default function Login() {
       {/* Login Form */}
       <Card className="w-full max-w-md rounded-2xl border-0 shadow-xl">
         <CardHeader className="text-center pb-6">
-          <CardTitle className="text-2xl font-bold text-slate-900">Welcome Back</CardTitle>
+          <CardTitle className="text-2xl font-bold text-slate-900">
+            Welcome Back
+          </CardTitle>
           <CardDescription>
             Sign in to access your Edusathi dashboard
           </CardDescription>
@@ -81,7 +89,7 @@ export default function Login() {
                 />
               </div>
             </div>
-            
+
             <div>
               <Label htmlFor="password">Password</Label>
               <div className="relative mt-1">
@@ -89,7 +97,7 @@ export default function Login() {
                 <Input
                   id="password"
                   name="password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   value={formData.password}
                   onChange={handleChange}
                   required
@@ -101,7 +109,11 @@ export default function Login() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
                 </button>
               </div>
             </div>
@@ -111,24 +123,30 @@ export default function Login() {
                 <input type="checkbox" className="mr-2" />
                 <span className="text-sm text-slate-600">Remember me</span>
               </label>
-              <Link to="/forgot-password" className="text-sm text-blue-600 hover:text-blue-700">
+              <Link
+                to="/forgot-password"
+                className="text-sm text-blue-600 hover:text-blue-700"
+              >
                 Forgot password?
               </Link>
             </div>
 
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
               disabled={isLoading}
             >
-              {isLoading ? 'Signing in...' : 'Sign In'}
+              {isLoading ? "Signing in..." : "Sign In"}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-slate-600">
-              Don't have an account?{' '}
-              <Link to="/pricing" className="text-blue-600 hover:text-blue-700 font-medium">
+              Don't have an account?{" "}
+              <Link
+                to="/pricing"
+                className="text-blue-600 hover:text-blue-700 font-medium"
+              >
                 Get started
               </Link>
             </p>

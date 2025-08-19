@@ -1,13 +1,27 @@
-import { useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
-import { Check, ArrowLeft, ArrowRight, GraduationCap, Building, Globe, CreditCard } from 'lucide-react';
+import { useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
+import {
+  Check,
+  ArrowLeft,
+  ArrowRight,
+  GraduationCap,
+  Building,
+  Globe,
+  CreditCard,
+} from "lucide-react";
 
 interface FormData {
   brandName: string;
@@ -18,7 +32,7 @@ interface FormData {
   selectedPlan: {
     name: string;
     price: number;
-    billing: 'monthly' | 'annual';
+    billing: "monthly" | "annual";
   };
 }
 
@@ -26,29 +40,30 @@ export default function PricingForm() {
   const [searchParams] = useSearchParams();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
-    brandName: '',
-    ownerName: '',
-    domainName: '',
-    email: '',
-    phone: '',
+    brandName: "",
+    ownerName: "",
+    domainName: "",
+    email: "",
+    phone: "",
     selectedPlan: {
-      name: searchParams.get('plan') || 'Professional',
-      price: parseInt(searchParams.get('price') || '79'),
-      billing: (searchParams.get('billing') as 'monthly' | 'annual') || 'monthly'
-    }
+      name: searchParams.get("plan") || "Professional",
+      price: parseInt(searchParams.get("price") || "79"),
+      billing:
+        (searchParams.get("billing") as "monthly" | "annual") || "monthly",
+    },
   });
 
   const totalSteps = 3;
   const stepTitles = [
-    'Institute Details',
-    'Owner Information', 
-    'Review & Payment'
+    "Institute Details",
+    "Owner Information",
+    "Review & Payment",
   ];
 
   const handleInputChange = (field: keyof FormData, value: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -69,33 +84,33 @@ export default function PricingForm() {
       // Create payment order
       const orderData = {
         amount: formData.selectedPlan.price * 100, // Razorpay expects amount in paise
-        currency: 'USD',
+        currency: "USD",
         institute: formData.brandName,
         owner: formData.ownerName,
         email: formData.email,
-        plan: formData.selectedPlan.name
+        plan: formData.selectedPlan.name,
       };
 
-      const response = await fetch('/api/payment/create-order', {
-        method: 'POST',
+      const response = await fetch("/api/payment/create-order", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(orderData),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create payment order');
+        throw new Error("Failed to create payment order");
       }
 
       const order = await response.json();
 
       if (!order.success) {
-        throw new Error(order.error || 'Failed to create order');
+        throw new Error(order.error || "Failed to create order");
       }
 
       // Get Razorpay config
-      const configResponse = await fetch('/api/payment/config');
+      const configResponse = await fetch("/api/payment/config");
       const config = await configResponse.json();
 
       // Initialize Razorpay payment
@@ -103,7 +118,7 @@ export default function PricingForm() {
         key: config.key_id,
         amount: order.order.amount,
         currency: order.order.currency,
-        name: 'Edusathi',
+        name: "Edusathi",
         description: `${formData.selectedPlan.name} Plan - ${formData.brandName}`,
         order_id: order.order.id,
         prefill: {
@@ -112,15 +127,15 @@ export default function PricingForm() {
           contact: formData.phone,
         },
         theme: {
-          color: '#3B82F6',
+          color: "#3B82F6",
         },
         handler: async function (response: any) {
           // Verify payment
           try {
-            const verifyResponse = await fetch('/api/payment/verify', {
-              method: 'POST',
+            const verifyResponse = await fetch("/api/payment/verify", {
+              method: "POST",
               headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
               },
               body: JSON.stringify({
                 razorpay_order_id: response.razorpay_order_id,
@@ -132,45 +147,46 @@ export default function PricingForm() {
             const verification = await verifyResponse.json();
 
             if (verification.success) {
-              alert('Payment successful! Your institute is being set up.');
+              alert("Payment successful! Your institute is being set up.");
               // Redirect to dashboard or success page
-              window.location.href = '/dashboard';
+              window.location.href = "/dashboard";
             } else {
-              alert('Payment verification failed. Please contact support.');
+              alert("Payment verification failed. Please contact support.");
             }
           } catch (error) {
-            console.error('Payment verification error:', error);
-            alert('Payment verification failed. Please contact support.');
+            console.error("Payment verification error:", error);
+            alert("Payment verification failed. Please contact support.");
           }
         },
         modal: {
           ondismiss: function () {
-            console.log('Payment modal closed');
+            console.log("Payment modal closed");
           },
         },
       };
 
       // Load Razorpay script and open checkout
-      const script = document.createElement('script');
-      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
       script.onload = () => {
         const rzp = new (window as any).Razorpay(options);
         rzp.open();
       };
       document.body.appendChild(script);
-
     } catch (error) {
-      console.error('Payment error:', error);
-      alert('Failed to initiate payment. Please try again.');
+      console.error("Payment error:", error);
+      alert("Failed to initiate payment. Please try again.");
     }
   };
 
   const isStepValid = () => {
     switch (currentStep) {
       case 1:
-        return formData.brandName.trim() !== '' && formData.domainName.trim() !== '';
+        return (
+          formData.brandName.trim() !== "" && formData.domainName.trim() !== ""
+        );
       case 2:
-        return formData.ownerName.trim() !== '' && formData.email.trim() !== '';
+        return formData.ownerName.trim() !== "" && formData.email.trim() !== "";
       case 3:
         return true;
       default:
@@ -199,8 +215,12 @@ export default function PricingForm() {
         {/* Progress Bar */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-4">
-            <h1 className="text-2xl font-bold text-slate-900">Setup Your Institute</h1>
-            <span className="text-sm text-slate-600">{Math.round((currentStep / totalSteps) * 100)}% Complete</span>
+            <h1 className="text-2xl font-bold text-slate-900">
+              Setup Your Institute
+            </h1>
+            <span className="text-sm text-slate-600">
+              {Math.round((currentStep / totalSteps) * 100)}% Complete
+            </span>
           </div>
           <Progress value={(currentStep / totalSteps) * 100} className="h-2" />
           <div className="flex justify-between mt-2">
@@ -208,7 +228,9 @@ export default function PricingForm() {
               <span
                 key={index}
                 className={`text-xs ${
-                  index + 1 <= currentStep ? 'text-blue-600 font-medium' : 'text-slate-400'
+                  index + 1 <= currentStep
+                    ? "text-blue-600 font-medium"
+                    : "text-slate-400"
                 }`}
               >
                 {title}
@@ -226,9 +248,12 @@ export default function PricingForm() {
                   {stepTitles[currentStep - 1]}
                 </CardTitle>
                 <CardDescription>
-                  {currentStep === 1 && "Tell us about your institute and choose your domain"}
-                  {currentStep === 2 && "We need some details about the institute owner"}
-                  {currentStep === 3 && "Review your details and proceed to payment"}
+                  {currentStep === 1 &&
+                    "Tell us about your institute and choose your domain"}
+                  {currentStep === 2 &&
+                    "We need some details about the institute owner"}
+                  {currentStep === 3 &&
+                    "Review your details and proceed to payment"}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -240,18 +265,24 @@ export default function PricingForm() {
                       <Input
                         id="brandName"
                         value={formData.brandName}
-                        onChange={(e) => handleInputChange('brandName', e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("brandName", e.target.value)
+                        }
                         placeholder="e.g. ABC Institute of Technology"
                         className="mt-1"
                       />
                     </div>
-                    
+
                     <div>
-                      <Label htmlFor="domainName">Preferred Domain Name *</Label>
+                      <Label htmlFor="domainName">
+                        Preferred Domain Name *
+                      </Label>
                       <Input
                         id="domainName"
                         value={formData.domainName}
-                        onChange={(e) => handleInputChange('domainName', e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("domainName", e.target.value)
+                        }
                         placeholder="your-institute.com"
                         className="mt-1"
                       />
@@ -266,23 +297,29 @@ export default function PricingForm() {
                 {currentStep === 2 && (
                   <div className="space-y-6">
                     <div>
-                      <Label htmlFor="ownerName">Owner/Director Full Name *</Label>
+                      <Label htmlFor="ownerName">
+                        Owner/Director Full Name *
+                      </Label>
                       <Input
                         id="ownerName"
                         value={formData.ownerName}
-                        onChange={(e) => handleInputChange('ownerName', e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("ownerName", e.target.value)
+                        }
                         placeholder="e.g. Dr. John Smith"
                         className="mt-1"
                       />
                     </div>
-                    
+
                     <div>
                       <Label htmlFor="email">Email Address *</Label>
                       <Input
                         id="email"
                         type="email"
                         value={formData.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("email", e.target.value)
+                        }
                         placeholder="director@yourinstitute.com"
                         className="mt-1"
                       />
@@ -294,7 +331,9 @@ export default function PricingForm() {
                         id="phone"
                         type="tel"
                         value={formData.phone}
-                        onChange={(e) => handleInputChange('phone', e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("phone", e.target.value)
+                        }
                         placeholder="+91 98765 43210"
                         className="mt-1"
                       />
@@ -306,19 +345,29 @@ export default function PricingForm() {
                 {currentStep === 3 && (
                   <div className="space-y-6">
                     <div className="bg-slate-50 rounded-lg p-4">
-                      <h3 className="font-semibold text-slate-900 mb-3">Institute Details</h3>
+                      <h3 className="font-semibold text-slate-900 mb-3">
+                        Institute Details
+                      </h3>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-slate-600">Institute Name:</span>
-                          <span className="font-medium">{formData.brandName}</span>
+                          <span className="text-slate-600">
+                            Institute Name:
+                          </span>
+                          <span className="font-medium">
+                            {formData.brandName}
+                          </span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-slate-600">Domain:</span>
-                          <span className="font-medium">{formData.domainName}</span>
+                          <span className="font-medium">
+                            {formData.domainName}
+                          </span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-slate-600">Owner:</span>
-                          <span className="font-medium">{formData.ownerName}</span>
+                          <span className="font-medium">
+                            {formData.ownerName}
+                          </span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-slate-600">Email:</span>
@@ -330,20 +379,29 @@ export default function PricingForm() {
                     <Separator />
 
                     <div className="bg-blue-50 rounded-lg p-4">
-                      <h3 className="font-semibold text-slate-900 mb-3">Selected Plan</h3>
+                      <h3 className="font-semibold text-slate-900 mb-3">
+                        Selected Plan
+                      </h3>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between items-center">
                           <span className="text-slate-600">Plan:</span>
-                          <Badge className="bg-blue-600">{formData.selectedPlan.name}</Badge>
+                          <Badge className="bg-blue-600">
+                            {formData.selectedPlan.name}
+                          </Badge>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-slate-600">Billing:</span>
-                          <span className="font-medium capitalize">{formData.selectedPlan.billing}</span>
+                          <span className="font-medium capitalize">
+                            {formData.selectedPlan.billing}
+                          </span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-slate-600">Amount:</span>
                           <span className="text-xl font-bold text-blue-600">
-                            ${formData.selectedPlan.price}/{formData.selectedPlan.billing === 'monthly' ? 'month' : 'year'}
+                            ${formData.selectedPlan.price}/
+                            {formData.selectedPlan.billing === "monthly"
+                              ? "month"
+                              : "year"}
                           </span>
                         </div>
                       </div>
@@ -399,9 +457,14 @@ export default function PricingForm() {
                     <Building className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
-                    <h3 className="font-medium">{formData.selectedPlan.name} Plan</h3>
+                    <h3 className="font-medium">
+                      {formData.selectedPlan.name} Plan
+                    </h3>
                     <p className="text-sm text-slate-600">
-                      {formData.selectedPlan.billing === 'monthly' ? 'Monthly' : 'Annual'} billing
+                      {formData.selectedPlan.billing === "monthly"
+                        ? "Monthly"
+                        : "Annual"}{" "}
+                      billing
                     </p>
                   </div>
                 </div>
@@ -423,7 +486,9 @@ export default function PricingForm() {
 
                 <div className="flex justify-between font-semibold">
                   <span>Total</span>
-                  <span className="text-blue-600">${formData.selectedPlan.price}</span>
+                  <span className="text-blue-600">
+                    ${formData.selectedPlan.price}
+                  </span>
                 </div>
 
                 <div className="bg-green-50 rounded-lg p-3 mt-4">

@@ -22,7 +22,7 @@ export interface Center {
   superAdminPath: string;
   createdAt: string;
   expireDate: string;
-  status: 'active' | 'inactive';
+  status: "active" | "inactive";
 }
 
 export interface CreateCenterRequest {

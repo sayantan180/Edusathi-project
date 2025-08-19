@@ -2,8 +2,17 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
-import { getCenters, createCenter, getCenterById, deleteCenter } from "./routes/centers";
-import { createPaymentOrder, verifyPayment, getPaymentConfig } from "./routes/payment";
+import {
+  getCenters,
+  createCenter,
+  getCenterById,
+  deleteCenter,
+} from "./routes/centers";
+import {
+  createPaymentOrder,
+  verifyPayment,
+  getPaymentConfig,
+} from "./routes/payment";
 
 export function createServer() {
   const app = express();
