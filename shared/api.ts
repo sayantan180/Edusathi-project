@@ -35,3 +35,40 @@ export interface CreateCenterRequest {
 export interface CentersResponse {
   centers: Center[];
 }
+
+/**
+ * Payment types for Razorpay integration
+ */
+export interface CreateOrderRequest {
+  amount: number;
+  currency: string;
+  institute: string;
+  owner: string;
+  email: string;
+  plan: string;
+}
+
+export interface CreateOrderResponse {
+  success: boolean;
+  order?: {
+    id: string;
+    amount: number;
+    currency: string;
+    receipt: string;
+  };
+  error?: string;
+}
+
+export interface PaymentVerificationRequest {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+}
+
+export interface PaymentVerificationResponse {
+  success: boolean;
+  message?: string;
+  payment_id?: string;
+  order_id?: string;
+  error?: string;
+}
