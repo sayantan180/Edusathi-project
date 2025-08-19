@@ -27,5 +27,10 @@ export function createServer() {
   app.get("/api/centers/:id", getCenterById);
   app.delete("/api/centers/:id", deleteCenter);
 
+  // Payment API routes
+  app.post("/api/payment/create-order", createPaymentOrder);
+  app.post("/api/payment/verify", verifyPayment);
+  app.get("/api/payment/config", getPaymentConfig);
+
   return app;
 }
