@@ -129,7 +129,7 @@ function RotatingText() {
     <span className="inline-block">
       <span
         key={currentText}
-        className="text-blue-600 font-semibold animate-in fade-in duration-500"
+        className="text-blue-700 font-bold animate-in fade-in duration-500"
       >
         {rotatingTexts[currentText]}
       </span>
