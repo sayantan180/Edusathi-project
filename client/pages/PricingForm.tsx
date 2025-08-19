@@ -64,20 +64,105 @@ export default function PricingForm() {
     }
   };
 
-  const handleSubmit = () => {
-    // Redirect to Razorpay payment integration
-    const paymentData = {
-      amount: formData.selectedPlan.price * 100, // Razorpay expects amount in paise
-      currency: 'USD',
-      institute: formData.brandName,
-      owner: formData.ownerName,
-      email: formData.email,
-      plan: formData.selectedPlan.name
-    };
-    
-    // In a real app, you would create a Razorpay order here
-    console.log('Proceeding to payment with data:', paymentData);
-    alert('Redirecting to Razorpay payment gateway...');
+  const handleSubmit = async () => {
+    try {
+      // Create payment order
+      const orderData = {
+        amount: formData.selectedPlan.price * 100, // Razorpay expects amount in paise
+        currency: 'USD',
+        institute: formData.brandName,
+        owner: formData.ownerName,
+        email: formData.email,
+        plan: formData.selectedPlan.name
+      };
+
+      const response = await fetch('/api/payment/create-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create payment order');
+      }
+
+      const order = await response.json();
+
+      if (!order.success) {
+        throw new Error(order.error || 'Failed to create order');
+      }
+
+      // Get Razorpay config
+      const configResponse = await fetch('/api/payment/config');
+      const config = await configResponse.json();
+
+      // Initialize Razorpay payment
+      const options = {
+        key: config.key_id,
+        amount: order.order.amount,
+        currency: order.order.currency,
+        name: 'Edusathi',
+        description: `${formData.selectedPlan.name} Plan - ${formData.brandName}`,
+        order_id: order.order.id,
+        prefill: {
+          name: formData.ownerName,
+          email: formData.email,
+          contact: formData.phone,
+        },
+        theme: {
+          color: '#3B82F6',
+        },
+        handler: async function (response: any) {
+          // Verify payment
+          try {
+            const verifyResponse = await fetch('/api/payment/verify', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              }),
+            });
+
+            const verification = await verifyResponse.json();
+
+            if (verification.success) {
+              alert('Payment successful! Your institute is being set up.');
+              // Redirect to dashboard or success page
+              window.location.href = '/dashboard';
+            } else {
+              alert('Payment verification failed. Please contact support.');
+            }
+          } catch (error) {
+            console.error('Payment verification error:', error);
+            alert('Payment verification failed. Please contact support.');
+          }
+        },
+        modal: {
+          ondismiss: function () {
+            console.log('Payment modal closed');
+          },
+        },
+      };
+
+      // Load Razorpay script and open checkout
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => {
+        const rzp = new (window as any).Razorpay(options);
+        rzp.open();
+      };
+      document.body.appendChild(script);
+
+    } catch (error) {
+      console.error('Payment error:', error);
+      alert('Failed to initiate payment. Please try again.');
+    }
   };
 
   const isStepValid = () => {
