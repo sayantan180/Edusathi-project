@@ -282,10 +282,10 @@ export default function Index() {
                     <div className="flex justify-center mb-4">
                       {item.icon}
                     </div>
-                    <CardTitle className="text-lg font-semibold">{item.title}</CardTitle>
+                    <CardTitle className="text-lg font-bold text-slate-800 leading-snug">{item.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-slate-600 text-center">{item.description}</p>
+                    <p className="text-slate-700 text-center leading-relaxed">{item.description}</p>
                   </CardContent>
                 </Card>
               </div>
