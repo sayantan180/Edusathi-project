@@ -314,7 +314,7 @@ export default function PricingForm() {
                         </div>
                         <div className="flex justify-between">
                           <span className="text-slate-600">Domain:</span>
-                          <span className="font-medium">{formData.domainName}.edusathi.com</span>
+                          <span className="font-medium">{formData.domainName}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-slate-600">Owner:</span>
