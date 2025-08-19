@@ -33,8 +33,8 @@ export default function CreateCenter() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const form = useForm<CreateCenterForm>({
-    resolver: zodResolver(createCenterSchema),
+  const form = useForm<CreateSubCenterForm>({
+    resolver: zodResolver(createSubCenterSchema),
     defaultValues: {
       name: '',
       domain: '',
@@ -43,7 +43,7 @@ export default function CreateCenter() {
     },
   });
 
-  const onSubmit = async (data: CreateCenterForm) => {
+  const onSubmit = async (data: CreateSubCenterForm) => {
     setIsSubmitting(true);
     try {
       const response = await fetch('/api/centers', {
@@ -55,7 +55,7 @@ export default function CreateCenter() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create center');
+        throw new Error('Failed to create sub center');
       }
 
       const result = await response.json();
