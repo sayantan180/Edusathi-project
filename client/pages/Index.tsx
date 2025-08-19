@@ -209,7 +209,7 @@ export default function Index() {
 
       <main>
         {/* Hero Section */}
-        <section className="container max-w-7xl mx-auto px-4 py-20 text-center relative z-10">
+        <section className="container max-w-7xl mx-auto px-4 py-12 md:py-20 text-center relative z-10">
           <BackgroundCarousel />
           <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
             <RotatingHeader />
