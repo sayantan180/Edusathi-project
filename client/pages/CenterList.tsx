@@ -147,7 +147,7 @@ export default function CenterList() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Center Name</TableHead>
+                      <TableHead>Sub Center Name</TableHead>
                       <TableHead>Website</TableHead>
                       <TableHead>Start Date</TableHead>
                       <TableHead>Expire Date</TableHead>
@@ -156,7 +156,7 @@ export default function CenterList() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {centers.map((center) => (
+                    {subCenters.map((center) => (
                       <TableRow key={center.id}>
                         <TableCell className="font-medium">
                           <div className="flex items-center gap-2">
