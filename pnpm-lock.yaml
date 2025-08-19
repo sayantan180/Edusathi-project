@@ -8,12 +8,18 @@ importers:
 
   .:
     dependencies:
+      '@remix-run/router':
+        specifier: ^1.15.3
+        version: 1.23.0
       dotenv:
         specifier: ^17.2.1
         version: 17.2.1
       express:
         specifier: ^5.1.0
         version: 5.1.0
+      react-router:
+        specifier: ^6.22.3
+        version: 6.30.1(react@18.3.1)
       zod:
         specifier: ^3.25.76
         version: 3.25.76
@@ -196,7 +202,7 @@ importers:
         specifier: ^3.0.4
         version: 3.0.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-router-dom:
-        specifier: ^6.30.1
+        specifier: ^6.22.3
         version: 6.30.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       recharts:
         specifier: ^2.12.7
