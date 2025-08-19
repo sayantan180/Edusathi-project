@@ -479,6 +479,67 @@ export default function Index() {
           </div>
         </section>
 
+        {/* About Us Section */}
+        <section id="about" className="container max-w-7xl mx-auto px-4 py-20">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+              About Edusathi
+            </h2>
+            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+              Transforming education through AI innovation
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
+            <div>
+              <h3 className="text-2xl font-bold text-slate-900 mb-6">Our Mission</h3>
+              <p className="text-lg text-slate-600 mb-6">
+                We're on a mission to democratize quality education through artificial intelligence,
+                making learning more personalized, accessible, and effective for everyone.
+              </p>
+              <p className="text-lg text-slate-600 mb-6">
+                Founded in 2023, Edusathi emerged from a simple observation: traditional education
+                systems weren't keeping pace with the digital age. Today, we serve over 1,200
+                institutes and 50,000+ students worldwide.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <div className="flex items-center gap-2">
+                  <Users className="w-5 h-5 text-blue-500" />
+                  <span className="text-sm font-medium">50,000+ Students</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Building className="w-5 h-5 text-green-500" />
+                  <span className="text-sm font-medium">1,200+ Institutes</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Globe className="w-5 h-5 text-purple-500" />
+                  <span className="text-sm font-medium">Global Reach</span>
+                </div>
+              </div>
+            </div>
+            <div className="relative">
+              <Card className="p-8 bg-gradient-to-br from-blue-50 to-purple-50 border-0 shadow-xl">
+                <div className="text-center">
+                  <Sparkles className="w-16 h-16 text-blue-500 mx-auto mb-4" />
+                  <h4 className="text-xl font-bold text-slate-900 mb-4">Our Vision</h4>
+                  <p className="text-slate-600">
+                    To empower every educator with AI-driven tools that transform
+                    how knowledge is shared, absorbed, and applied in the modern world.
+                  </p>
+                </div>
+              </Card>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <Link to="/about">
+              <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8">
+                Learn More About Us
+              </Button>
+            </Link>
+          </div>
+        </section>
+
         {/* FAQ */}
         <section className="container max-w-4xl mx-auto px-4 py-20">
           <div className="text-center mb-16">
