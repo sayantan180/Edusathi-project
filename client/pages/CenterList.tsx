@@ -101,17 +101,17 @@ export default function CenterList() {
           </div>
         </div>
 
-        {/* Centers Table */}
+        {/* Sub Centers Table */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Building className="h-5 w-5" />
-              Educational Centers
+              Educational Sub Centers
             </CardTitle>
             <CardDescription>
-              {centers.length > 0 
-                ? `Showing ${centers.length} center${centers.length !== 1 ? 's' : ''}`
-                : 'No centers created yet'
+              {subCenters.length > 0
+                ? `Showing ${subCenters.length} sub center${subCenters.length !== 1 ? 's' : ''}`
+                : 'No sub centers created yet'
               }
             </CardDescription>
           </CardHeader>
@@ -128,17 +128,17 @@ export default function CenterList() {
                   </div>
                 ))}
               </div>
-            ) : centers.length === 0 ? (
+            ) : subCenters.length === 0 ? (
               <div className="text-center py-12">
                 <Building className="mx-auto h-12 w-12 text-muted-foreground" />
-                <h3 className="mt-4 text-lg font-semibold">No centers found</h3>
+                <h3 className="mt-4 text-lg font-semibold">No sub centers found</h3>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Get started by creating your first educational center.
+                  Get started by creating your first educational sub center.
                 </p>
                 <Button asChild className="mt-4">
                   <Link to="/dashboard/centers/create">
                     <Plus className="mr-2 h-4 w-4" />
-                    Create Center
+                    Add Sub Center
                   </Link>
                 </Button>
               </div>
