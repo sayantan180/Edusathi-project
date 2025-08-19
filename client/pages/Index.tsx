@@ -37,6 +37,44 @@ import {
   Sparkles
 } from 'lucide-react';
 
+// Rotating Header Component
+function RotatingHeader() {
+  const [currentHeader, setCurrentHeader] = useState(0);
+
+  const headerTexts = [
+    { first: "Take your institute", second: "online—fast." },
+    { first: "Transform education with", second: "AI technology." },
+    { first: "Scale your institute", second: "effortlessly." },
+    { first: "Revolutionize learning", second: "experience." },
+    { first: "Automate everything", second: "grow faster." }
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentHeader((prev) => (prev + 1) % headerTexts.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [headerTexts.length]);
+
+  return (
+    <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-6">
+      <span
+        key={`first-${currentHeader}`}
+        className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent animate-in fade-in duration-500"
+      >
+        {headerTexts[currentHeader].first}
+      </span>
+      <br />
+      <span
+        key={`second-${currentHeader}`}
+        className="bg-gradient-to-r from-green-500 to-blue-500 bg-clip-text text-transparent animate-in fade-in duration-500"
+      >
+        {headerTexts[currentHeader].second}
+      </span>
+    </h1>
+  );
+}
+
 // Rotating Text Component
 function RotatingText() {
   const [currentText, setCurrentText] = useState(0);
@@ -560,7 +598,7 @@ export default function Index() {
           <Separator className="my-8" />
           
           <div className="text-center text-sm text-slate-600">
-            <p>© 2025 Edusathi. All rights reserved. Made with ❤��� for educators worldwide.</p>
+            <p>© 2025 Edusathi. All rights reserved. Made with ❤️ for educators worldwide.</p>
           </div>
         </div>
       </footer>
