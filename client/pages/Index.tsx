@@ -181,7 +181,7 @@ export default function Index() {
               </span>
             </h1>
             <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8 animate-in fade-in duration-1000 delay-300">
-              Harness the power of <span className="text-purple-600 font-semibold">artificial intelligence</span> to automate grading, personalize learning, and scale your institute with intelligent insights and <span className="text-green-600 font-semibold">data-driven growth</span>.
+              Harness the power of <span className="text-purple-600 font-semibold">artificial intelligence</span> to <RotatingText /> and scale your institute with intelligent insights and <span className="text-green-600 font-semibold">data-driven growth</span>.
             </p>
 
             {/* AI Features Carousel */}
