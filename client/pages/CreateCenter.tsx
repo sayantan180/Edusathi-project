@@ -20,14 +20,14 @@ import { useToast } from '@/hooks/use-toast';
 import { CreateCenterRequest } from '@shared/api';
 import { Building, Globe, Link as LinkIcon, Shield } from 'lucide-react';
 
-const createCenterSchema = z.object({
-  name: z.string().min(1, 'Center name is required').min(2, 'Center name must be at least 2 characters'),
+const createSubCenterSchema = z.object({
+  name: z.string().min(1, 'Sub center name is required').min(2, 'Sub center name must be at least 2 characters'),
   domain: z.string().min(1, 'Domain name is required').regex(/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Please enter a valid domain (e.g., example.com)'),
   website: z.string().min(1, 'Website is required').url('Please enter a valid URL'),
   superAdminPath: z.string().min(1, 'Super Admin Path is required').regex(/^\//, 'Path must start with /'),
 });
 
-type CreateCenterForm = z.infer<typeof createCenterSchema>;
+type CreateSubCenterForm = z.infer<typeof createSubCenterSchema>;
 
 export default function CreateCenter() {
   const [isSubmitting, setIsSubmitting] = useState(false);
