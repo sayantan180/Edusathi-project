@@ -216,12 +216,6 @@ export default function Index() {
               Harness the power of <span className="text-purple-600 font-semibold">artificial intelligence</span> to <RotatingText /> and scale your institute with intelligent insights and <span className="text-green-600 font-semibold">data-driven growth</span>.
             </p>
 
-            {/* AI Features Carousel */}
-            <div className="mb-8 animate-in fade-in duration-1000 delay-400">
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-white/20 shadow-lg p-6 max-w-2xl mx-auto">
-                <AIFeaturesCarousel />
-              </div>
-            </div>
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-in fade-in duration-1000 delay-500">
