@@ -38,12 +38,12 @@ export default function CenterList() {
       }
 
       const data: CentersResponse = await response.json();
-      setCenters(data.centers);
+      setSubCenters(data.centers);
     } catch (error) {
-      console.error('Error fetching centers:', error);
+      console.error('Error fetching sub centers:', error);
       toast({
         title: 'Error',
-        description: 'Failed to load centers. Please try again.',
+        description: 'Failed to load sub centers. Please try again.',
         variant: 'destructive',
       });
     } finally {
@@ -53,7 +53,7 @@ export default function CenterList() {
   };
 
   useEffect(() => {
-    fetchCenters();
+    fetchSubCenters();
   }, []);
 
   const handleGoToCenter = (center: Center) => {
