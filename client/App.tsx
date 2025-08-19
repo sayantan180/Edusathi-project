@@ -15,6 +15,7 @@ import Pricing from "./pages/Pricing";
 import PricingForm from "./pages/PricingForm";
 import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
+import Login from "./pages/Login";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
