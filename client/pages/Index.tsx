@@ -153,7 +153,7 @@ export default function Index() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden">
       {/* Floating Background Cards */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {floatingCards.map((card, index) => (
