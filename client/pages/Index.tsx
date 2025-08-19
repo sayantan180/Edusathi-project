@@ -211,14 +211,7 @@ export default function Index() {
       <main>
         {/* Hero Section */}
         <section className="container max-w-7xl mx-auto px-4 py-20 text-center relative z-10">
-          {/* Background Image Overlay */}
-          <div
-            className="absolute inset-0 -mx-4 -my-20 bg-cover bg-center bg-no-repeat opacity-10 rounded-3xl"
-            style={{
-              backgroundImage: `url('https://images.pexels.com/photos/9783353/pexels-photo-9783353.jpeg?auto=compress&cs=tinysrgb&w=1200')`
-            }}
-          />
-          <div className="absolute inset-0 -mx-4 -my-20 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-3xl" />
+          <BackgroundCarousel />
           <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
             <RotatingHeader />
             <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8 animate-in fade-in duration-1000 delay-300">
