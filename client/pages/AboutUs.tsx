@@ -110,13 +110,14 @@ export default function AboutUs() {
             <div>
               <h2 className="text-3xl font-bold text-slate-900 mb-6">Our Story</h2>
               <p className="text-lg text-slate-600 mb-6">
-                Founded in 2023, Edusathi emerged from a simple observation: traditional education 
-                systems weren't keeping pace with the digital age. Our founders, educators and 
-                technologists, envisioned a platform where AI could enhance human learning.
+                Founded in 2023, Edusathi was created to solve a critical problem: most institutes
+                couldn't afford custom education platforms. We developed a white-label solution that
+                gives every institute access to enterprise-grade learning technology with their own branding.
               </p>
               <p className="text-lg text-slate-600 mb-6">
-                Today, we're proud to serve over 1,200 institutes and 50,000+ students worldwide, 
-                providing them with tools that make education more engaging, efficient, and effective.
+                Our white-label platform provides: custom domains, branded interfaces, complete LMS,
+                student management, payment gateways, mobile apps, AI-powered analytics, and 24/7 support.
+                Today, over 1,200 institutes use our platform to serve 50,000+ students globally.
               </p>
               <div className="flex flex-wrap gap-4">
                 <div className="flex items-center gap-2">
