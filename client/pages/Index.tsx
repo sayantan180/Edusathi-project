@@ -37,6 +37,36 @@ import {
   Sparkles
 } from 'lucide-react';
 
+// Background Image Carousel Component
+function BackgroundCarousel() {
+  const [currentBg, setCurrentBg] = useState(0);
+
+  const backgroundImages = [
+    'https://images.pexels.com/photos/9783353/pexels-photo-9783353.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    'https://images.pexels.com/photos/8566445/pexels-photo-8566445.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    'https://images.pexels.com/photos/6517274/pexels-photo-6517274.jpeg?auto=compress&cs=tinysrgb&w=1200'
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentBg((prev) => (prev + 1) % backgroundImages.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [backgroundImages.length]);
+
+  return (
+    <div className="absolute inset-0 -mx-4 -my-20 overflow-hidden rounded-3xl">
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 transition-all duration-1000"
+        style={{
+          backgroundImage: `url('${backgroundImages[currentBg]}')`
+        }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-purple-500/30" />
+    </div>
+  );
+}
+
 // Rotating Header Component
 function RotatingHeader() {
   const [currentHeader, setCurrentHeader] = useState(0);
