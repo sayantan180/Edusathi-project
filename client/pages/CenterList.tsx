@@ -1,8 +1,14 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { DashboardLayout } from '@/components/DashboardLayout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { DashboardLayout } from "@/components/DashboardLayout";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -10,20 +16,20 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { useToast } from '@/hooks/use-toast';
-import { Center, CentersResponse } from '@shared/api';
-import { Building, ExternalLink, Plus, RefreshCw } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
+import { Center, CentersResponse } from "@shared/api";
+import { Building, ExternalLink, Plus, RefreshCw } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CenterList() {
-  const [centers, setCenters] = useState<Center[]>([]);
+  const [subCenters, setSubCenters] = useState<Center[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { toast } = useToast();
 
-  const fetchCenters = async (showRefreshIndicator = false) => {
+  const fetchSubCenters = async (showRefreshIndicator = false) => {
     if (showRefreshIndicator) {
       setIsRefreshing(true);
     } else {
@@ -31,20 +37,20 @@ export default function CenterList() {
     }
 
     try {
-      const response = await fetch('/api/centers');
-      
+      const response = await fetch("/api/centers");
+
       if (!response.ok) {
-        throw new Error('Failed to fetch centers');
+        throw new Error("Failed to fetch centers");
       }
 
       const data: CentersResponse = await response.json();
-      setCenters(data.centers);
+      setSubCenters(data.centers);
     } catch (error) {
-      console.error('Error fetching centers:', error);
+      console.error("Error fetching sub centers:", error);
       toast({
-        title: 'Error',
-        description: 'Failed to load centers. Please try again.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to load sub centers. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -53,21 +59,21 @@ export default function CenterList() {
   };
 
   useEffect(() => {
-    fetchCenters();
+    fetchSubCenters();
   }, []);
 
-  const handleGoToCenter = (center: Center) => {
+  const handleGoToSubCenter = (center: Center) => {
     const url = `${center.website}${center.superAdminPath}`;
-    window.open(url, '_blank', 'noopener,noreferrer');
+    window.open(url, "_blank", "noopener,noreferrer");
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -77,42 +83,45 @@ export default function CenterList() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-3xl font-bold tracking-tight">Center List</h2>
+            <h2 className="text-3xl font-bold tracking-tight">
+              Sub Center List
+            </h2>
             <p className="text-muted-foreground">
-              Manage and access your educational centers
+              Manage and access your educational sub centers
             </p>
           </div>
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
               size="sm"
-              onClick={() => fetchCenters(true)}
+              onClick={() => fetchSubCenters(true)}
               disabled={isRefreshing}
             >
-              <RefreshCw className={`mr-2 h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              <RefreshCw
+                className={`mr-2 h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`}
+              />
               Refresh
             </Button>
             <Button asChild>
               <Link to="/dashboard/centers/create">
                 <Plus className="mr-2 h-4 w-4" />
-                Create Center
+                Add Sub Center
               </Link>
             </Button>
           </div>
         </div>
 
-        {/* Centers Table */}
+        {/* Sub Centers Table */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Building className="h-5 w-5" />
-              Educational Centers
+              Educational Sub Centers
             </CardTitle>
             <CardDescription>
-              {centers.length > 0 
-                ? `Showing ${centers.length} center${centers.length !== 1 ? 's' : ''}`
-                : 'No centers created yet'
-              }
+              {subCenters.length > 0
+                ? `Showing ${subCenters.length} sub center${subCenters.length !== 1 ? "s" : ""}`
+                : "No sub centers created yet"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -128,17 +137,19 @@ export default function CenterList() {
                   </div>
                 ))}
               </div>
-            ) : centers.length === 0 ? (
+            ) : subCenters.length === 0 ? (
               <div className="text-center py-12">
                 <Building className="mx-auto h-12 w-12 text-muted-foreground" />
-                <h3 className="mt-4 text-lg font-semibold">No centers found</h3>
+                <h3 className="mt-4 text-lg font-semibold">
+                  No sub centers found
+                </h3>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Get started by creating your first educational center.
+                  Get started by creating your first educational sub center.
                 </p>
                 <Button asChild className="mt-4">
                   <Link to="/dashboard/centers/create">
                     <Plus className="mr-2 h-4 w-4" />
-                    Create Center
+                    Add Sub Center
                   </Link>
                 </Button>
               </div>
@@ -147,7 +158,7 @@ export default function CenterList() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Center Name</TableHead>
+                      <TableHead>Sub Center Name</TableHead>
                       <TableHead>Website</TableHead>
                       <TableHead>Start Date</TableHead>
                       <TableHead>Expire Date</TableHead>
@@ -156,7 +167,7 @@ export default function CenterList() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {centers.map((center) => (
+                    {subCenters.map((center) => (
                       <TableRow key={center.id}>
                         <TableCell className="font-medium">
                           <div className="flex items-center gap-2">
@@ -182,21 +193,30 @@ export default function CenterList() {
                         </TableCell>
                         <TableCell>
                           <div className="text-sm">
-                            <div className="font-medium">{formatDate(center.expireDate)}</div>
+                            <div className="font-medium">
+                              {formatDate(center.expireDate)}
+                            </div>
                             <div className="text-muted-foreground text-xs">
                               {new Date(center.expireDate) > new Date()
                                 ? `${Math.ceil((new Date(center.expireDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} days left`
-                                : 'Expired'
-                              }
+                                : "Expired"}
                             </div>
                           </div>
                         </TableCell>
                         <TableCell>
                           <Badge
-                            variant={center.status === 'active' ? 'default' : 'destructive'}
-                            className={center.status === 'active' ? 'bg-green-100 text-green-800 hover:bg-green-200' : ''}
+                            variant={
+                              center.status === "active"
+                                ? "default"
+                                : "destructive"
+                            }
+                            className={
+                              center.status === "active"
+                                ? "bg-green-100 text-green-800 hover:bg-green-200"
+                                : ""
+                            }
                           >
-                            {center.status === 'active' ? 'Active' : 'Inactive'}
+                            {center.status === "active" ? "Active" : "Inactive"}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">

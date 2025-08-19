@@ -12,6 +12,10 @@ import Dashboard from "./pages/Dashboard";
 import CreateCenter from "./pages/CreateCenter";
 import CenterList from "./pages/CenterList";
 import Pricing from "./pages/Pricing";
+import PricingForm from "./pages/PricingForm";
+import AboutUs from "./pages/AboutUs";
+import ContactUs from "./pages/ContactUs";
+import Login from "./pages/Login";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -25,9 +29,34 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/pricing" element={<Pricing />} />
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/dashboard/centers" element={<ProtectedRoute><CenterList /></ProtectedRoute>} />
-          <Route path="/dashboard/centers/create" element={<ProtectedRoute><CreateCenter /></ProtectedRoute>} />
+          <Route path="/pricing/setup" element={<PricingForm />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/contact" element={<ContactUs />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/centers"
+            element={
+              <ProtectedRoute>
+                <CenterList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/centers/create"
+            element={
+              <ProtectedRoute>
+                <CreateCenter />
+              </ProtectedRoute>
+            }
+          />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

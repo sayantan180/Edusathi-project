@@ -1,12 +1,18 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { DashboardLayout } from '@/components/DashboardLayout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { DashboardLayout } from "@/components/DashboardLayout";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Form,
   FormControl,
@@ -15,63 +21,78 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { useToast } from '@/hooks/use-toast';
-import { CreateCenterRequest } from '@shared/api';
-import { Building, Globe, Link as LinkIcon, Shield } from 'lucide-react';
+} from "@/components/ui/form";
+import { useToast } from "@/hooks/use-toast";
+import { CreateCenterRequest } from "@shared/api";
+import { Building, Globe, Link as LinkIcon, Shield } from "lucide-react";
 
-const createCenterSchema = z.object({
-  name: z.string().min(1, 'Center name is required').min(2, 'Center name must be at least 2 characters'),
-  domain: z.string().min(1, 'Domain name is required').regex(/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Please enter a valid domain (e.g., example.com)'),
-  website: z.string().min(1, 'Website is required').url('Please enter a valid URL'),
-  superAdminPath: z.string().min(1, 'Super Admin Path is required').regex(/^\//, 'Path must start with /'),
+const createSubCenterSchema = z.object({
+  name: z
+    .string()
+    .min(1, "Sub center name is required")
+    .min(2, "Sub center name must be at least 2 characters"),
+  domain: z
+    .string()
+    .min(1, "Domain name is required")
+    .regex(
+      /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      "Please enter a valid domain (e.g., example.com)",
+    ),
+  website: z
+    .string()
+    .min(1, "Website is required")
+    .url("Please enter a valid URL"),
+  superAdminPath: z
+    .string()
+    .min(1, "Super Admin Path is required")
+    .regex(/^\//, "Path must start with /"),
 });
 
-type CreateCenterForm = z.infer<typeof createCenterSchema>;
+type CreateSubCenterForm = z.infer<typeof createSubCenterSchema>;
 
 export default function CreateCenter() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const form = useForm<CreateCenterForm>({
-    resolver: zodResolver(createCenterSchema),
+  const form = useForm<CreateSubCenterForm>({
+    resolver: zodResolver(createSubCenterSchema),
     defaultValues: {
-      name: '',
-      domain: '',
-      website: '',
-      superAdminPath: '/admin',
+      name: "",
+      domain: "",
+      website: "",
+      superAdminPath: "/admin",
     },
   });
 
-  const onSubmit = async (data: CreateCenterForm) => {
+  const onSubmit = async (data: CreateSubCenterForm) => {
     setIsSubmitting(true);
     try {
-      const response = await fetch('/api/centers', {
-        method: 'POST',
+      const response = await fetch("/api/centers", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(data as CreateCenterRequest),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create center');
+        throw new Error("Failed to create sub center");
       }
 
       const result = await response.json();
-      
+
       toast({
-        title: 'Success!',
-        description: 'Center created successfully.',
+        title: "Success!",
+        description: "Sub center created successfully.",
       });
 
       form.reset();
     } catch (error) {
-      console.error('Error creating center:', error);
+      console.error("Error creating sub center:", error);
       toast({
-        title: 'Error',
-        description: 'Failed to create center. Please try again.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to create sub center. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
@@ -83,9 +104,9 @@ export default function CreateCenter() {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Create Center</h2>
+          <h2 className="text-3xl font-bold tracking-tight">Add Sub Center</h2>
           <p className="text-muted-foreground">
-            Add a new educational center to your dashboard
+            Add a new educational sub center to your dashboard
           </p>
         </div>
 
@@ -102,7 +123,10 @@ export default function CreateCenter() {
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
                 {/* Center Name */}
                 <FormField
                   control={form.control}
@@ -114,10 +138,7 @@ export default function CreateCenter() {
                         Name of Center
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Enter center name"
-                          {...field}
-                        />
+                        <Input placeholder="Enter center name" {...field} />
                       </FormControl>
                       <FormDescription>
                         The display name for your educational center
@@ -138,10 +159,7 @@ export default function CreateCenter() {
                         Domain Name of Center
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="example.com"
-                          {...field}
-                        />
+                        <Input placeholder="example.com" {...field} />
                       </FormControl>
                       <FormDescription>
                         The domain name where your center will be accessible
@@ -162,10 +180,7 @@ export default function CreateCenter() {
                         Website
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="https://example.com"
-                          {...field}
-                        />
+                        <Input placeholder="https://example.com" {...field} />
                       </FormControl>
                       <FormDescription>
                         The full website URL for your educational center
@@ -186,13 +201,11 @@ export default function CreateCenter() {
                         Super Admin Path
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="/admin"
-                          {...field}
-                        />
+                        <Input placeholder="/admin" {...field} />
                       </FormControl>
                       <FormDescription>
-                        The path to access the super admin panel (must start with /)
+                        The path to access the super admin panel (must start
+                        with /)
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -206,7 +219,7 @@ export default function CreateCenter() {
                     className="w-full"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? 'Creating Center...' : 'Create Center'}
+                    {isSubmitting ? "Creating Center..." : "Create Center"}
                   </Button>
                 </div>
               </form>

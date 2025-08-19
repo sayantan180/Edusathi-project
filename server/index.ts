@@ -2,7 +2,17 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
-import { getCenters, createCenter, getCenterById, deleteCenter } from "./routes/centers";
+import {
+  getCenters,
+  createCenter,
+  getCenterById,
+  deleteCenter,
+} from "./routes/centers";
+import {
+  createPaymentOrder,
+  verifyPayment,
+  getPaymentConfig,
+} from "./routes/payment";
 
 export function createServer() {
   const app = express();
@@ -25,6 +35,11 @@ export function createServer() {
   app.post("/api/centers", createCenter);
   app.get("/api/centers/:id", getCenterById);
   app.delete("/api/centers/:id", deleteCenter);
+
+  // Payment API routes
+  app.post("/api/payment/create-order", createPaymentOrder);
+  app.post("/api/payment/verify", verifyPayment);
+  app.get("/api/payment/config", getPaymentConfig);
 
   return app;
 }
