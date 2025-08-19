@@ -171,10 +171,10 @@ export default function Index() {
           <nav className="hidden lg:flex items-center space-x-8">
             <a href="#features" className="text-slate-600 hover:text-blue-600 transition-colors font-medium">Features</a>
             <Link to="/pricing" className="text-slate-600 hover:text-blue-600 transition-colors font-medium">Pricing</Link>
-            <a href="#about" className="text-slate-600 hover:text-blue-600 transition-colors font-medium">About us</a>
+            <Link to="/about" className="text-slate-600 hover:text-blue-600 transition-colors font-medium">About us</Link>
             <a href="#institutes" className="text-slate-600 hover:text-blue-600 transition-colors font-medium">For Institutes</a>
             <a href="#students" className="text-slate-600 hover:text-blue-600 transition-colors font-medium">For Students</a>
-            <a href="#contact" className="text-slate-600 hover:text-blue-600 transition-colors font-medium">Contact us</a>
+            <Link to="/contact" className="text-slate-600 hover:text-blue-600 transition-colors font-medium">Contact us</Link>
           </nav>
 
           {/* CTA Button */}
