@@ -296,10 +296,10 @@ export default function Index() {
          {/* Feature Highlights */}
         <section id="features" className="container max-w-7xl mx-auto px-4 py-20">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent mb-6 leading-tight">
               Powerful features for modern education
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-xl text-slate-700 max-w-2xl mx-auto leading-relaxed">
               Everything you need to run a successful educational institute
             </p>
           </div>
