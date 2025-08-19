@@ -182,15 +182,7 @@ export default function Index() {
         {/* Hero Section */}
         <section className="container max-w-7xl mx-auto px-4 py-20 text-center relative z-10">
           <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-6">
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Take your institute
-              </span>
-              <br />
-              <span className="bg-gradient-to-r from-green-500 to-blue-500 bg-clip-text text-transparent">
-                online—fast.
-              </span>
-            </h1>
+            <RotatingHeader />
             <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8 animate-in fade-in duration-1000 delay-300">
               Harness the power of <span className="text-purple-600 font-semibold">artificial intelligence</span> to <RotatingText /> and scale your institute with intelligent insights and <span className="text-green-600 font-semibold">data-driven growth</span>.
             </p>
