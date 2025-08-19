@@ -56,7 +56,7 @@ export default function CenterList() {
     fetchSubCenters();
   }, []);
 
-  const handleGoToCenter = (center: Center) => {
+  const handleGoToSubCenter = (center: Center) => {
     const url = `${center.website}${center.superAdminPath}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
