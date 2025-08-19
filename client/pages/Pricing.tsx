@@ -193,15 +193,19 @@ export default function Pricing() {
                   </CardHeader>
                   
                   <CardContent className="space-y-6">
-                    <Button 
-                      className={`w-full ${plan.buttonVariant === 'default' 
-                        ? 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700' 
-                        : ''}`}
-                      variant={plan.buttonVariant}
-                      size="lg"
+                    <Link
+                      to={`/pricing/setup?plan=${plan.name}&price=${isAnnual ? plan.annualPrice : plan.monthlyPrice}&billing=${isAnnual ? 'annual' : 'monthly'}`}
                     >
-                      {plan.buttonText}
-                    </Button>
+                      <Button
+                        className={`w-full ${plan.buttonVariant === 'default'
+                          ? 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700'
+                          : ''}`}
+                        variant={plan.buttonVariant}
+                        size="lg"
+                      >
+                        {plan.buttonText}
+                      </Button>
+                    </Link>
                     
                     <Separator />
                     
