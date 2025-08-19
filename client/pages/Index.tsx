@@ -121,34 +121,45 @@ export default function Index() {
               </span>
             </h1>
             <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8 animate-in fade-in duration-1000 delay-300">
-              <span className="text-purple-600 font-semibold">AI-powered platform</span> to manage students, teach online, track performance, and <span className="text-green-600 font-semibold">grow enrollments</span>.
+              Harness the power of <span className="text-purple-600 font-semibold">artificial intelligence</span> to automate grading, personalize learning, and scale your institute with intelligent insights and <span className="text-green-600 font-semibold">data-driven growth</span>.
             </p>
-            
+
+            {/* AI Features Carousel */}
+            <div className="mb-8 animate-in fade-in duration-1000 delay-400">
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-white/20 shadow-lg p-6 max-w-2xl mx-auto">
+                <AIFeaturesCarousel />
+              </div>
+            </div>
+
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-in fade-in duration-1000 delay-500">
               <Button size="lg" className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all">
                 <Sparkles className="w-5 h-5 mr-2" />
-                Start Free
+                Experience AI Magic
               </Button>
               <Button variant="ghost" size="lg" className="border border-slate-300 hover:border-blue-400 px-8 py-3 text-lg hover:bg-blue-50 transition-all">
                 <Play className="w-5 h-5 mr-2 text-blue-600" />
-                See Live Demo
+                See AI in Action
               </Button>
             </div>
 
-            {/* Trust Badges */}
+            {/* AI Trust Badges */}
             <div className="flex flex-wrap justify-center gap-6 text-sm animate-in fade-in duration-1000 delay-700">
               <div className="flex items-center gap-2 text-green-600 font-medium">
                 <Shield className="w-4 h-4" />
-                Secure
+                AI-Secure
               </div>
               <div className="flex items-center gap-2 text-blue-600 font-medium">
                 <Zap className="w-4 h-4" />
-                Fast Onboarding
+                Smart Automation
               </div>
               <div className="flex items-center gap-2 text-purple-600 font-medium">
                 <Brain className="w-4 h-4" />
-                AI-Powered
+                ML-Powered
+              </div>
+              <div className="flex items-center gap-2 text-orange-600 font-medium">
+                <Target className="w-4 h-4" />
+                Predictive Analytics
               </div>
             </div>
           </div>
