@@ -69,65 +69,6 @@ function RotatingText() {
   );
 }
 
-// AI Features Carousel Component
-function AIFeaturesCarousel() {
-  const [currentFeature, setCurrentFeature] = useState(0);
-
-  const aiFeatures = [
-    {
-      icon: <Brain className="w-6 h-6 text-blue-500" />,
-      title: "AI-Powered Grading",
-      description: "Automated assessment and instant feedback for students"
-    },
-    {
-      icon: <Target className="w-6 h-6 text-purple-500" />,
-      title: "Personalized Learning Paths",
-      description: "AI adapts content based on individual student performance"
-    },
-    {
-      icon: <BarChart3 className="w-6 h-6 text-green-500" />,
-      title: "Predictive Analytics",
-      description: "Forecast student outcomes and enrollment trends"
-    },
-    {
-      icon: <MessageCircle className="w-6 h-6 text-orange-500" />,
-      title: "Smart Communication",
-      description: "AI-driven notifications and engagement insights"
-    }
-  ];
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentFeature((prev) => (prev + 1) % aiFeatures.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [aiFeatures.length]);
-
-  return (
-    <div className="text-center">
-      <div className="flex justify-center mb-4">
-        {aiFeatures[currentFeature].icon}
-      </div>
-      <h3 className="text-lg font-semibold text-slate-900 mb-2">
-        {aiFeatures[currentFeature].title}
-      </h3>
-      <p className="text-sm text-slate-600 mb-4">
-        {aiFeatures[currentFeature].description}
-      </p>
-      <div className="flex justify-center gap-2">
-        {aiFeatures.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentFeature(index)}
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${
-              index === currentFeature ? 'bg-blue-500 w-6' : 'bg-slate-300'
-            }`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
 
 export default function Index() {
   const [openFaq, setOpenFaq] = useState<string>('');
@@ -619,7 +560,7 @@ export default function Index() {
           <Separator className="my-8" />
           
           <div className="text-center text-sm text-slate-600">
-            <p>© 2025 Edusathi. All rights reserved. Made with ❤️ for educators worldwide.</p>
+            <p>© 2025 Edusathi. All rights reserved. Made with ❤��� for educators worldwide.</p>
           </div>
         </div>
       </footer>
