@@ -87,17 +87,16 @@ function RotatingHeader() {
   }, [headerTexts.length]);
 
   return (
-    <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-6">
+    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 md:mb-6 leading-tight">
       <span
         key={`first-${currentHeader}`}
-        className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent animate-in fade-in duration-500"
+        className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent animate-in fade-in duration-500 block"
       >
         {headerTexts[currentHeader].first}
       </span>
-      <br />
       <span
         key={`second-${currentHeader}`}
-        className="bg-gradient-to-r from-green-500 to-blue-500 bg-clip-text text-transparent animate-in fade-in duration-500"
+        className="bg-gradient-to-r from-green-500 to-blue-500 bg-clip-text text-transparent animate-in fade-in duration-500 block"
       >
         {headerTexts[currentHeader].second}
       </span>
