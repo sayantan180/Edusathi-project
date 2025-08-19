@@ -341,10 +341,10 @@ export default function Index() {
                 <Card className="rounded-2xl border-0 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-full bg-white/70 backdrop-blur-sm">
                   <CardHeader>
                     <div className="mb-4">{feature.icon}</div>
-                    <CardTitle className="text-xl font-semibold">{feature.title}</CardTitle>
+                    <CardTitle className="text-xl font-bold text-slate-800 leading-snug">{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-slate-600">{feature.description}</p>
+                    <p className="text-slate-700 leading-relaxed">{feature.description}</p>
                   </CardContent>
                 </Card>
               </div>
