@@ -590,6 +590,64 @@ export default function Index() {
           </Accordion>
         </section>
 
+        {/* Contact Us Section */}
+        <section id="contact" className="container max-w-7xl mx-auto px-4 py-20">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+              Get in Touch
+            </h2>
+            <p className="text-xl text-slate-600">
+              Ready to transform your institute? We're here to help!
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            <Card className="rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all duration-300 text-center">
+              <CardContent className="p-6">
+                <Mail className="w-8 h-8 text-blue-500 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">Email Us</h3>
+                <p className="text-blue-600 font-medium mb-1">support@edusathi.com</p>
+                <p className="text-sm text-slate-600">We reply within 24 hours</p>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all duration-300 text-center">
+              <CardContent className="p-6">
+                <Phone className="w-8 h-8 text-green-500 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">Call Us</h3>
+                <p className="text-green-600 font-medium mb-1">+91 98765 43210</p>
+                <p className="text-sm text-slate-600">Mon-Fri 9AM-6PM IST</p>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all duration-300 text-center">
+              <CardContent className="p-6">
+                <MapPin className="w-8 h-8 text-red-500 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">Visit Us</h3>
+                <p className="text-red-600 font-medium mb-1">Bangalore, India</p>
+                <p className="text-sm text-slate-600">Schedule an appointment</p>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all duration-300 text-center">
+              <CardContent className="p-6">
+                <MessageCircle className="w-8 h-8 text-purple-500 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">Live Chat</h3>
+                <p className="text-purple-600 font-medium mb-1">Available 24/7</p>
+                <p className="text-sm text-slate-600">Instant support</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="text-center">
+            <Link to="/contact">
+              <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8">
+                Contact Us
+              </Button>
+            </Link>
+          </div>
+        </section>
+
         {/* Final CTA */}
         <section className="container max-w-4xl mx-auto px-4 py-20 text-center">
           <Card className="rounded-2xl border-0 shadow-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white">
