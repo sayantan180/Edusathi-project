@@ -357,10 +357,10 @@ export default function Index() {
        {/* Success Stories by Numbers */}
         <section className="container max-w-7xl mx-auto px-4 py-16">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent mb-6 leading-tight">
               Success Stories by Numbers
             </h2>
-            <p className="text-xl text-slate-600">
+            <p className="text-xl text-slate-700 leading-relaxed">
               Join thousands of institutes already transforming education
             </p>
           </div>
@@ -737,7 +737,7 @@ export default function Index() {
           <Separator className="my-8" />
           
           <div className="text-center text-sm text-slate-600">
-            <p>© 2025 Edusathi. All rights reserved. Made with ❤️ for educators worldwide.</p>
+            <p>© 2025 Edusathi. All rights reserved. Made with ❤�� for educators worldwide.</p>
           </div>
         </div>
       </footer>
