@@ -77,16 +77,16 @@ export default function CenterList() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-3xl font-bold tracking-tight">Center List</h2>
+            <h2 className="text-3xl font-bold tracking-tight">Sub Center List</h2>
             <p className="text-muted-foreground">
-              Manage and access your educational centers
+              Manage and access your educational sub centers
             </p>
           </div>
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
               size="sm"
-              onClick={() => fetchCenters(true)}
+              onClick={() => fetchSubCenters(true)}
               disabled={isRefreshing}
             >
               <RefreshCw className={`mr-2 h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
@@ -95,7 +95,7 @@ export default function CenterList() {
             <Button asChild>
               <Link to="/dashboard/centers/create">
                 <Plus className="mr-2 h-4 w-4" />
-                Create Center
+                Add Sub Center
               </Link>
             </Button>
           </div>
