@@ -98,8 +98,9 @@ export default function AboutUs() {
             with AI Innovation
           </h1>
           <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8">
-            We're on a mission to democratize quality education through artificial intelligence, 
-            making learning more personalized, accessible, and effective for everyone.
+            We provide a comprehensive white-label education platform that empowers institutes
+            to launch their own branded online learning systems. Our AI-powered solution includes
+            everything from custom domains to complete learning management systems.
           </p>
         </section>
 
