@@ -62,15 +62,15 @@ export default function CreateCenter() {
       
       toast({
         title: 'Success!',
-        description: 'Center created successfully.',
+        description: 'Sub center created successfully.',
       });
 
       form.reset();
     } catch (error) {
-      console.error('Error creating center:', error);
+      console.error('Error creating sub center:', error);
       toast({
         title: 'Error',
-        description: 'Failed to create center. Please try again.',
+        description: 'Failed to create sub center. Please try again.',
         variant: 'destructive',
       });
     } finally {
@@ -83,9 +83,9 @@ export default function CreateCenter() {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Create Center</h2>
+          <h2 className="text-3xl font-bold tracking-tight">Add Sub Center</h2>
           <p className="text-muted-foreground">
-            Add a new educational center to your dashboard
+            Add a new educational sub center to your dashboard
           </p>
         </div>
 
