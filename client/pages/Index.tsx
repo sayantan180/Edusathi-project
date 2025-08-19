@@ -252,7 +252,7 @@ export default function Index() {
 
         {/* Value Proposition */}
         <section className="container max-w-7xl mx-auto px-4 py-20">
-          <h1 className='text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4 text-center'>Everything you need to run your institute</h1>
+          <h1 className='text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent mb-6 text-center leading-tight'>Everything you need to run your institute</h1>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
