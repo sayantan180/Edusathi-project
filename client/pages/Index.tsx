@@ -212,16 +212,15 @@ export default function Index() {
           <BackgroundCarousel />
           <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
             <RotatingHeader />
-            <p className="text-xl text-slate-700 max-w-3xl mx-auto mb-8 animate-in fade-in duration-1000 delay-300 leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-slate-700 max-w-3xl mx-auto mb-6 md:mb-8 animate-in fade-in duration-1000 delay-300 leading-relaxed px-4">
               Harness the power of <span className="text-purple-700 font-semibold">artificial intelligence</span> to <RotatingText /> and scale your institute with intelligent insights and <span className="text-emerald-700 font-semibold">data-driven growth</span>.
             </p>
 
-
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-in fade-in duration-1000 delay-500">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8 md:mb-12 animate-in fade-in duration-1000 delay-500 px-4">
               <Link to="/pricing">
-                <Button size="lg" className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all">
-                  <Sparkles className="w-5 h-5 mr-2" />
+                <Button size="lg" className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 md:px-8 py-3 text-base md:text-lg shadow-lg hover:shadow-xl transition-all w-full sm:w-auto">
+                  <Sparkles className="w-4 md:w-5 h-4 md:h-5 mr-2" />
                   Get Started
                 </Button>
               </Link>
