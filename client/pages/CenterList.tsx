@@ -18,12 +18,12 @@ import { Building, ExternalLink, Plus, RefreshCw } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function CenterList() {
-  const [centers, setCenters] = useState<Center[]>([]);
+  const [subCenters, setSubCenters] = useState<Center[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { toast } = useToast();
 
-  const fetchCenters = async (showRefreshIndicator = false) => {
+  const fetchSubCenters = async (showRefreshIndicator = false) => {
     if (showRefreshIndicator) {
       setIsRefreshing(true);
     } else {
