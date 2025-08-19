@@ -221,14 +221,12 @@ export default function Index() {
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-in fade-in duration-1000 delay-500">
-              <Button size="lg" className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all">
-                <Sparkles className="w-5 h-5 mr-2" />
-                Experience AI Magic
-              </Button>
-              <Button variant="ghost" size="lg" className="border border-slate-300 hover:border-blue-400 px-8 py-3 text-lg hover:bg-blue-50 transition-all">
-                <Play className="w-5 h-5 mr-2 text-blue-600" />
-                See AI in Action
-              </Button>
+              <Link to="/pricing">
+                <Button size="lg" className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all">
+                  <Sparkles className="w-5 h-5 mr-2" />
+                  Get Started
+                </Button>
+              </Link>
             </div>
 
             {/* AI Trust Badges */}
