@@ -140,8 +140,9 @@ export default function AboutUs() {
                   <Sparkles className="w-16 h-16 text-blue-500 mx-auto mb-4" />
                   <h3 className="text-2xl font-bold text-slate-900 mb-4">Our Mission</h3>
                   <p className="text-slate-600">
-                    To empower every educator with AI-driven tools that transform 
-                    how knowledge is shared, absorbed, and applied in the modern world.
+                    To democratize educational technology by providing affordable,
+                    white-label platforms that allow any institute to launch professional
+                    online learning systems with their own branding and domain.
                   </p>
                 </div>
               </Card>
