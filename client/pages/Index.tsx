@@ -199,12 +199,11 @@ export default function Index() {
           </nav>
 
           {/* CTA Button */}
-          <Button 
-            onClick={() => setShowLoginModal(true)}
-            className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 shadow-lg hover:shadow-xl transition-all"
-          >
-            Go to Dashboard
-          </Button>
+          <Link to="/pricing">
+            <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 shadow-lg hover:shadow-xl transition-all">
+              Join Now
+            </Button>
+          </Link>
         </div>
       </header>
 
