@@ -248,20 +248,15 @@ export default function PricingForm() {
                     
                     <div>
                       <Label htmlFor="domainName">Preferred Domain Name *</Label>
-                      <div className="flex mt-1">
-                        <Input
-                          id="domainName"
-                          value={formData.domainName}
-                          onChange={(e) => handleInputChange('domainName', e.target.value)}
-                          placeholder="your-institute"
-                          className="rounded-r-none"
-                        />
-                        <div className="bg-slate-100 border border-l-0 rounded-r-md px-3 py-2 text-sm text-slate-600">
-                          .edusathi.com
-                        </div>
-                      </div>
+                      <Input
+                        id="domainName"
+                        value={formData.domainName}
+                        onChange={(e) => handleInputChange('domainName', e.target.value)}
+                        placeholder="your-institute.com"
+                        className="mt-1"
+                      />
                       <p className="text-xs text-slate-500 mt-1">
-                        This will be your institute's web address
+                        This will be your institute's custom domain
                       </p>
                     </div>
                   </div>
