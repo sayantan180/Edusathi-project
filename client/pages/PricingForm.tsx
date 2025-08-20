@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 import { Link, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -37,7 +39,9 @@ interface FormData {
 }
 
 export default function PricingForm() {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
     brandName: "",
@@ -84,11 +88,12 @@ export default function PricingForm() {
       // Create payment order
       const orderData = {
         amount: formData.selectedPlan.price * 100, // Razorpay expects amount in paise
-        currency: "USD",
+        currency: "INR",
         institute: formData.brandName,
         owner: formData.ownerName,
         email: formData.email,
         plan: formData.selectedPlan.name,
+        domain: formData.domainName,
       };
 
       const response = await fetch("/api/payment/create-order", {
@@ -147,11 +152,23 @@ export default function PricingForm() {
             const verification = await verifyResponse.json();
 
             if (verification.success) {
-              alert("Payment successful! Your institute is being set up.");
-              // Redirect to dashboard or success page
-              window.location.href = "/dashboard";
+              toast({
+                title: "Payment Successful!",
+                description: "Your institute is being set up. Redirecting...",
+                variant: "default",
+              });
+              // Mark user as authenticated so ProtectedRoute allows access
+              localStorage.setItem("isLoggedIn", "true");
+              // Optionally, delay slightly to show toast before redirect
+              setTimeout(() => {
+                navigate("/admin");
+              }, 800);
             } else {
-              alert("Payment verification failed. Please contact support.");
+              toast({
+                title: "Payment Verification Failed",
+                description: verification.error || "Please contact support.",
+                variant: "destructive",
+              });
             }
           } catch (error) {
             console.error("Payment verification error:", error);
@@ -398,7 +415,7 @@ export default function PricingForm() {
                         <div className="flex justify-between items-center">
                           <span className="text-slate-600">Amount:</span>
                           <span className="text-xl font-bold text-blue-600">
-                            ${formData.selectedPlan.price}/
+                            ₹{formData.selectedPlan.price}/
                             {formData.selectedPlan.billing === "monthly"
                               ? "month"
                               : "year"}
@@ -474,7 +491,7 @@ export default function PricingForm() {
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span>Subtotal</span>
-                    <span>${formData.selectedPlan.price}</span>
+                    <span>₹{formData.selectedPlan.price}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Setup Fee</span>
@@ -487,7 +504,7 @@ export default function PricingForm() {
                 <div className="flex justify-between font-semibold">
                   <span>Total</span>
                   <span className="text-blue-600">
-                    ${formData.selectedPlan.price}
+                    ₹{formData.selectedPlan.price}
                   </span>
                 </div>
 

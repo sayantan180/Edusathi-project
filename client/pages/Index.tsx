@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { LoginModal } from "@/components/LoginModal";
+import CookieConsentBanner from "@/components/CookieConsentBanner";
 import {
   GraduationCap,
   Users,
@@ -187,6 +188,7 @@ export default function Index() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
+      <CookieConsentBanner />
       {/* Floating Background Cards */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {floatingCards.map((card, index) => (
@@ -623,16 +625,16 @@ export default function Index() {
                 Our Mission
               </h3>
               <p className="text-lg text-slate-600 mb-6">
-                We're on a mission to democratize quality education through
-                artificial intelligence, making learning more personalized,
-                accessible, and effective for everyone.
+              Our mission is to empower education with technology and make learning interactive, engaging, and effective. Whether you are a school, institute, or individual learner, we have the right solution for you.
+
+Together, let’s build the future of education
               </p>
-              <p className="text-lg text-slate-600 mb-6">
+              {/* <p className="text-lg text-slate-600 mb-6">
                 Founded in 2023, Edusathi emerged from a simple observation:
                 traditional education systems weren't keeping pace with the
                 digital age. Today, we serve over 1,200 institutes and 50,000+
                 students worldwide.
-              </p>
+              </p> */}
               <div className="flex flex-wrap gap-4">
                 <div className="flex items-center gap-2">
                   <Users className="w-5 h-5 text-blue-500" />
@@ -656,9 +658,8 @@ export default function Index() {
                     Our Vision
                   </h4>
                   <p className="text-slate-600">
-                    To empower every educator with AI-driven tools that
-                    transform how knowledge is shared, absorbed, and applied in
-                    the modern world.
+                  Welcome to Edusathi, the one-stop platform for modern educational apps.
+                  We believe that learning should be simple, smart, and accessible for everyone. That’s why we created a system where schools, teachers, and students can explore different educational apps and choose the best plan according to their needs.
                   </p>
                 </div>
               </Card>

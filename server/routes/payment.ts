@@ -1,5 +1,7 @@
 import { RequestHandler } from "express";
 import Razorpay from "razorpay";
+import crypto from "crypto";
+import Center from "../models/Center";
 
 // Initialize Razorpay instance
 const razorpay = new Razorpay({
@@ -14,6 +16,7 @@ export interface CreateOrderRequest {
   owner: string;
   email: string;
   plan: string;
+  domain: string;
 }
 
 export interface CreateOrderResponse {
@@ -36,10 +39,11 @@ export const createPaymentOrder: RequestHandler = async (req, res) => {
       owner,
       email,
       plan,
+      domain,
     }: CreateOrderRequest = req.body;
 
     // Validate required fields
-    if (!amount || !institute || !owner || !email || !plan) {
+    if (!amount || !institute || !owner || !email || !plan || !domain) {
       return res.status(400).json({
         success: false,
         error: "Missing required fields",
@@ -52,13 +56,14 @@ export const createPaymentOrder: RequestHandler = async (req, res) => {
     // Create Razorpay order
     const order = await razorpay.orders.create({
       amount: amount, // amount in paise
-      currency: currency || "USD",
+      currency: "INR",
       receipt: receipt,
       notes: {
         institute: institute,
         owner: owner,
         email: email,
         plan: plan,
+        domain: domain,
         timestamp: new Date().toISOString(),
       },
     });
@@ -67,7 +72,7 @@ export const createPaymentOrder: RequestHandler = async (req, res) => {
       success: true,
       order: {
         id: order.id,
-        amount: order.amount,
+        amount: Number(order.amount),
         currency: order.currency,
         receipt: order.receipt,
       },
@@ -75,10 +80,14 @@ export const createPaymentOrder: RequestHandler = async (req, res) => {
 
     res.json(response);
   } catch (error: any) {
-    console.error("Payment order creation failed:", error);
+    console.error(
+      "Payment order creation failed:",
+      error.statusCode, 
+      error.error
+    );
     res.status(500).json({
       success: false,
-      error: error.message || "Failed to create payment order",
+      error: error.error?.description || "Failed to create payment order",
     });
   }
 };
@@ -89,7 +98,6 @@ export const verifyPayment: RequestHandler = async (req, res) => {
       req.body;
 
     // Verify payment signature
-    const crypto = require("crypto");
     const expectedSignature = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET || "dummy_secret")
       .update(`${razorpay_order_id}|${razorpay_payment_id}`)
@@ -98,16 +106,52 @@ export const verifyPayment: RequestHandler = async (req, res) => {
     if (razorpay_signature === expectedSignature) {
       // Payment is verified
       // Here you would typically:
-      // 1. Create the institute account
-      // 2. Send welcome email
-      // 3. Set up the domain
-      // 4. Activate the plan
+      // Payment is verified, now create the center
+      const orderDetails = await razorpay.orders.fetch(razorpay_order_id);
+
+      if (!orderDetails) {
+        throw new Error("Order not found");
+      }
+
+      const { institute, owner, email, plan, domain } = orderDetails.notes;
+
+      // Check if a center with this domain or email already exists
+      const existingCenter = await Center.findOne({ $or: [{ domain }, { email }] });
+      if (existingCenter) {
+        return res.status(409).json({
+          success: false,
+          error: "A center with this domain or email already exists.",
+        });
+      }
+
+      // Create the new center in the database
+      const expiresAt = new Date();
+      // Assuming 'plan' contains 'annual' or 'monthly'
+      if (plan && plan.toLowerCase().includes('annual')) {
+        expiresAt.setFullYear(expiresAt.getFullYear() + 1);
+      } else {
+        expiresAt.setMonth(expiresAt.getMonth() + 1);
+      }
+
+      const newCenter = new Center({
+        instituteName: institute,
+        ownerName: owner,
+        email,
+        domain,
+        plan,
+        razorpay_order_id,
+        razorpay_payment_id,
+        expiresAt,
+      });
+
+      await newCenter.save();
 
       res.json({
         success: true,
-        message: "Payment verified successfully",
+        message: "Payment verified and institute created successfully",
         payment_id: razorpay_payment_id,
         order_id: razorpay_order_id,
+        center: newCenter,
       });
     } else {
       res.status(400).json({

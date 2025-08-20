@@ -34,13 +34,9 @@ export default function Pricing() {
       icon: <Zap className="w-8 h-8 text-blue-500" />,
       badge: null,
       features: [
-        "Up to 100 students",
-        "5 courses",
-        "Basic analytics",
-        "Email support",
-        "Mobile app access",
-        "Student management",
-        "Assignment tracking",
+        "From Control",
+        "Home Page",
+        "AI-Chatbot",
       ],
       buttonText: "Start Free Trial",
       buttonVariant: "outline" as const,
@@ -53,15 +49,9 @@ export default function Pricing() {
       icon: <Building className="w-8 h-8 text-green-500" />,
       badge: "Most Popular",
       features: [
-        "Up to 500 students",
-        "Unlimited courses",
-        "Advanced analytics",
-        "Priority support",
-        "Custom branding",
-        "Payment integration",
-        "AI-powered grading",
-        "Marketing tools",
-        "Parent portal",
+         "From Control",
+        "Home Page",
+        "AI-Chatbot",
       ],
       buttonText: "Get Started",
       buttonVariant: "default" as const,
@@ -74,16 +64,9 @@ export default function Pricing() {
       icon: <Crown className="w-8 h-8 text-purple-500" />,
       badge: "Best Value",
       features: [
-        "Unlimited students",
-        "Unlimited courses",
-        "Custom analytics",
-        "24/7 phone support",
-        "White-label solution",
-        "API access",
-        "SSO integration",
-        "Custom integrations",
-        "Dedicated account manager",
-        "Training & onboarding",
+        "From Control",
+        "Home Page",
+        "AI-Chatbot",
       ],
       buttonText: "Contact Sales",
       buttonVariant: "outline" as const,
@@ -138,11 +121,6 @@ export default function Pricing() {
             </Link>
           </nav>
 
-          <Link to="/dashboard">
-            <Button className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6">
-              Go to Dashboard
-            </Button>
-          </Link>
         </div>
       </header>
 
@@ -227,14 +205,14 @@ export default function Pricing() {
 
                     <div className="pt-4">
                       <div className="text-4xl font-bold text-slate-900">
-                        ${isAnnual ? plan.annualPrice : plan.monthlyPrice}
+                        ₹{isAnnual ? plan.annualPrice : plan.monthlyPrice}
                         <span className="text-lg font-normal text-slate-500">
                           /{isAnnual ? "year" : "month"}
                         </span>
                       </div>
                       {isAnnual && (
                         <div className="text-sm text-green-600 mt-1">
-                          Save ${plan.monthlyPrice * 12 - plan.annualPrice}{" "}
+                          Save ₹{plan.monthlyPrice * 12 - plan.annualPrice}{" "}
                           annually
                         </div>
                       )}

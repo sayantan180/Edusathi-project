@@ -122,7 +122,7 @@ export default function AboutUs() {
                 Our Story
               </h2>
               <p className="text-lg text-slate-600 mb-6">
-                Founded in 2023, Edusathi was created to solve a critical
+                Founded in 2025, Edusathi was created to solve a critical
                 problem: most institutes couldn't afford custom education
                 platforms. We developed a white-label solution that gives every
                 institute access to enterprise-grade learning technology with

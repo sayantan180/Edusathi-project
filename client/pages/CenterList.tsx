@@ -24,12 +24,12 @@ import { Building, ExternalLink, Plus, RefreshCw } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CenterList() {
-  const [subCenters, setSubCenters] = useState<Center[]>([]);
+  const [centers, setCenters] = useState<Center[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { toast } = useToast();
 
-  const fetchSubCenters = async (showRefreshIndicator = false) => {
+  const fetchCenters = async (showRefreshIndicator = false) => {
     if (showRefreshIndicator) {
       setIsRefreshing(true);
     } else {
@@ -44,12 +44,12 @@ export default function CenterList() {
       }
 
       const data: CentersResponse = await response.json();
-      setSubCenters(data.centers);
+      setCenters(data.centers);
     } catch (error) {
-      console.error("Error fetching sub centers:", error);
+      console.error("Error fetching centers:", error);
       toast({
         title: "Error",
-        description: "Failed to load sub centers. Please try again.",
+        description: "Failed to load centers. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -59,10 +59,10 @@ export default function CenterList() {
   };
 
   useEffect(() => {
-    fetchSubCenters();
+    fetchCenters();
   }, []);
 
-  const handleGoToSubCenter = (center: Center) => {
+  const handleGoToCenter = (center: Center) => {
     const url = `${center.website}${center.superAdminPath}`;
     window.open(url, "_blank", "noopener,noreferrer");
   };
@@ -84,17 +84,17 @@ export default function CenterList() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-3xl font-bold tracking-tight">
-              Sub Center List
+              Center List
             </h2>
             <p className="text-muted-foreground">
-              Manage and access your educational sub centers
+              Manage and access your educational centers
             </p>
           </div>
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
               size="sm"
-              onClick={() => fetchSubCenters(true)}
+              onClick={() => fetchCenters(true)}
               disabled={isRefreshing}
             >
               <RefreshCw
@@ -103,25 +103,25 @@ export default function CenterList() {
               Refresh
             </Button>
             <Button asChild>
-              <Link to="/dashboard/centers/create">
+              <Link to="#">
                 <Plus className="mr-2 h-4 w-4" />
-                Add Sub Center
+                Add Center
               </Link>
             </Button>
           </div>
         </div>
 
-        {/* Sub Centers Table */}
+        {/* Centers Table */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Building className="h-5 w-5" />
-              Educational Sub Centers
+              Educational Centers
             </CardTitle>
             <CardDescription>
-              {subCenters.length > 0
-                ? `Showing ${subCenters.length} sub center${subCenters.length !== 1 ? "s" : ""}`
-                : "No sub centers created yet"}
+              {centers.length > 0
+                ? `Showing ${centers.length} center${centers.length !== 1 ? "s" : ""}`
+                : "No centers created yet"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -137,19 +137,19 @@ export default function CenterList() {
                   </div>
                 ))}
               </div>
-            ) : subCenters.length === 0 ? (
+            ) : centers.length === 0 ? (
               <div className="text-center py-12">
                 <Building className="mx-auto h-12 w-12 text-muted-foreground" />
                 <h3 className="mt-4 text-lg font-semibold">
-                  No sub centers found
+                  No centers found
                 </h3>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Get started by creating your first educational sub center.
+                  Get started by creating your first educational center.
                 </p>
                 <Button asChild className="mt-4">
                   <Link to="/dashboard/centers/create">
                     <Plus className="mr-2 h-4 w-4" />
-                    Add Sub Center
+                    Add Center
                   </Link>
                 </Button>
               </div>
@@ -158,7 +158,8 @@ export default function CenterList() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Sub Center Name</TableHead>
+                      <TableHead>Center Name</TableHead>
+                      <TableHead>Domain Name</TableHead>
                       <TableHead>Website</TableHead>
                       <TableHead>Start Date</TableHead>
                       <TableHead>Expire Date</TableHead>
@@ -167,7 +168,7 @@ export default function CenterList() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {subCenters.map((center) => (
+                    {centers.map((center) => (
                       <TableRow key={center.id}>
                         <TableCell className="font-medium">
                           <div className="flex items-center gap-2">
@@ -176,6 +177,9 @@ export default function CenterList() {
                             </div>
                             {center.name}
                           </div>
+                        </TableCell>
+                        <TableCell>
+                          {center.domain}
                         </TableCell>
                         <TableCell>
                           <a

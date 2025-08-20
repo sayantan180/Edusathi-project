@@ -7,6 +7,7 @@ import {
   Building,
   Plus,
   List,
+  Settings as SettingsIcon,
 } from "lucide-react";
 import {
   Sidebar,
@@ -51,19 +52,26 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       isOpen: centerManagementOpen,
       onToggle: () => setCenterManagementOpen(!centerManagementOpen),
       subItems: [
-        {
-          title: "Create Center",
-          href: "/dashboard/centers/create",
-          icon: Plus,
-          isActive: location.pathname === "/dashboard/centers/create",
-        },
+        
         {
           title: "Center List",
           href: "/dashboard/centers",
           icon: List,
           isActive: location.pathname === "/dashboard/centers",
         },
+        {
+          title: "Create Sub Center",
+          href: "/dashboard/centers/create",
+          icon: Plus,
+          isActive: location.pathname === "/dashboard/centers/create",
+        },
       ],
+    },
+    {
+      title: "Settings",
+      href: "/dashboard/settings",
+      icon: SettingsIcon,
+      isActive: location.pathname === "/dashboard/settings",
     },
   ];
 
@@ -92,7 +100,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                       <>
                         <SidebarMenuButton
                           onClick={item.onToggle}
-                          className="w-full justify-between"
+                          className="w-full justify-between transition-colors duration-200 hover:bg-primary/10 hover:text-primary"
                         >
                           <div className="flex items-center gap-2">
                             <item.icon className="h-4 w-4" />
@@ -111,6 +119,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                                 <SidebarMenuSubButton
                                   asChild
                                   isActive={subItem.isActive}
+                                  className="transition-colors duration-200 hover:bg-primary/10 hover:text-primary data-[active=true]:bg-primary/15 data-[active=true]:text-primary"
                                 >
                                   <Link to={subItem.href}>
                                     <subItem.icon className="h-4 w-4" />
@@ -123,7 +132,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                         )}
                       </>
                     ) : (
-                      <SidebarMenuButton asChild isActive={item.isActive}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={item.isActive}
+                        className="transition-colors duration-200 hover:bg-primary/10 hover:text-primary data-[active=true]:bg-primary/15 data-[active=true]:text-primary"
+                      >
                         <Link to={item.href}>
                           <item.icon className="h-4 w-4" />
                           <span>{item.title}</span>
@@ -143,7 +156,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />
           <div className="flex items-center gap-2">
-            <h1 className="text-lg font-semibold">Educational Dashboard</h1>
+            <h1 className="text-lg font-semibold">Edusathi Dashboard</h1>
           </div>
         </header>
         <main className="flex-1 p-6">{children}</main>

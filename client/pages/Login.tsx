@@ -118,7 +118,7 @@ export default function Login() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
+            {/* <div className="flex items-center justify-between">
               <label className="flex items-center">
                 <input type="checkbox" className="mr-2" />
                 <span className="text-sm text-slate-600">Remember me</span>
@@ -129,7 +129,7 @@ export default function Login() {
               >
                 Forgot password?
               </Link>
-            </div>
+            </div> */}
 
             <Button
               type="submit"
@@ -140,7 +140,7 @@ export default function Login() {
             </Button>
           </form>
 
-          <div className="mt-6 text-center">
+          {/* <div className="mt-6 text-center">
             <p className="text-sm text-slate-600">
               Don't have an account?{" "}
               <Link
@@ -150,7 +150,7 @@ export default function Login() {
                 Get started
               </Link>
             </p>
-          </div>
+          </div> */}
         </CardContent>
       </Card>
     </div>

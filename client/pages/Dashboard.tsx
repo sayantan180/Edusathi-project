@@ -12,7 +12,7 @@ export default function Dashboard() {
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
           <p className="text-muted-foreground">
-            Welcome to your educational center management dashboard
+            Welcome to your Edusathi  management dashboard
           </p>
         </div>
 
@@ -71,9 +71,9 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent className="space-y-4">
               <Button asChild className="w-full">
-                <Link to="/dashboard/centers/create">
+                <Link to="#">
                   <Plus className="mr-2 h-4 w-4" />
-                  Create New Center
+                  Create Sub Center
                 </Link>
               </Button>
               <Button variant="outline" asChild className="w-full">
