@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import Razorpay from "razorpay";
 import crypto from "crypto";
-import Center from "../models/Center";
+import Center from "../models/Center.js";
 
 // Initialize Razorpay instance
 const razorpay = new Razorpay({
@@ -74,7 +74,7 @@ export const createPaymentOrder: RequestHandler = async (req, res) => {
         id: order.id,
         amount: Number(order.amount),
         currency: order.currency,
-        receipt: order.receipt,
+        receipt: order.receipt || "",
       },
     };
 
@@ -113,7 +113,16 @@ export const verifyPayment: RequestHandler = async (req, res) => {
         throw new Error("Order not found");
       }
 
-      const { institute, owner, email, plan, domain } = orderDetails.notes;
+      const notes = orderDetails.notes || {};
+      const institute = notes.institute as string;
+      const owner = notes.owner as string;
+      const email = notes.email as string;
+      const plan = notes.plan as string;
+      const domain = notes.domain as string;
+
+      if (!institute || !owner || !email || !plan || !domain) {
+        throw new Error("Missing required fields in order notes");
+      }
 
       // Check if a center with this domain or email already exists
       const existingCenter = await Center.findOne({ $or: [{ domain }, { email }] });
@@ -126,11 +135,16 @@ export const verifyPayment: RequestHandler = async (req, res) => {
 
       // Create the new center in the database
       const expiresAt = new Date();
-      // Assuming 'plan' contains 'annual' or 'monthly'
-      if (plan && plan.toLowerCase().includes('annual')) {
+      // Calculate expiry based on plan duration
+      if (plan && plan.toLowerCase().includes('1 year')) {
         expiresAt.setFullYear(expiresAt.getFullYear() + 1);
+      } else if (plan && plan.toLowerCase().includes('3 year')) {
+        expiresAt.setFullYear(expiresAt.getFullYear() + 3);
+      } else if (plan && plan.toLowerCase().includes('5 year')) {
+        expiresAt.setFullYear(expiresAt.getFullYear() + 5);
       } else {
-        expiresAt.setMonth(expiresAt.getMonth() + 1);
+        // Default to 1 year if plan format is unclear
+        expiresAt.setFullYear(expiresAt.getFullYear() + 1);
       }
 
       const newCenter = new Center({

@@ -23,14 +23,13 @@ import {
 } from "lucide-react";
 
 export default function Pricing() {
-  const [isAnnual, setIsAnnual] = useState(true);
 
   const plans = [
     {
-      name: "Starter",
-      description: "Perfect for small institutes getting started",
-      monthlyPrice: 29,
-      annualPrice: 290,
+      name: "1 Year Plan",
+      description: "Perfect for institutes starting their journey",
+      monthlyPrice: 5000,
+      annualPrice: 5000,
       icon: <Zap className="w-8 h-8 text-blue-500" />,
       badge: null,
       features: [
@@ -38,18 +37,18 @@ export default function Pricing() {
         "Home Page",
         "AI-Chatbot",
       ],
-      buttonText: "Start Free Trial",
+      buttonText: "Get Started",
       buttonVariant: "outline" as const,
     },
     {
-      name: "Professional",
-      description: "For growing institutes with advanced needs",
-      monthlyPrice: 79,
-      annualPrice: 790,
+      name: "3 Year Plan",
+      description: "For institutes with medium-term commitment",
+      monthlyPrice: 7000,
+      annualPrice: 7000,
       icon: <Building className="w-8 h-8 text-green-500" />,
       badge: "Most Popular",
       features: [
-         "From Control",
+        "From Control",
         "Home Page",
         "AI-Chatbot",
       ],
@@ -57,10 +56,10 @@ export default function Pricing() {
       buttonVariant: "default" as const,
     },
     {
-      name: "Enterprise",
-      description: "For large institutions with custom requirements",
-      monthlyPrice: 199,
-      annualPrice: 1990,
+      name: "5 Year Plan",
+      description: "For institutes with long-term vision",
+      monthlyPrice: 10000,
+      annualPrice: 10000,
       icon: <Crown className="w-8 h-8 text-purple-500" />,
       badge: "Best Value",
       features: [
@@ -68,7 +67,7 @@ export default function Pricing() {
         "Home Page",
         "AI-Chatbot",
       ],
-      buttonText: "Contact Sales",
+      buttonText: "Get Started",
       buttonVariant: "outline" as const,
     },
   ];
@@ -139,34 +138,6 @@ export default function Pricing() {
               hidden fees.
             </p>
 
-            {/* Billing Toggle */}
-            <div className="flex items-center justify-center gap-4 mb-16">
-              <span
-                className={`${!isAnnual ? "text-slate-900" : "text-slate-500"}`}
-              >
-                Monthly
-              </span>
-              <button
-                onClick={() => setIsAnnual(!isAnnual)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  isAnnual ? "bg-blue-600" : "bg-slate-300"
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    isAnnual ? "translate-x-6" : "translate-x-1"
-                  }`}
-                />
-              </button>
-              <span
-                className={`${isAnnual ? "text-slate-900" : "text-slate-500"}`}
-              >
-                Annual
-                <Badge className="ml-2 bg-green-100 text-green-800">
-                  Save 20%
-                </Badge>
-              </span>
-            </div>
           </div>
         </section>
 
@@ -205,23 +176,17 @@ export default function Pricing() {
 
                     <div className="pt-4">
                       <div className="text-4xl font-bold text-slate-900">
-                        ₹{isAnnual ? plan.annualPrice : plan.monthlyPrice}
+                        ₹{plan.annualPrice}
                         <span className="text-lg font-normal text-slate-500">
-                          /{isAnnual ? "year" : "month"}
+                          /{plan.name.includes("1 Year") ? "year" : plan.name.includes("3 Year") ? "3 years" : "5 years"}
                         </span>
                       </div>
-                      {isAnnual && (
-                        <div className="text-sm text-green-600 mt-1">
-                          Save ₹{plan.monthlyPrice * 12 - plan.annualPrice}{" "}
-                          annually
-                        </div>
-                      )}
                     </div>
                   </CardHeader>
 
                   <CardContent className="space-y-6">
                     <Link
-                      to={`/pricing/setup?plan=${plan.name}&price=${isAnnual ? plan.annualPrice : plan.monthlyPrice}&billing=${isAnnual ? "annual" : "monthly"}`}
+                      to={`/pricing/setup?plan=${plan.name}&price=${plan.annualPrice}&billing=annual`}
                     >
                       <Button
                         className={`w-full ${

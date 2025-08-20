@@ -1,13 +1,13 @@
 import { RequestHandler } from "express";
-import { Center as CenterType } from "@shared/api";
-import Center from "../models/Center";
+import { Center as CenterType } from "../../shared/api.js";
+import Center, { ICenter } from "../models/Center.js";
 
 // GET /api/centers - Get all centers
 export const getCenters: RequestHandler = async (req, res) => {
   try {
     const centersFromDb = await Center.find().sort({ createdAt: -1 });
 
-    const centers: Center[] = centersFromDb.map((center) => ({
+    const centers: CenterType[] = centersFromDb.map((center: ICenter) => ({
       id: center._id.toString(),
       name: center.instituteName,
       domain: center.domain,
@@ -36,11 +36,16 @@ export const createCenter: RequestHandler = async (req, res) => {
       return res.status(409).json({ error: "A center with this domain or email already exists" });
     }
 
-    // Calculate expiresAt date (e.g., 1 year for annual plan)
+    // Calculate expiresAt date based on plan duration
     const expiresAt = new Date();
-    if (plan === 'monthly') {
-      expiresAt.setMonth(expiresAt.getMonth() + 1);
-    } else if (plan === 'annual') {
+    if (plan === '1 Year Plan') {
+      expiresAt.setFullYear(expiresAt.getFullYear() + 1);
+    } else if (plan === '3 Year Plan') {
+      expiresAt.setFullYear(expiresAt.getFullYear() + 3);
+    } else if (plan === '5 Year Plan') {
+      expiresAt.setFullYear(expiresAt.getFullYear() + 5);
+    } else {
+      // Default to 1 year for unknown plans
       expiresAt.setFullYear(expiresAt.getFullYear() + 1);
     }
 
