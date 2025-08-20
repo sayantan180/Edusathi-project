@@ -51,17 +51,18 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       isOpen: centerManagementOpen,
       onToggle: () => setCenterManagementOpen(!centerManagementOpen),
       subItems: [
-        {
-          title: "Create Center",
-          href: "/dashboard/centers/create",
-          icon: Plus,
-          isActive: location.pathname === "/dashboard/centers/create",
-        },
+        
         {
           title: "Center List",
           href: "/dashboard/centers",
           icon: List,
           isActive: location.pathname === "/dashboard/centers",
+        },
+        {
+          title: "Create Sub Center",
+          // href: "/dashboard/centers/create",
+          icon: Plus,
+          isActive: location.pathname === "/dashboard/centers/create",
         },
       ],
     },
@@ -143,7 +144,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />
           <div className="flex items-center gap-2">
-            <h1 className="text-lg font-semibold">Educational Dashboard</h1>
+            <h1 className="text-lg font-semibold">Edusathi Dashboard</h1>
           </div>
         </header>
         <main className="flex-1 p-6">{children}</main>
