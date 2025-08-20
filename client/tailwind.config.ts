@@ -4,7 +4,11 @@ export default {
   darkMode: ["class"],
   content: [
     "./index.html",
-    "./**/*.{ts,tsx,js,jsx}",
+    "./pages/**/*.{ts,tsx,js,jsx}",
+    "./components/**/*.{ts,tsx,js,jsx}",
+    "./hooks/**/*.{ts,tsx,js,jsx}",
+    "./lib/**/*.{ts,tsx,js,jsx}",
+    "./src/**/*.{ts,tsx,js,jsx}",
   ],
   safelist: [
     // Ensure these classes exist even if not detected in content scanning

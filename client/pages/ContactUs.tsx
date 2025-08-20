@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -7,9 +6,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import {
   GraduationCap,
@@ -17,37 +13,12 @@ import {
   Phone,
   MapPin,
   Clock,
-  Send,
   MessageCircle,
   Headphones,
   Globe,
 } from "lucide-react";
 
 export default function ContactUs() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    subject: "",
-    message: "",
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission here
-    console.log("Form submitted:", formData);
-    alert("Thank you for your message! We'll get back to you soon.");
-    setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
-  };
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
 
   const contactInfo = [
     {
@@ -162,137 +133,37 @@ export default function ContactUs() {
           </div>
         </section>
 
-        {/* Contact Form & Support Options */}
+        {/* Support Options */}
         <section className="py-16">
-          <div className="grid lg:grid-cols-2 gap-12">
-            {/* Contact Form */}
-            <Card className="rounded-2xl border-0 shadow-xl">
-              <CardHeader>
-                <CardTitle className="text-2xl font-bold text-slate-900">
-                  Send us a Message
-                </CardTitle>
-                <CardDescription>
-                  Fill out the form below and we'll get back to you within 24
-                  hours
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="name">Full Name</Label>
-                      <Input
-                        id="name"
-                        name="name"
-                        type="text"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-                        className="mt-1"
-                        placeholder="Your full name"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="email">Email Address</Label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                        className="mt-1"
-                        placeholder="your@email.com"
-                      />
-                    </div>
-                  </div>
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-slate-900 mb-6">
+                How Can We Help?
+              </h2>
+              <p className="text-lg text-slate-600">
+                Choose the best way to get the support you need
+              </p>
+            </div>
 
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="phone">Phone Number</Label>
-                      <Input
-                        id="phone"
-                        name="phone"
-                        type="tel"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        className="mt-1"
-                        placeholder="+91 12345 67890"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="subject">Subject</Label>
-                      <Input
-                        id="subject"
-                        name="subject"
-                        type="text"
-                        value={formData.subject}
-                        onChange={handleChange}
-                        required
-                        className="mt-1"
-                        placeholder="How can we help?"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="message">Message</Label>
-                    <Textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      required
-                      className="mt-1 min-h-[120px]"
-                      placeholder="Tell us more about your inquiry..."
-                    />
-                  </div>
-
-                  <Button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
-                  >
-                    <Send className="w-4 h-4 mr-2" />
-                    Send Message
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-
-            {/* Support Options */}
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-6">
-                  How Can We Help?
-                </h2>
-                <p className="text-slate-600 mb-8">
-                  Choose the best way to get the support you need
-                </p>
-              </div>
-
+            <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8">
               {supportOptions.map((option, index) => (
                 <Card
                   key={index}
-                  className="rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all duration-300 text-center"
                 >
-                  <CardContent className="p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="flex-shrink-0">{option.icon}</div>
-                      <div className="flex-grow">
-                        <h3 className="text-lg font-semibold text-slate-900 mb-2">
-                          {option.title}
-                        </h3>
-                        <p className="text-slate-600 mb-4">
-                          {option.description}
-                        </p>
-                        <Button
-                          variant="outline"
-                          className="border-blue-500 text-blue-600 hover:bg-blue-50"
-                        >
-                          {option.action}
-                        </Button>
-                      </div>
-                    </div>
+                  <CardContent className="p-8">
+                    <div className="flex justify-center mb-6">{option.icon}</div>
+                    <h3 className="text-xl font-semibold text-slate-900 mb-4">
+                      {option.title}
+                    </h3>
+                    <p className="text-slate-600 mb-6">
+                      {option.description}
+                    </p>
+                    <Button
+                      className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white w-full"
+                    >
+                      {option.action}
+                    </Button>
                   </CardContent>
                 </Card>
               ))}

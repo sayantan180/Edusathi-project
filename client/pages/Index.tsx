@@ -47,34 +47,62 @@ import {
   Calendar,
   Target,
   Sparkles,
+  Menu,
+  X,
 } from "lucide-react";
 
 // Background Image Carousel Component
 function BackgroundCarousel() {
   const [currentBg, setCurrentBg] = useState(0);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const backgroundImages = [
-    "https://images.pexels.com/photos/9783353/pexels-photo-9783353.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    "https://images.pexels.com/photos/8566445/pexels-photo-8566445.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    "https://images.pexels.com/photos/6517274/pexels-photo-6517274.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "https://images.pexels.com/photos/9783353/pexels-photo-9783353.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080",
+    "https://images.pexels.com/photos/8566445/pexels-photo-8566445.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080",
+    "https://images.pexels.com/photos/6517274/pexels-photo-6517274.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080",
   ];
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentBg((prev) => (prev + 1) % backgroundImages.length);
-    }, 4000);
+    }, 5000);
     return () => clearInterval(interval);
   }, [backgroundImages.length]);
 
+  // Preload images for better performance
+  useEffect(() => {
+    backgroundImages.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+    setImageLoaded(true);
+  }, []);
+
   return (
-    <div className="absolute inset-0 -mx-4 -my-20 overflow-hidden rounded-3xl">
+    <div className="absolute inset-0 -mx-2 -my-8 sm:-mx-4 sm:-my-12 md:-mx-6 md:-my-16 lg:-mx-8 lg:-my-20 overflow-hidden rounded-xl sm:rounded-2xl md:rounded-3xl">
+      {/* Main background image with full visibility */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 transition-all duration-1000"
+        className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1500 ease-in-out ${
+          imageLoaded ? 'opacity-100' : 'opacity-0'
+        }`}
         style={{
           backgroundImage: `url('${backgroundImages[currentBg]}')`,
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-purple-500/30" />
+      
+      {/* Animated dots indicator */}
+      <div className="absolute bottom-2 sm:bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
+        {backgroundImages.map((_, index) => (
+          <div
+            key={index}
+            className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-all duration-300 ${
+              index === currentBg 
+                ? 'bg-white/90 scale-125' 
+                : 'bg-white/50 hover:bg-white/70'
+            }`}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -151,6 +179,7 @@ function RotatingText() {
 export default function Index() {
   const [openFaq, setOpenFaq] = useState<string>("");
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Floating cards data for background
   const floatingCards = [
@@ -211,74 +240,153 @@ export default function Index() {
       </div>
 
       {/* Navbar */}
-      <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-sm">
-        <div className="container max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white">
-              <GraduationCap className="h-5 w-5" />
+      <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur-md shadow-sm">
+        <div className="container max-w-7xl mx-auto px-4 py-3 sm:py-4">
+          <div className="flex items-center justify-between">
+            {/* Logo */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg">
+                <GraduationCap className="h-4 w-4 sm:h-5 sm:w-5" />
+              </div>
+              <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Edusathi
+              </span>
             </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Edusathi
-            </span>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
+              <a
+                href="#features"
+                className="text-slate-600 hover:text-blue-600 transition-colors font-medium relative group py-2"
+              >
+                Features
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+              </a>
+              <Link
+                to="/pricing"
+                className="text-slate-600 hover:text-blue-600 transition-colors font-medium relative group py-2"
+              >
+                Pricing
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+              </Link>
+              <Link
+                to="/about"
+                className="text-slate-600 hover:text-blue-600 transition-colors font-medium relative group py-2"
+              >
+                About us
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+              </Link>
+              <a
+                href="#institutes"
+                className="text-slate-600 hover:text-blue-600 transition-colors font-medium relative group py-2"
+              >
+                For Institutes
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+              </a>
+              <a
+                href="#students"
+                className="text-slate-600 hover:text-blue-600 transition-colors font-medium relative group py-2"
+              >
+                For Students
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+              </a>
+              <Link
+                to="/contact"
+                className="text-slate-600 hover:text-blue-600 transition-colors font-medium relative group py-2"
+              >
+                Contact us
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+              </Link>
+            </nav>
+
+            {/* Desktop CTA & Mobile Menu Button */}
+            <div className="flex items-center gap-3">
+              <Link to="/pricing" className="hidden sm:block">
+                <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-4 sm:px-6 py-2 text-sm sm:text-base shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Join Now
+                </Button>
+              </Link>
+              
+              {/* Mobile Menu Button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden p-2"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </Button>
+            </div>
           </div>
 
-          {/* Navigation Links */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            <a
-              href="#features"
-              className="text-slate-600 hover:text-blue-600 transition-colors font-medium"
-            >
-              Features
-            </a>
-            <Link
-              to="/pricing"
-              className="text-slate-600 hover:text-blue-600 transition-colors font-medium"
-            >
-              Pricing
-            </Link>
-            <Link
-              to="/about"
-              className="text-slate-600 hover:text-blue-600 transition-colors font-medium"
-            >
-              About us
-            </Link>
-            <a
-              href="#institutes"
-              className="text-slate-600 hover:text-blue-600 transition-colors font-medium"
-            >
-              For Institutes
-            </a>
-            <a
-              href="#students"
-              className="text-slate-600 hover:text-blue-600 transition-colors font-medium"
-            >
-              For Students
-            </a>
-            <Link
-              to="/contact"
-              className="text-slate-600 hover:text-blue-600 transition-colors font-medium"
-            >
-              Contact us
-            </Link>
-          </nav>
-
-          {/* CTA Button */}
-          <Link to="/pricing">
-            <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 shadow-lg hover:shadow-xl transition-all">
-              Join Now
-            </Button>
-          </Link>
+          {/* Mobile Navigation Menu */}
+          {mobileMenuOpen && (
+            <div className="lg:hidden mt-4 pb-4 border-t border-slate-200 animate-in slide-in-from-top-2 duration-300">
+              <nav className="flex flex-col space-y-3 pt-4">
+                <a
+                  href="#features"
+                  className="text-slate-600 hover:text-blue-600 transition-colors font-medium py-2 px-2 rounded-lg hover:bg-blue-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Features
+                </a>
+                <Link
+                  to="/pricing"
+                  className="text-slate-600 hover:text-blue-600 transition-colors font-medium py-2 px-2 rounded-lg hover:bg-blue-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Pricing
+                </Link>
+                <Link
+                  to="/about"
+                  className="text-slate-600 hover:text-blue-600 transition-colors font-medium py-2 px-2 rounded-lg hover:bg-blue-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  About us
+                </Link>
+                <a
+                  href="#institutes"
+                  className="text-slate-600 hover:text-blue-600 transition-colors font-medium py-2 px-2 rounded-lg hover:bg-blue-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  For Institutes
+                </a>
+                <a
+                  href="#students"
+                  className="text-slate-600 hover:text-blue-600 transition-colors font-medium py-2 px-2 rounded-lg hover:bg-blue-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  For Students
+                </a>
+                <Link
+                  to="/contact"
+                  className="text-slate-600 hover:text-blue-600 transition-colors font-medium py-2 px-2 rounded-lg hover:bg-blue-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Contact us
+                </Link>
+                <div className="pt-3 border-t border-slate-200">
+                  <Link to="/pricing" onClick={() => setMobileMenuOpen(false)}>
+                    <Button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Join Now
+                    </Button>
+                  </Link>
+                </div>
+              </nav>
+            </div>
+          )}
         </div>
       </header>
 
       <main>
         {/* Hero Section */}
-        <section className="container max-w-7xl mx-auto px-4 py-12 md:py-20 text-center relative z-10">
+        <section className="container max-w-7xl mx-auto px-4 py-16 sm:py-20 md:py-24 lg:py-28 text-center relative z-10">
           <BackgroundCarousel />
-          <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
+          <div className="max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
             <RotatingHeader />
-            <p className="text-base sm:text-lg md:text-xl text-slate-700 max-w-3xl mx-auto mb-6 md:mb-8 animate-in fade-in duration-1000 delay-300 leading-relaxed px-4">
+            <p className="text-lg sm:text-xl md:text-2xl text-slate-700 max-w-4xl mx-auto mb-8 md:mb-10 animate-in fade-in duration-1000 delay-300 leading-relaxed px-4">
               Harness the power of{" "}
               <span className="text-purple-700 font-semibold">
                 artificial intelligence
@@ -291,34 +399,42 @@ export default function Index() {
               .
             </p>
 
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8 md:mb-12 animate-in fade-in duration-1000 delay-500 px-4">
+            {/* Enhanced CTAs */}
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mb-10 md:mb-16 animate-in fade-in duration-1000 delay-500 px-4">
               <Link to="/pricing">
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 md:px-8 py-3 text-base md:text-lg shadow-lg hover:shadow-xl transition-all w-full sm:w-auto"
+                  className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 md:px-10 py-4 text-lg md:text-xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 w-full sm:w-auto font-semibold"
                 >
-                  <Sparkles className="w-4 md:w-5 h-4 md:h-5 mr-2" />
-                  Get Started
+                  <Sparkles className="w-5 md:w-6 h-5 md:h-6 mr-3" />
+                  Get Started Free
                 </Button>
               </Link>
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-2 border-slate-300 hover:border-blue-500 text-slate-700 hover:text-blue-600 px-8 md:px-10 py-4 text-lg md:text-xl hover:shadow-lg transition-all duration-300 hover:scale-105 w-full sm:w-auto font-semibold bg-white/80 backdrop-blur-sm"
+              >
+                <Play className="w-5 md:w-6 h-5 md:h-6 mr-3" />
+                Watch Demo
+              </Button>
             </div>
 
-            {/* AI Trust Badges */}
-            <div className="flex flex-wrap justify-center gap-4 md:gap-8 text-xs sm:text-sm animate-in fade-in duration-1000 delay-700 px-4">
-              <div className="flex items-center gap-2 text-emerald-700 font-semibold">
+            {/* Enhanced Trust Badges */}
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-6 md:gap-8 text-sm sm:text-base animate-in fade-in duration-1000 delay-700 px-4">
+              <div className="flex items-center gap-2 text-emerald-700 font-semibold bg-emerald-50 px-3 py-2 rounded-full border border-emerald-200 hover:bg-emerald-100 transition-colors">
                 <Shield className="w-4 md:w-5 h-4 md:h-5" />
                 <span className="hidden sm:inline">AI-</span>Secure
               </div>
-              <div className="flex items-center gap-2 text-blue-700 font-semibold">
+              <div className="flex items-center gap-2 text-blue-700 font-semibold bg-blue-50 px-3 py-2 rounded-full border border-blue-200 hover:bg-blue-100 transition-colors">
                 <Zap className="w-4 md:w-5 h-4 md:h-5" />
                 <span className="hidden sm:inline">Smart </span>Automation
               </div>
-              <div className="flex items-center gap-2 text-purple-700 font-semibold">
+              <div className="flex items-center gap-2 text-purple-700 font-semibold bg-purple-50 px-3 py-2 rounded-full border border-purple-200 hover:bg-purple-100 transition-colors">
                 <Brain className="w-4 md:w-5 h-4 md:h-5" />
                 ML-Powered
               </div>
-              <div className="flex items-center gap-2 text-orange-700 font-semibold">
+              <div className="flex items-center gap-2 text-orange-700 font-semibold bg-orange-50 px-3 py-2 rounded-full border border-orange-200 hover:bg-orange-100 transition-colors">
                 <Target className="w-4 md:w-5 h-4 md:h-5" />
                 <span className="hidden sm:inline">Predictive </span>Analytics
               </div>
@@ -327,11 +443,17 @@ export default function Index() {
         </section>
 
         {/* Value Proposition */}
-        <section className="container max-w-7xl mx-auto px-4 py-12 md:py-20">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent mb-6 text-center leading-tight">
-            Everything you need to run your institute
-          </h1>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <section className="bg-gradient-to-b from-slate-50 to-white py-16 sm:py-20 md:py-24">
+          <div className="container max-w-7xl mx-auto px-4">
+            <div className="text-center mb-12 md:mb-16">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent mb-4 leading-tight">
+                Everything you need to run your institute
+              </h2>
+              <p className="text-lg sm:text-xl text-slate-600 max-w-3xl mx-auto">
+                Powerful tools designed for modern education
+              </p>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {[
               {
                 icon: <Globe className="w-8 h-8 text-blue-500" />,
@@ -360,39 +482,41 @@ export default function Index() {
                 className="animate-in fade-in slide-in-from-bottom-8 duration-700"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <Card className="rounded-2xl border-0 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 bg-white/70 backdrop-blur-sm">
+                <Card className="rounded-2xl border-0 shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all duration-300 bg-white group">
                   <CardHeader className="text-center pb-4">
-                    <div className="flex justify-center mb-4">{item.icon}</div>
-                    <CardTitle className="text-lg font-bold text-slate-800 leading-snug">
+                    <div className="flex justify-center mb-4 p-3 rounded-full bg-gradient-to-br from-blue-50 to-purple-50 group-hover:from-blue-100 group-hover:to-purple-100 transition-colors w-fit mx-auto">{item.icon}</div>
+                    <CardTitle className="text-lg font-bold text-slate-800 leading-snug group-hover:text-blue-700 transition-colors">
                       {item.title}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-slate-700 text-center leading-relaxed">
+                    <p className="text-slate-600 text-center leading-relaxed">
                       {item.description}
                     </p>
                   </CardContent>
                 </Card>
               </div>
             ))}
+            </div>
           </div>
         </section>
 
         {/* Feature Highlights */}
         <section
           id="features"
-          className="container max-w-7xl mx-auto px-4 py-20"
+          className="py-16 sm:py-20 md:py-24"
         >
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent mb-6 leading-tight">
-              Powerful features for modern education
-            </h2>
-            <p className="text-xl text-slate-700 max-w-2xl mx-auto leading-relaxed">
-              Everything you need to run a successful educational institute
-            </p>
-          </div>
+          <div className="container max-w-7xl mx-auto px-4">
+            <div className="text-center mb-12 md:mb-16">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent mb-6 leading-tight">
+                Powerful features for modern education
+              </h2>
+              <p className="text-lg sm:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+                Everything you need to run a successful educational institute
+              </p>
+            </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {[
               {
                 icon: <Brain className="w-12 h-12 text-blue-500" />,
@@ -436,36 +560,38 @@ export default function Index() {
                 className="animate-in fade-in slide-in-from-bottom-8 duration-700"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <Card className="rounded-2xl border-0 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-full bg-white/70 backdrop-blur-sm">
+                <Card className="rounded-2xl border-0 shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all duration-300 h-full bg-white group">
                   <CardHeader>
-                    <div className="mb-4">{feature.icon}</div>
-                    <CardTitle className="text-xl font-bold text-slate-800 leading-snug">
+                    <div className="mb-4 p-3 rounded-full bg-gradient-to-br from-slate-50 to-slate-100 group-hover:from-blue-50 group-hover:to-purple-50 transition-colors w-fit">{feature.icon}</div>
+                    <CardTitle className="text-xl font-bold text-slate-800 leading-snug group-hover:text-blue-700 transition-colors">
                       {feature.title}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-slate-700 leading-relaxed">
+                    <p className="text-slate-600 leading-relaxed">
                       {feature.description}
                     </p>
                   </CardContent>
                 </Card>
               </div>
             ))}
+            </div>
           </div>
         </section>
 
         {/* Success Stories by Numbers */}
-        <section className="container max-w-7xl mx-auto px-4 py-16">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent mb-6 leading-tight">
-              Success Stories by Numbers
-            </h2>
-            <p className="text-xl text-slate-700 leading-relaxed">
-              Join thousands of institutes already transforming education
-            </p>
-          </div>
+        <section className="bg-gradient-to-b from-blue-50 to-purple-50 py-16 sm:py-20 md:py-24">
+          <div className="container max-w-7xl mx-auto px-4">
+            <div className="text-center mb-12 md:mb-16">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent mb-6 leading-tight">
+                Success Stories by Numbers
+              </h2>
+              <p className="text-lg sm:text-xl text-slate-600 leading-relaxed">
+                Join thousands of institutes already transforming education
+              </p>
+            </div>
 
-          <div className="grid md:grid-cols-4 gap-8">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {[
               {
                 number: "50,000+",
@@ -501,21 +627,21 @@ export default function Index() {
                 className="animate-in fade-in slide-in-from-bottom-8 duration-700"
                 style={{ animationDelay: `${index * 200}ms` }}
               >
-                <Card className="rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white/80 backdrop-blur-sm hover:-translate-y-2">
-                  <CardContent className="p-8 text-center">
-                    <div className="flex justify-center mb-4">
+                <Card className="rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white hover:-translate-y-3 group">
+                  <CardContent className="p-6 sm:p-8 text-center">
+                    <div className="flex justify-center mb-6">
                       <div
-                        className={`p-3 rounded-full bg-gradient-to-r ${stat.color} text-white`}
+                        className={`p-4 rounded-full bg-gradient-to-r ${stat.color} text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}
                       >
                         {stat.icon}
                       </div>
                     </div>
                     <div
-                      className={`text-4xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-2`}
+                      className={`text-3xl sm:text-4xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-3`}
                     >
                       {stat.number}
                     </div>
-                    <h3 className="text-lg font-bold text-slate-900 mb-1 ">
+                    <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-blue-700 transition-colors">
                       {stat.label}
                     </h3>
                     <p className="text-sm text-slate-600">{stat.description}</p>
@@ -523,6 +649,7 @@ export default function Index() {
                 </Card>
               </div>
             ))}
+            </div>
           </div>
         </section>
 
