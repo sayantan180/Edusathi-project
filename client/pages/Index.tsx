@@ -401,7 +401,7 @@ export default function Index() {
 
             {/* Enhanced CTAs */}
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mb-10 md:mb-16 animate-in fade-in duration-1000 delay-500 px-4">
-              <Link to="/pricing">
+              <Link to="/get-started">
                 <Button
                   size="lg"
                   className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 md:px-10 py-4 text-lg md:text-xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 w-full sm:w-auto font-semibold"

@@ -19,6 +19,11 @@ import Login from "./pages/Login";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import Admin from "./pages/admin";
 import Settings from "./pages/Settings";
+import GetStarted from "./pages/GetStarted";
+import Auth from "./pages/Auth";
+import StudentDashboard from "./pages/StudentDashboard";
+import CreatorDashboard from "./pages/CreatorDashboard";
+import BusinessDashboard from "./pages/BusinessDashboard";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +40,11 @@ const App = () => (
           <Route path="/about" element={<AboutUs />} />
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/get-started" element={<GetStarted />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/student" element={<StudentDashboard />} />
+          <Route path="/creator" element={<CreatorDashboard />} />
+          <Route path="/business" element={<BusinessDashboard />} />
           <Route
             path="/dashboard"
             element={
