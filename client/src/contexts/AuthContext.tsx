@@ -42,8 +42,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Check if user is logged in on app start
     const checkAuth = async () => {
       try {
-        const token = localStorage.getItem('accessToken');
-        const savedUser = localStorage.getItem('user');
+        // Prefer snake_case tokens to match server and the rest of the app
+        const token = localStorage.getItem('access_token') || localStorage.getItem('accessToken');
+        const savedUser = localStorage.getItem('user') || localStorage.getItem('userProfile');
         
         if (token && savedUser) {
           setUser(JSON.parse(savedUser));
@@ -52,9 +53,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
       } catch (error) {
         // Token invalid, clear storage
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');
+        localStorage.removeItem('userProfile');
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('userRole');
       } finally {
         setLoading(false);
       }
@@ -66,37 +72,55 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string) => {
     try {
       const response = await authAPI.login({ email, password });
-      const { user: userData, accessToken, refreshToken } = response.data;
+      const { user: userData, access_token, refresh_token } = response.data;
 
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
+      // Store snake_case tokens (primary)
+      if (access_token) localStorage.setItem('access_token', access_token);
+      if (refresh_token) localStorage.setItem('refresh_token', refresh_token);
+      // Back-compat: also store camelCase if some parts still read them
+      if (access_token) localStorage.setItem('accessToken', access_token);
+      if (refresh_token) localStorage.setItem('refreshToken', refresh_token);
       localStorage.setItem('user', JSON.stringify(userData));
+      // Compatibility with some pages using these keys
+      localStorage.setItem('userProfile', JSON.stringify(userData));
+      localStorage.setItem('isLoggedIn', 'true');
+      if (userData?.role) localStorage.setItem('userRole', userData.role);
       
       setUser(userData);
     } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Login failed');
+      throw new Error(error?.response?.data?.message || error?.response?.data?.error || error?.message || 'Login failed');
     }
   };
 
   const register = async (name: string, email: string, password: string, role: string = 'creator') => {
     try {
       const response = await authAPI.register({ name, email, password, role });
-      const { user: userData, accessToken, refreshToken } = response.data;
+      const { user: userData, access_token, refresh_token } = response.data;
 
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
+      if (access_token) localStorage.setItem('access_token', access_token);
+      if (refresh_token) localStorage.setItem('refresh_token', refresh_token);
+      if (access_token) localStorage.setItem('accessToken', access_token);
+      if (refresh_token) localStorage.setItem('refreshToken', refresh_token);
       localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('userProfile', JSON.stringify(userData));
+      localStorage.setItem('isLoggedIn', 'true');
+      if (userData?.role) localStorage.setItem('userRole', userData.role);
       
       setUser(userData);
     } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Registration failed');
+      throw new Error(error?.response?.data?.message || error?.response?.data?.error || error?.message || 'Registration failed');
     }
   };
 
   const logout = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
+    localStorage.removeItem('userProfile');
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('userRole');
     setUser(null);
   };
 

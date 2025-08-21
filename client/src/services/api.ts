@@ -13,7 +13,7 @@ const api = axios.create({
 // Request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem('access_token') || localStorage.getItem('accessToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -30,10 +30,17 @@ api.interceptors.response.use(
   async (error) => {
     if (error.response?.status === 401) {
       // Token expired, redirect to login
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('user');
-      window.location.href = '/login';
+      localStorage.removeItem('userProfile');
+      localStorage.removeItem('isLoggedIn');
+      const role = localStorage.getItem('userRole') || '';
+      localStorage.removeItem('userRole');
+      const authPath = role ? `/auth?role=${role}` : '/auth';
+      window.location.href = authPath;
     }
     return Promise.reject(error);
   }

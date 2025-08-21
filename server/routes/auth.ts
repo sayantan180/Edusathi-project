@@ -23,7 +23,11 @@ export const register: RequestHandler = async (req, res) => {
       access_token,
       refresh_token,
     });
-  } catch (err) {
+  } catch (err: any) {
+    // Handle duplicate key race conditions gracefully
+    if (err && (err.code === 11000 || String(err?.message || '').toLowerCase().includes('duplicate key'))) {
+      return res.status(409).json({ message: 'Email already registered' });
+    }
     console.error('register error', err);
     res.status(500).json({ message: 'Server error' });
   }
