@@ -5,10 +5,12 @@ export interface JWTPayload {
   role: string;
 }
 
-const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || "dev_access_secret";
-const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "dev_refresh_secret";
-const ACCESS_EXPIRES = process.env.JWT_ACCESS_EXPIRES || "15m";
-const REFRESH_EXPIRES = process.env.JWT_REFRESH_EXPIRES || "7d";
+import type { Secret, SignOptions } from "jsonwebtoken";
+
+const ACCESS_SECRET: Secret = (process.env.JWT_ACCESS_SECRET || "dev_access_secret") as Secret;
+const REFRESH_SECRET: Secret = (process.env.JWT_REFRESH_SECRET || "dev_refresh_secret") as Secret;
+const ACCESS_EXPIRES: SignOptions["expiresIn"] = (process.env.JWT_ACCESS_EXPIRES || "15m") as any;
+const REFRESH_EXPIRES: SignOptions["expiresIn"] = (process.env.JWT_REFRESH_EXPIRES || "7d") as any;
 
 export function signAccessToken(payload: JWTPayload) {
   return jwt.sign(payload, ACCESS_SECRET, { expiresIn: ACCESS_EXPIRES });

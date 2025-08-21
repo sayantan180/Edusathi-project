@@ -1,33 +1,37 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Schema, Document, Types } from 'mongoose';
 
-export type ContentType = "pdf" | "video" | "live";
+export type ContentType = 'pdf' | 'video' | 'live';
 
 export interface IContent extends Document {
   title: string;
   description: string;
   type: ContentType;
-  price: number; // in INR rupees
-  businessName: string;
-  creatorId?: mongoose.Types.ObjectId;
-  resourceUrl?: string; // pdf or video url
-  liveLink?: string; // live meeting link
+  price: number;
+  fileUrl: string;
+  thumbnailUrl: string;
+  resourceUrl?: string;
+  liveLink: string;
+  creatorId: Types.ObjectId;
+  businessId?: Types.ObjectId | null;
+  businessName?: string;
+  isActive: boolean;
   createdAt: Date;
-  updatedAt: Date;
 }
 
-const ContentSchema: Schema<IContent> = new Schema(
-  {
-    title: { type: String, required: true, trim: true },
-    description: { type: String, required: true },
-    type: { type: String, enum: ["pdf", "video", "live"], required: true },
-    price: { type: Number, required: true, min: 0 },
-    businessName: { type: String, required: true },
-    creatorId: { type: Schema.Types.ObjectId, ref: "User" },
-    resourceUrl: { type: String },
-    liveLink: { type: String },
-  },
-  { timestamps: true }
-);
+const ContentSchema: Schema = new Schema<IContent>({
+  title: { type: String, required: true, trim: true },
+  description: { type: String, required: true },
+  type: { type: String, enum: ['pdf', 'video', 'live'], required: true },
+  price: { type: Number, required: true, min: 0 },
+  fileUrl: { type: String, default: '' },
+  thumbnailUrl: { type: String, default: '' },
+  resourceUrl: { type: String, default: '' },
+  liveLink: { type: String, default: '' },
+  creatorId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+  businessId: { type: Schema.Types.ObjectId, ref: 'Business', default: null },
+  businessName: { type: String, default: '' },
+  isActive: { type: Boolean, default: true },
+  createdAt: { type: Date, default: Date.now }
+});
 
-const Content: Model<IContent> = mongoose.models.Content || mongoose.model<IContent>("Content", ContentSchema);
-export default Content;
+export default mongoose.model<IContent>('Content', ContentSchema);

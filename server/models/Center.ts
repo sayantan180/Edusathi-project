@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface ICenter extends Document {
+  _id: mongoose.Types.ObjectId;
   instituteName: string;
   ownerName: string;
   email: string;

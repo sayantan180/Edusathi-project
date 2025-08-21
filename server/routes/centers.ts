@@ -1,6 +1,16 @@
 import { RequestHandler } from "express";
-import { Center as CenterType } from "../../shared/api.js";
 import Center, { ICenter } from "../models/Center.js";
+
+type CenterType = {
+  id: string;
+  name: string;
+  domain: string;
+  website: string;
+  superAdminPath: string;
+  createdAt: string;
+  expireDate: string;
+  status: 'active' | 'inactive';
+};
 
 // GET /api/centers - Get all centers
 export const getCenters: RequestHandler = async (req, res) => {

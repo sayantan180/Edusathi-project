@@ -4,16 +4,15 @@ import crypto from "crypto";
 import Order from "../models/Order.js";
 import Content from "../models/Content.js";
 import Enrollment from "../models/Enrollment.js";
-import { AuthRequest } from "../middleware/auth.js";
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID || "rzp_test_dummy_key",
   key_secret: process.env.RAZORPAY_KEY_SECRET || "dummy_secret",
 });
 
-export const createStudentOrder: RequestHandler = async (req: AuthRequest, res) => {
+export const createStudentOrder: RequestHandler = async (req, res) => {
   try {
-    const userId = req.user?.sub;
+    const userId = (req as any).user?.sub as string | undefined;
     const { items } = req.body as { items: { contentId: string }[] };
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
     if (!items || !items.length) return res.status(400).json({ message: "No items" });
@@ -49,9 +48,9 @@ export const createStudentOrder: RequestHandler = async (req: AuthRequest, res) 
   }
 };
 
-export const verifyStudentPayment: RequestHandler = async (req: AuthRequest, res) => {
+export const verifyStudentPayment: RequestHandler = async (req, res) => {
   try {
-    const userId = req.user?.sub;
+    const userId = (req as any).user?.sub as string | undefined;
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } = req.body as {
       razorpay_order_id: string;
       razorpay_payment_id: string;
@@ -96,9 +95,9 @@ export const verifyStudentPayment: RequestHandler = async (req: AuthRequest, res
   }
 };
 
-export const getMyEnrollments: RequestHandler = async (req: AuthRequest, res) => {
+export const getMyEnrollments: RequestHandler = async (req, res) => {
   try {
-    const userId = req.user?.sub;
+    const userId = (req as any).user?.sub as string | undefined;
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
     const enrollments = await Enrollment.find({ userId }).populate("contentId");

@@ -1,7 +1,8 @@
-import "dotenv/config";
+ import "dotenv/config";
 import express from "express";
 import connectDB from "./db.js";
 import cors from "cors";
+import path from "path";
 import { handleDemo } from "./routes/demo.js";
 import {
   getCenters,
@@ -14,9 +15,21 @@ import {
   verifyPayment,
   getPaymentConfig,
 } from "./routes/payment.js";
-import { register, login, refresh } from "./routes/auth.js";
+import { register, login, refresh, getProfile, updateAvatar } from "./routes/auth.js";
+import {
+  createContent,
+  getMyContents,
+  updateContent,
+  deleteContent,
+  assignToBusiness,
+  getBusinesses,
+  getContentById,
+} from "./routes/content.js";
+import { getMySales, getContentSales } from "./routes/sales.js";
+import { createBusiness } from "./routes/business.js";
+import { authenticateToken, requireRole, requireAuth } from "./middleware/auth.js";
+import { upload } from "./middleware/upload.js";
 import { listContents } from "./routes/contents.js";
-import { requireAuth } from "./middleware/auth.js";
 import { createStudentOrder, verifyStudentPayment, getMyEnrollments } from "./routes/student.js";
 
 export function createServer() {
@@ -27,8 +40,19 @@ export function createServer() {
   connectDB();
 
   app.use(cors());
+  // Handle CORS preflight requests globally (Express 5 + path-to-regexp v6)
+  app.options(/.*/, cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+
+  // Temporary request logger (debug 404s)
+  app.use((req, _res, next) => {
+    console.log(`[REQ] ${req.method} ${req.url}`);
+    next();
+  });
+
+  // Serve uploaded files
+  app.use('/uploads', express.static('uploads'));
 
   // Example API routes
   app.get("/api/ping", (_req, res) => {
@@ -37,6 +61,38 @@ export function createServer() {
   });
 
   app.get("/api/demo", handleDemo);
+
+  // Auth routes
+  app.post("/api/auth/register", register);
+  app.post("/api/auth/login", login);
+  app.post("/api/auth/refresh", refresh);
+  app.get("/api/auth/profile", authenticateToken, getProfile);
+  app.put("/api/auth/avatar", authenticateToken, upload.single('avatar'), updateAvatar);
+
+  // Content routes (Creator only)
+  app.post(
+    "/api/content",
+    authenticateToken,
+    requireRole(['creator']),
+    upload.fields([
+      { name: 'file', maxCount: 1 },
+      { name: 'thumbnail', maxCount: 1 },
+    ]),
+    createContent
+  );
+  app.get("/api/content/my", authenticateToken, requireRole(['creator']), getMyContents);
+  app.get("/api/content/:id", authenticateToken, requireRole(['creator']), getContentById);
+  app.put("/api/content/:id", authenticateToken, requireRole(['creator']), updateContent);
+  app.delete("/api/content/:id", authenticateToken, requireRole(['creator']), deleteContent);
+  app.put("/api/content/:id/assign", authenticateToken, requireRole(['creator']), assignToBusiness);
+
+  // Business routes
+  app.get("/api/businesses", authenticateToken, getBusinesses);
+  app.post("/api/businesses", authenticateToken, requireRole(['creator', 'business']), createBusiness);
+
+  // Sales routes (Creator only)
+  app.get("/api/sales/my", authenticateToken, requireRole(['creator']), getMySales);
+  app.get("/api/sales/content/:contentId", authenticateToken, requireRole(['creator']), getContentSales);
 
   // Centers API routes
   app.get("/api/centers", getCenters);
@@ -49,11 +105,6 @@ export function createServer() {
   app.post("/api/payment/verify", verifyPayment);
   app.get("/api/payment/config", getPaymentConfig);
 
-  // Auth routes
-  app.post("/api/auth/register", register);
-  app.post("/api/auth/login", login);
-  app.post("/api/auth/refresh", refresh);
-
   // Catalog
   app.get("/api/contents", listContents);
 
@@ -61,6 +112,22 @@ export function createServer() {
   app.post("/api/student/create-order", requireAuth, createStudentOrder);
   app.post("/api/student/verify", requireAuth, verifyStudentPayment);
   app.get("/api/student/my-courses", requireAuth, getMyEnrollments);
+  
+  // Global error handler (handle multer and other runtime errors)
+  app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    console.error('[ERR]', err);
+    // Multer errors or our fileFilter error message
+    if (err?.name === 'MulterError' || (typeof err?.message === 'string' && err.message.toLowerCase().includes('invalid file type'))) {
+      return res.status(400).json({ error: err.message });
+    }
+    return res.status(500).json({ error: 'Internal server error' });
+  });
+
+  // 404 handler (debugging)
+  app.use((req, res) => {
+    console.warn(`[404] ${req.method} ${req.url}`);
+    res.status(404).json({ error: 'Not Found', path: req.url, method: req.method });
+  });
 
   return app;
 }

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { GraduationCap } from "lucide-react";
-import { apiPost } from "@/lib/api";
+import { useAuth } from "@/src/contexts/AuthContext";
 
 export default function Auth() {
   const [params] = useSearchParams();
@@ -29,29 +29,15 @@ export default function Auth() {
     setEmail("");
     setPassword("");
   }, [role]);
-
+  const { login, register } = useAuth();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     try {
       if (mode === "register") {
-        const res = await apiPost<{
-          user: { id: string; name: string; email: string; role: string };
-          access_token: string;
-          refresh_token: string;
-        }>("/api/auth/register", { name, email, password, role });
-        localStorage.setItem("access_token", res.access_token);
-        localStorage.setItem("refresh_token", res.refresh_token);
-        localStorage.setItem("userProfile", JSON.stringify(res.user));
+        await register(name, email, password, role);
       } else {
-        const res = await apiPost<{
-          user: { id: string; name: string; email: string; role: string };
-          access_token: string;
-          refresh_token: string;
-        }>("/api/auth/login", { email, password });
-        localStorage.setItem("access_token", res.access_token);
-        localStorage.setItem("refresh_token", res.refresh_token);
-        localStorage.setItem("userProfile", JSON.stringify(res.user));
+        await login(email, password);
       }
 
       // Redirect by role or pending redirect
