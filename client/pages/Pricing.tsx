@@ -84,7 +84,7 @@ export default function Pricing() {
             <span className="text-2xl font-bold text-slate-900">Edusathi</span>
           </Link>
 
-          <nav className="hidden lg:flex items-center space-x-8">
+          {/* <nav className="hidden lg:flex items-center space-x-8">
             <Link
               to="/#features"
               className="text-slate-600 hover:text-slate-900 transition-colors"
@@ -118,7 +118,7 @@ export default function Pricing() {
             >
               Contact us
             </Link>
-          </nav>
+          </nav> */}
 
         </div>
       </header>
@@ -203,7 +203,7 @@ export default function Pricing() {
 
                     <Separator />
 
-                    {/* <div className="space-y-3">
+                    <div className="space-y-3">
                       <h4 className="font-semibold text-slate-900">Everything included:</h4>
                       {plan.features.map((feature, featureIndex) => (
                         <div key={featureIndex} className="flex items-center gap-3">
@@ -211,7 +211,7 @@ export default function Pricing() {
                           <span className="text-slate-600">{feature}</span>
                         </div>
                       ))}
-                    </div> */}
+                    </div>
                   </CardContent>
                 </Card>
               </div>

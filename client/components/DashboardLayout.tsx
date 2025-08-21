@@ -7,6 +7,7 @@ import {
   Building,
   Plus,
   List,
+  BarChart3,
   Settings as SettingsIcon,
 } from "lucide-react";
 import {
@@ -30,6 +31,34 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
+type NavIcon = React.ComponentType<{ className?: string }>;
+
+type NavSimple = {
+  title: string;
+  href: string;
+  icon: NavIcon;
+  isActive: boolean;
+  isExpandable: false;
+};
+
+type NavSubItem = {
+  title: string;
+  href: string;
+  icon: NavIcon;
+  isActive: boolean;
+};
+
+type NavExpandable = {
+  title: string;
+  icon: NavIcon;
+  isExpandable: true;
+  isOpen: boolean;
+  onToggle: () => void;
+  subItems: NavSubItem[];
+};
+
+type NavigationItem = NavSimple | NavExpandable;
+
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
@@ -37,13 +66,17 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const location = useLocation();
   const [centerManagementOpen, setCenterManagementOpen] = useState(true);
+  const [creatorManagementOpen, setCreatorManagementOpen] = useState(true);
 
-  const navigationItems = [
+  const isExpandableItem = (i: NavigationItem): i is NavExpandable => i.isExpandable === true;
+
+  const navigationItems: NavigationItem[] = [
     {
       title: "Dashboard",
       href: "/dashboard",
       icon: LayoutDashboard,
       isActive: location.pathname === "/dashboard",
+      isExpandable: false,
     },
     {
       title: "Center Management",
@@ -68,10 +101,38 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       ],
     },
     {
+      title: "Creator",
+      icon: LayoutDashboard,
+      isExpandable: true,
+      isOpen: creatorManagementOpen,
+      onToggle: () => setCreatorManagementOpen(!creatorManagementOpen),
+      subItems: [
+        {
+          title: "Upload Content",
+          href: "/dashboard/creator/upload",
+          icon: Plus,
+          isActive: location.pathname === "/dashboard/creator/upload",
+        },
+        {
+          title: "Manage Contents",
+          href: "/dashboard/creator/contents",
+          icon: List,
+          isActive: location.pathname === "/dashboard/creator/contents",
+        },
+        {
+          title: "View Sales",
+          href: "/dashboard/creator/sales",
+          icon: BarChart3,
+          isActive: location.pathname === "/dashboard/creator/sales",
+        },
+      ],
+    },
+    {
       title: "Settings",
       href: "/dashboard/settings",
       icon: SettingsIcon,
       isActive: location.pathname === "/dashboard/settings",
+      isExpandable: false,
     },
   ];
 
@@ -96,7 +157,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               <SidebarMenu>
                 {navigationItems.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    {item.isExpandable ? (
+                    {isExpandableItem(item) ? (
                       <>
                         <SidebarMenuButton
                           onClick={item.onToggle}

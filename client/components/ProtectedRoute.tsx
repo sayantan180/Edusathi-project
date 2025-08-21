@@ -1,21 +1,16 @@
-import { useEffect, useState } from "react";
+import React from "react";
 import { Navigate } from "react-router-dom";
+import { useAuth } from "@/src/contexts/AuthContext";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
+  roles?: string[]; // optional allowed roles
 }
 
-export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+export function ProtectedRoute({ children, roles }: ProtectedRouteProps) {
+  const { isAuthenticated, user, loading } = useAuth();
 
-  useEffect(() => {
-    // Check if user is logged in
-    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-    setIsAuthenticated(isLoggedIn);
-  }, []);
-
-  if (isAuthenticated === null) {
-    // Loading state
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -26,8 +21,15 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     );
   }
 
+  const targetRole = roles && roles.length > 0 ? roles[0] : undefined;
+  const authPath = targetRole ? `/auth?role=${targetRole}` : "/auth";
+
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to={authPath} replace />;
+  }
+
+  if (roles && user && !roles.includes(user.role)) {
+    return <Navigate to={authPath} replace />;
   }
 
   return <>{children}</>;

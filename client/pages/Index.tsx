@@ -255,32 +255,26 @@ export default function Index() {
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
-              <a
+              {/* <a
                 href="#features"
                 className="text-slate-600 hover:text-blue-600 transition-colors font-medium relative group py-2"
               >
                 Features
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
-              </a>
+              </a> */}
               <Link
-                to="/pricing"
+                to="/creator"
                 className="text-slate-600 hover:text-blue-600 transition-colors font-medium relative group py-2"
               >
-                Pricing
+                Creator
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
               </Link>
-              <Link
-                to="/about"
-                className="text-slate-600 hover:text-blue-600 transition-colors font-medium relative group py-2"
-              >
-                About us
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
-              </Link>
+             
               <a
-                href="#institutes"
+                href="#"
                 className="text-slate-600 hover:text-blue-600 transition-colors font-medium relative group py-2"
               >
-                For Institutes
+                For Business
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
               </a>
               <a
@@ -290,6 +284,15 @@ export default function Index() {
                 For Students
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
               </a>
+
+              <Link
+                to="/about"
+                className="text-slate-600 hover:text-blue-600 transition-colors font-medium relative group py-2"
+              >
+                About us
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+              </Link>
+
               <Link
                 to="/contact"
                 className="text-slate-600 hover:text-blue-600 transition-colors font-medium relative group py-2"
@@ -324,33 +327,27 @@ export default function Index() {
           {mobileMenuOpen && (
             <div className="lg:hidden mt-4 pb-4 border-t border-slate-200 animate-in slide-in-from-top-2 duration-300">
               <nav className="flex flex-col space-y-3 pt-4">
-                <a
+                {/* <a
                   href="#features"
                   className="text-slate-600 hover:text-blue-600 transition-colors font-medium py-2 px-2 rounded-lg hover:bg-blue-50"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Features
-                </a>
+                </a> */}
                 <Link
-                  to="/pricing"
+                  to="/creator"
                   className="text-slate-600 hover:text-blue-600 transition-colors font-medium py-2 px-2 rounded-lg hover:bg-blue-50"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Pricing
+                  Creator
                 </Link>
-                <Link
-                  to="/about"
-                  className="text-slate-600 hover:text-blue-600 transition-colors font-medium py-2 px-2 rounded-lg hover:bg-blue-50"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  About us
-                </Link>
+                
                 <a
-                  href="#institutes"
+                  href="#"
                   className="text-slate-600 hover:text-blue-600 transition-colors font-medium py-2 px-2 rounded-lg hover:bg-blue-50"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  For Institutes
+                  For Business
                 </a>
                 <a
                   href="#students"
@@ -359,6 +356,15 @@ export default function Index() {
                 >
                   For Students
                 </a>
+
+                <Link
+                  to="/about"
+                  className="text-slate-600 hover:text-blue-600 transition-colors font-medium py-2 px-2 rounded-lg hover:bg-blue-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  About us
+                </Link>
+
                 <Link
                   to="/contact"
                   className="text-slate-600 hover:text-blue-600 transition-colors font-medium py-2 px-2 rounded-lg hover:bg-blue-50"

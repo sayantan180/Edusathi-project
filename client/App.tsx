@@ -24,6 +24,10 @@ import Auth from "./pages/Auth";
 import StudentDashboard from "./pages/StudentDashboard";
 import CreatorDashboard from "./pages/CreatorDashboard";
 import BusinessDashboard from "./pages/BusinessDashboard";
+import CreatorUpload from "./pages/CreatorUpload";
+import CreatorContents from "./pages/CreatorContents";
+import CreatorSales from "./pages/CreatorSales";
+import CreatorContentDetail from "./pages/CreatorContentDetail";
 
 const queryClient = new QueryClient();
 
@@ -42,14 +46,69 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/get-started" element={<GetStarted />} />
           <Route path="/auth" element={<Auth />} />
-          <Route path="/student" element={<StudentDashboard />} />
-          <Route path="/creator" element={<CreatorDashboard />} />
-          <Route path="/business" element={<BusinessDashboard />} />
+          <Route
+            path="/student"
+            element={
+              <ProtectedRoute roles={["student"]}>
+                <StudentDashboard />
+              </ProtectedRoute>
+            }
+          />
+           
+          <Route
+            path="/creator"
+            element={
+              
+              <ProtectedRoute roles={["creator"]}>
+                <CreatorDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/business"
+            element={
+              <ProtectedRoute roles={["business"]}>
+                <BusinessDashboard />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/dashboard"
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/creator/upload"
+            element={
+              <ProtectedRoute roles={["creator"]}>
+                <CreatorUpload />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/creator/contents"
+            element={
+              <ProtectedRoute roles={["creator"]}>
+                <CreatorContents />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/creator/content/:id"
+            element={
+              <ProtectedRoute roles={["creator"]}>
+                <CreatorContentDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/creator/sales"
+            element={
+              <ProtectedRoute roles={["creator"]}>
+                <CreatorSales />
               </ProtectedRoute>
             }
           />

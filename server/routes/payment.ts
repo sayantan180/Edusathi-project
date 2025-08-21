@@ -4,9 +4,27 @@ import crypto from "crypto";
 import Center from "../models/Center.js";
 
 // Initialize Razorpay instance
+const RAZORPAY_KEY_ID: string = (() => {
+  const v = process.env.RAZORPAY_KEY_ID;
+  if (!v) {
+    console.error("RAZORPAY_KEY_ID is not defined in the environment variables");
+    process.exit(1);
+  }
+  return v;
+})();
+
+const RAZORPAY_KEY_SECRET: string = (() => {
+  const v = process.env.RAZORPAY_KEY_SECRET;
+  if (!v) {
+    console.error("RAZORPAY_KEY_SECRET is not defined in the environment variables");
+    process.exit(1);
+  }
+  return v;
+})();
+
 const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || "rzp_test_dummy_key",
-  key_secret: process.env.RAZORPAY_KEY_SECRET || "dummy_secret",
+  key_id: RAZORPAY_KEY_ID,
+  key_secret: RAZORPAY_KEY_SECRET,
 });
 
 export interface CreateOrderRequest {
@@ -99,7 +117,7 @@ export const verifyPayment: RequestHandler = async (req, res) => {
 
     // Verify payment signature
     const expectedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET || "dummy_secret")
+      .createHmac("sha256", RAZORPAY_KEY_SECRET)
       .update(`${razorpay_order_id}|${razorpay_payment_id}`)
       .digest("hex");
 
@@ -184,6 +202,6 @@ export const verifyPayment: RequestHandler = async (req, res) => {
 
 export const getPaymentConfig: RequestHandler = (req, res) => {
   res.json({
-    key_id: process.env.RAZORPAY_KEY_ID || "rzp_test_dummy_key",
+    key_id: RAZORPAY_KEY_ID,
   });
 };
