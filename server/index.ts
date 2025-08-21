@@ -14,6 +14,10 @@ import {
   verifyPayment,
   getPaymentConfig,
 } from "./routes/payment.js";
+import { register, login, refresh } from "./routes/auth.js";
+import { listContents } from "./routes/contents.js";
+import { requireAuth } from "./middleware/auth.js";
+import { createStudentOrder, verifyStudentPayment, getMyEnrollments } from "./routes/student.js";
 
 export function createServer() {
   const app = express();
@@ -44,6 +48,19 @@ export function createServer() {
   app.post("/api/payment/create-order", createPaymentOrder);
   app.post("/api/payment/verify", verifyPayment);
   app.get("/api/payment/config", getPaymentConfig);
+
+  // Auth routes
+  app.post("/api/auth/register", register);
+  app.post("/api/auth/login", login);
+  app.post("/api/auth/refresh", refresh);
+
+  // Catalog
+  app.get("/api/contents", listContents);
+
+  // Student checkout and enrollments
+  app.post("/api/student/create-order", requireAuth, createStudentOrder);
+  app.post("/api/student/verify", requireAuth, verifyStudentPayment);
+  app.get("/api/student/my-courses", requireAuth, getMyEnrollments);
 
   return app;
 }

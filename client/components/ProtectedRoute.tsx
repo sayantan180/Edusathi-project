@@ -9,9 +9,9 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
-    // Check if user is logged in
-    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-    setIsAuthenticated(isLoggedIn);
+    // JWT-based check
+    const token = localStorage.getItem("access_token");
+    setIsAuthenticated(!!token);
   }, []);
 
   if (isAuthenticated === null) {
@@ -27,7 +27,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/auth?role=student" replace />;
   }
 
   return <>{children}</>;

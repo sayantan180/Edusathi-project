@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { GraduationCap } from "lucide-react";
+import { apiPost } from "@/lib/api";
 
 export default function Auth() {
   const [params] = useSearchParams();
@@ -29,34 +30,44 @@ export default function Auth() {
     setPassword("");
   }, [role]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-
-    setTimeout(() => {
-      // Persist lightweight auth state
-      localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("userRole", role);
+    try {
       if (mode === "register") {
-        localStorage.setItem("userProfile", JSON.stringify({ name, email, role }));
+        const res = await apiPost<{
+          user: { id: string; name: string; email: string; role: string };
+          access_token: string;
+          refresh_token: string;
+        }>("/api/auth/register", { name, email, password, role });
+        localStorage.setItem("access_token", res.access_token);
+        localStorage.setItem("refresh_token", res.refresh_token);
+        localStorage.setItem("userProfile", JSON.stringify(res.user));
       } else {
-        // For demo: if profile missing, create a minimal profile on login
-        const existing = localStorage.getItem("userProfile");
-        if (!existing) {
-          localStorage.setItem("userProfile", JSON.stringify({ name: email.split("@")[0], email, role }));
-        } else {
-          try {
-            const p = JSON.parse(existing);
-            localStorage.setItem("userProfile", JSON.stringify({ ...p, role, email: email || p.email }));
-          } catch {}
-        }
+        const res = await apiPost<{
+          user: { id: string; name: string; email: string; role: string };
+          access_token: string;
+          refresh_token: string;
+        }>("/api/auth/login", { email, password });
+        localStorage.setItem("access_token", res.access_token);
+        localStorage.setItem("refresh_token", res.refresh_token);
+        localStorage.setItem("userProfile", JSON.stringify(res.user));
       }
 
-      // Redirect by role
+      // Redirect by role or pending redirect
+      const redirect = localStorage.getItem("postLoginRedirect");
+      if (redirect) {
+        localStorage.removeItem("postLoginRedirect");
+        navigate(redirect, { replace: true });
+        return;
+      }
       const path = role === "creator" ? "/creator" : role === "business" ? "/business" : "/student";
       navigate(path, { replace: true });
+    } catch (err: any) {
+      alert(err?.message || "Authentication failed");
+    } finally {
       setIsLoading(false);
-    }, 800);
+    }
   };
 
   return (
