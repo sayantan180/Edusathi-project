@@ -36,7 +36,7 @@ export const register = async (req: Request, res: Response) => {
 
     const existing = await User.findOne({ email });
     if (existing) {
-      return res.status(400).json({ error: 'User already exists' });
+      return res.status(409).json({ error: 'User already exists' });
     }
 
     const salt = await bcrypt.genSalt(10);

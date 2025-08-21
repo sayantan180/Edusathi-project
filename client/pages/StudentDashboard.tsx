@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 export default function StudentDashboard() {
@@ -9,11 +8,6 @@ export default function StudentDashboard() {
     const p = localStorage.getItem("userProfile");
     setProfile(p ? JSON.parse(p) : null);
   }, []);
-
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-  const role = localStorage.getItem("userRole");
-  if (!isLoggedIn) return <Navigate to="/auth?role=student" replace />;
-  if (role !== "student") return <Navigate to={`/auth?role=${role || 'student'}`} replace />;
 
   return (
     <div className="min-h-screen bg-slate-50">

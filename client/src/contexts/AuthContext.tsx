@@ -12,8 +12,8 @@ interface User {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string, role?: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
+  register: (name: string, email: string, password: string, role?: string) => Promise<User>;
   logout: () => void;
   isAuthenticated: boolean;
   refreshProfile: () => Promise<void>;
@@ -73,8 +73,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       localStorage.setItem('user', JSON.stringify(userData));
       
       setUser(userData);
+      return userData as User;
     } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Login failed');
+      const message = error.response?.data?.error || error.response?.data?.message || 'Login failed';
+      const err: any = new Error(message);
+      err.status = error.response?.status;
+      err.data = error.response?.data;
+      throw err;
     }
   };
 
@@ -88,8 +93,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       localStorage.setItem('user', JSON.stringify(userData));
       
       setUser(userData);
+      return userData as User;
     } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Registration failed');
+      const message = error.response?.data?.error || error.response?.data?.message || 'Registration failed';
+      const err: any = new Error(message);
+      err.status = error.response?.status;
+      err.data = error.response?.data;
+      throw err;
     }
   };
 

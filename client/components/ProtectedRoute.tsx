@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/src/contexts/AuthContext";
 
 interface ProtectedRouteProps {
@@ -9,6 +9,7 @@ interface ProtectedRouteProps {
 
 export function ProtectedRoute({ children, roles }: ProtectedRouteProps) {
   const { isAuthenticated, user, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -25,11 +26,13 @@ export function ProtectedRoute({ children, roles }: ProtectedRouteProps) {
   const authPath = targetRole ? `/auth?role=${targetRole}` : "/auth";
 
   if (!isAuthenticated) {
-    return <Navigate to={authPath} replace />;
+    return <Navigate to={authPath} replace state={{ from: location }} />;
   }
 
   if (roles && user && !roles.includes(user.role)) {
-    return <Navigate to={authPath} replace />;
+    const defaultPath =
+      user.role === "creator" ? "/creator" : user.role === "business" ? "/business" : "/student";
+    return <Navigate to={defaultPath} replace />;
   }
 
   return <>{children}</>;

@@ -273,12 +273,14 @@ export default function Pricing() {
                 Join thousands of educators who trust Edusathi
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button
-                  size="lg"
-                  className="bg-white text-blue-600 hover:bg-slate-100 px-8"
-                >
-                  Start Free Trial
-                </Button>
+                <Link to="/auth?role=student">
+                  <Button
+                    size="lg"
+                    className="bg-white text-blue-600 hover:bg-slate-100 px-8"
+                  >
+                    Start Free Trial
+                  </Button>
+                </Link>
                 <Button
                   variant="outline"
                   size="lg"
