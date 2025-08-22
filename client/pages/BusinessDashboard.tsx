@@ -36,9 +36,6 @@ export default function BusinessDashboard() {
         {/* Header with Profile option */}
         <div className="flex items-center justify-between">
           <h1 className="text-2xl md:text-3xl font-bold">Business Dashboard</h1>
-          <div className="flex items-center gap-2">
-            <Button variant="secondary" onClick={() => navigate("/profile")}>Profile</Button>
-          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-6">
@@ -49,7 +46,6 @@ export default function BusinessDashboard() {
               <div className="text-xs text-slate-600">{profile?.email || "-"}</div>
             </div>
             <div className="grid gap-2">
-              <Button variant="secondary" onClick={() => navigate("/profile")}>Profile</Button>
               <Button variant="outline" onClick={() => navigate("/pricing")} className="justify-start">Subscription Plan</Button>
               <Button variant="outline" onClick={() => navigate("#")} className="justify-start">Setup Details</Button>
               <Button variant="outline" onClick={() => navigate("#")} className="justify-start">Subscription Details</Button>
