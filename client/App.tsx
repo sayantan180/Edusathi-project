@@ -70,6 +70,14 @@ const router = createBrowserRouter(
         }
       />
       <Route
+        path="/creator/*"
+        element={
+          <ProtectedRoute roles={["creator"]}>
+            <CreatorDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/business"
         element={
           <ProtectedRoute roles={["business"]}>
