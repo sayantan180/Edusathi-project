@@ -14,17 +14,32 @@ export default function Profile() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const p = localStorage.getItem("userProfile");
+    const p =
+      sessionStorage.getItem("userProfile") ||
+      localStorage.getItem("userProfile") ||
+      sessionStorage.getItem("user") ||
+      localStorage.getItem("user");
     setProfile(p ? JSON.parse(p) : null);
   }, []);
 
-  const token = localStorage.getItem("access_token");
+  const token =
+    sessionStorage.getItem("access_token") ||
+    localStorage.getItem("access_token") ||
+    sessionStorage.getItem("accessToken") ||
+    localStorage.getItem("accessToken");
   if (!token) return <Navigate to="/auth?role=student" replace />;
 
   function logout() {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    localStorage.removeItem("userProfile");
+    for (const storage of [localStorage, sessionStorage]) {
+      storage.removeItem("access_token");
+      storage.removeItem("refresh_token");
+      storage.removeItem("accessToken");
+      storage.removeItem("refreshToken");
+      storage.removeItem("user");
+      storage.removeItem("userProfile");
+      storage.removeItem("isLoggedIn");
+      storage.removeItem("userRole");
+    }
     navigate("/auth?role=student", { replace: true });
   }
 
@@ -34,7 +49,7 @@ export default function Profile() {
         <div className="flex items-center justify-between">
           <h1 className="text-2xl md:text-3xl font-bold">Account</h1>
           <div className="flex gap-2">
-            <Button variant="secondary" onClick={() => navigate("/student")}>Back to Dashboard</Button>
+            {/* <Button variant="secondary" onClick={() => navigate("/student/studashboard")}>Back to Dashboard</Button> */}
             <Button variant="destructive" onClick={logout}>Logout</Button>
           </div>
         </div>

@@ -1,10 +1,8 @@
-import { Request, Response } from 'express';
 import Content from '../models/Content.js';
 import Business from '../models/Business.js';
-import { upload, getFileUrl } from '../middleware/upload.js';
+import { getFileUrl } from '../middleware/upload.js';
 import { z } from 'zod';
 
-// Validation schemas
 const contentSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().min(1, 'Description is required'),
@@ -22,7 +20,7 @@ const updateContentSchema = z.object({
   businessId: z.string().optional()
 });
 
-export const createContent = async (req: Request, res: Response) => {
+export const createContent = async (req, res) => {
   try {
     if (!req.user) {
       return res.status(401).json({ error: 'Unauthorized' });
@@ -32,12 +30,11 @@ export const createContent = async (req: Request, res: Response) => {
       price: parseFloat(req.body.price)
     });
 
-    // Handle file upload
     let fileUrl = '';
     let thumbnailUrl = '';
-    const files = (req as any).files as { [fieldname: string]: Express.Multer.File[] } | undefined;
-    const uploadedMain = (req as any).file || files?.file?.[0];
-    const uploadedThumb = files?.thumbnail?.[0];
+    const files = req.files;
+    const uploadedMain = req.file || (files && files.file && files.file[0]);
+    const uploadedThumb = files && files.thumbnail && files.thumbnail[0];
 
     if (uploadedMain && (validatedData.type === 'pdf' || validatedData.type === 'video')) {
       fileUrl = getFileUrl(uploadedMain.filename);
@@ -47,7 +44,6 @@ export const createContent = async (req: Request, res: Response) => {
       thumbnailUrl = getFileUrl(uploadedThumb.filename);
     }
 
-    // Validate business assignment if provided
     if (validatedData.businessId) {
       const business = await Business.findById(validatedData.businessId);
       if (!business) {
@@ -82,7 +78,7 @@ export const createContent = async (req: Request, res: Response) => {
   }
 };
 
-export const getContentById = async (req: Request, res: Response) => {
+export const getContentById = async (req, res) => {
   try {
     const { id } = req.params;
     if (!req.user) {
@@ -106,7 +102,7 @@ export const getContentById = async (req: Request, res: Response) => {
   }
 };
 
-export const getMyContents = async (req: Request, res: Response) => {
+export const getMyContents = async (req, res) => {
   try {
     if (!req.user) {
       return res.status(401).json({ error: 'Unauthorized' });
@@ -125,7 +121,7 @@ export const getMyContents = async (req: Request, res: Response) => {
   }
 };
 
-export const updateContent = async (req: Request, res: Response) => {
+export const updateContent = async (req, res) => {
   try {
     const { id } = req.params;
     if (!req.user) {
@@ -146,7 +142,6 @@ export const updateContent = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Content not found' });
     }
 
-    // Validate business assignment if provided
     if (validatedData.businessId) {
       const business = await Business.findById(validatedData.businessId);
       if (!business) {
@@ -154,7 +149,6 @@ export const updateContent = async (req: Request, res: Response) => {
       }
     }
 
-    // Update content
     Object.assign(content, validatedData);
     await content.save();
 
@@ -171,7 +165,7 @@ export const updateContent = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteContent = async (req: Request, res: Response) => {
+export const deleteContent = async (req, res) => {
   try {
     const { id } = req.params;
     if (!req.user) {
@@ -188,7 +182,6 @@ export const deleteContent = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Content not found' });
     }
 
-    // Soft delete
     content.isActive = false;
     await content.save();
 
@@ -199,7 +192,7 @@ export const deleteContent = async (req: Request, res: Response) => {
   }
 };
 
-export const assignToBusiness = async (req: Request, res: Response) => {
+export const assignToBusiness = async (req, res) => {
   try {
     const { id } = req.params;
     const { businessId } = req.body;
@@ -239,7 +232,7 @@ export const assignToBusiness = async (req: Request, res: Response) => {
   }
 };
 
-export const getBusinesses = async (req: Request, res: Response) => {
+export const getBusinesses = async (_req, res) => {
   try {
     const businesses = await Business.find({ isActive: true })
       .select('_id name description')

@@ -1,15 +1,8 @@
-import mongoose, { Schema, Document, Types } from 'mongoose';
+import mongoose from 'mongoose';
 
-export interface IRevenue extends Document {
-  creatorId: Types.ObjectId;
-  contentId: Types.ObjectId;
-  businessId?: Types.ObjectId | null;
-  totalSales: number;
-  totalEarnings: number;
-  updatedAt: Date;
-}
+const { Schema } = mongoose;
 
-const RevenueSchema: Schema = new Schema<IRevenue>({
+const RevenueSchema = new Schema({
   creatorId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
   contentId: { type: Schema.Types.ObjectId, ref: 'Content', required: true, index: true },
   businessId: { type: Schema.Types.ObjectId, ref: 'Business', default: null },
@@ -18,4 +11,4 @@ const RevenueSchema: Schema = new Schema<IRevenue>({
   updatedAt: { type: Date, default: Date.now }
 });
 
-export default mongoose.model<IRevenue>('Revenue', RevenueSchema);
+export default mongoose.models.Revenue || mongoose.model('Revenue', RevenueSchema);

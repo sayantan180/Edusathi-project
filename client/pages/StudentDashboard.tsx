@@ -3,8 +3,8 @@ import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { apiGet } from "@/lib/api";
-import { Menu as MenuIcon } from "lucide-react";
 import { ChevronDown } from "lucide-react";
+import MyCourses from "./MyCourses";
 
 interface CourseItem {
   enrollmentId: string;
@@ -30,11 +30,14 @@ export default function StudentDashboard() {
   const [loadingContents, setLoadingContents] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [openClassRoom, setOpenClassRoom] = useState(true);
 
   useEffect(() => {
-    const p = localStorage.getItem("userProfile");
+    const p =
+      sessionStorage.getItem("userProfile") ||
+      localStorage.getItem("userProfile") ||
+      sessionStorage.getItem("user") ||
+      localStorage.getItem("user");
     setProfile(p ? JSON.parse(p) : null);
   }, []);
 
@@ -51,7 +54,11 @@ export default function StudentDashboard() {
       .finally(() => setLoadingContents(false));
   }, []);
 
-  const token = localStorage.getItem("access_token");
+  const token =
+    sessionStorage.getItem("access_token") ||
+    localStorage.getItem("access_token") ||
+    sessionStorage.getItem("accessToken") ||
+    localStorage.getItem("accessToken");
   const role = profile?.role || "student";
   if (!token) return <Navigate to="/auth?role=student" replace />;
   if (role !== "student") return <Navigate to={`/auth?role=${role || "student"}`} replace />;
@@ -68,6 +75,8 @@ export default function StudentDashboard() {
     if (location.pathname.startsWith("/student/courses")) return "courses";
     if (location.pathname.startsWith("/student/materials")) return "materials";
     if (location.pathname.startsWith("/student/mock-tests")) return "mock";
+    if (location.pathname.startsWith("/student/my-courses")) return "my-courses";
+    if (location.pathname.startsWith("/student/account")) return "account";
     return "home";
   }, [location.pathname]);
 
@@ -77,14 +86,19 @@ export default function StudentDashboard() {
 
   function go(path: string) {
     navigate(path);
-    setMobileNavOpen(false);
   }
 
   function logout() {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    localStorage.removeItem("userProfile");
-    setMobileNavOpen(false);
+    for (const storage of [localStorage, sessionStorage]) {
+      storage.removeItem("access_token");
+      storage.removeItem("refresh_token");
+      storage.removeItem("accessToken");
+      storage.removeItem("refreshToken");
+      storage.removeItem("user");
+      storage.removeItem("userProfile");
+      storage.removeItem("isLoggedIn");
+      storage.removeItem("userRole");
+    }
     navigate("/auth?role=student", { replace: true });
   }
 
@@ -94,136 +108,21 @@ export default function StudentDashboard() {
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="mx-auto max-w-6xl px-4 py-6 md:py-8">
-        {/* Mobile header */}
-        <div className="md:hidden flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-sm font-bold">
-              {initials}
-            </div>
-            <div>
-              <div className="font-semibold leading-5">{profile?.name || "Student"}</div>
-              <div className="text-xs text-slate-600">{profile?.email || "-"}</div>
-            </div>
+        {/* Mobile header removed: sidebar is static across breakpoints */}
+
+        {/* Desktop header */}
+        <div className="hidden md:flex items-center justify-between mb-4">
+          <h1 className="text-2xl md:text-3xl font-bold">Student Dashboard</h1>
+          <div className="flex items-center gap-2">
+            <Button variant="secondary" onClick={() => navigate("/student/account")}>Profile</Button>
           </div>
-          <Button
-            variant="secondary"
-            size="icon"
-            aria-label="Open menu"
-            onClick={() => setMobileNavOpen(true)}
-          >
-            <MenuIcon className="h-5 w-5" />
-          </Button>
         </div>
 
-        {/* Mobile Drawer */}
-        {mobileNavOpen && (
-          <div className="fixed inset-0 z-50">
-            <div
-              className="absolute inset-0 bg-black/40"
-              aria-hidden="true"
-              onClick={() => setMobileNavOpen(false)}
-            />
-            <div className="absolute inset-y-0 left-0 w-72 max-w-[85%] bg-white shadow-xl p-5 overflow-y-auto">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-sm font-bold">
-                    {initials}
-                  </div>
-                  <div>
-                    <div className="font-semibold leading-5">{profile?.name || "Student"}</div>
-                    <div className="text-xs text-slate-600">{profile?.email || "-"}</div>
-                  </div>
-                </div>
-                <Button size="sm" variant="ghost" onClick={() => setMobileNavOpen(false)}>Close</Button>
-              </div>
-              <div className="grid grid-cols-3 gap-2 mb-4 text-center">
-                <div className="rounded-lg bg-slate-50 p-2">
-                  <div className="text-xs text-slate-500">Total</div>
-                  <div className="font-semibold">{total}</div>
-                </div>
-                <div className="rounded-lg bg-slate-50 p-2">
-                  <div className="text-xs text-slate-500">Live</div>
-                  <div className="font-semibold">{liveCount}</div>
-                </div>
-                <div className="rounded-lg bg-slate-50 p-2">
-                  <div className="text-xs text-slate-500">Video/PDF</div>
-                  <div className="font-semibold">{videoCount + pdfCount}</div>
-                </div>
-              </div>
-              <nav className="space-y-2">
-                <Button
-                  variant={section === "home" ? "default" : "secondary"}
-                  className="w-full justify-start"
-                  onClick={() => go("/student")}
-                >
-                  Dashboard Home
-                </Button>
-                <div>
-                  <Button
-                    variant={section === "live" || section === "courses" || section === "materials" ? "default" : "secondary"}
-                    className="w-full justify-between"
-                    onClick={() => setOpenClassRoom((v) => !v)}
-                  >
-                    <span>Class Room</span>
-                    <ChevronDown className={openClassRoom ? "h-4 w-4 transition-transform rotate-180" : "h-4 w-4 transition-transform"} />
-                  </Button>
-                  {openClassRoom && (
-                    <div className="pl-1 space-y-1 mt-2">
-                      <Button
-                        variant={section === "live" ? "default" : "ghost"}
-                        className="w-full justify-start"
-                        onClick={() => go("/student/live")}
-                      >
-                        • Live Classes
-                      </Button>
-                      <Button
-                        variant={section === "courses" ? "default" : "ghost"}
-                        className="w-full justify-start"
-                        onClick={() => go("/student/courses")}
-                      >
-                        • Course List
-                      </Button>
-                      <Button
-                        variant={section === "materials" ? "default" : "ghost"}
-                        className="w-full justify-start"
-                        onClick={() => go("/student/materials")}
-                      >
-                        • Study Materials
-                      </Button>
-                    </div>
-                  )}
-                </div>
-                <Button
-                  variant={"secondary"}
-                  className="w-full justify-start"
-                  onClick={() => go("/my-courses")}
-                >
-                  My Courses
-                </Button>
-                <Button
-                  variant={section === "mock" ? "default" : "secondary"}
-                  className="w-full justify-start"
-                  onClick={() => go("/student/mock-tests")}
-                >
-                  Mock Test
-                </Button>
-                <Button
-                  variant={"secondary"}
-                  className="w-full justify-start"
-                  onClick={() => go("/profile")}
-                >
-                  Account
-                </Button>
-              </nav>
-              <div className="h-px bg-slate-200 my-4" />
-              <Button className="w-full" onClick={logout}>Logout</Button>
-            </div>
-          </div>
-        )}
+        {/* Mobile drawer removed: sidebar always visible */}
 
         <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-6">
-          {/* Sidebar - static/sticky */}
-          <aside className="hidden md:block bg-white border border-slate-200 rounded-2xl p-5 h-fit sticky top-4 self-start">
+          {/* Sidebar - static/sticky on all breakpoints */}
+          <aside className="bg-white border border-slate-200 rounded-2xl p-5 h-fit sticky top-4 self-start">
             <div className="flex items-center gap-3 mb-4">
               <div className="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-lg font-bold">
                 {initials}
@@ -294,9 +193,9 @@ export default function StudentDashboard() {
               </div>
 
               <Button
-                variant={"secondary"}
+                variant={section === "my-courses" ? "default" : "secondary"}
                 className="w-full justify-start"
-                onClick={() => go("/my-courses")}
+                onClick={() => go("/student/my-courses")}
               >
                 My Courses
               </Button>
@@ -310,9 +209,9 @@ export default function StudentDashboard() {
               </Button>
 
               <Button
-                variant={"secondary"}
+                variant={section === "account" ? "default" : "secondary"}
                 className="w-full justify-start"
-                onClick={() => go("/profile")}
+                onClick={() => go("/student/account")}
               >
                 Account
               </Button>
@@ -521,10 +420,39 @@ export default function StudentDashboard() {
                     </div>
                   </div>
                 )}
+
+                {section === "my-courses" && (
+                  <div>
+                    <MyCourses />
+                  </div>
+                )}
+
+                {section === "account" && (
+                  <div>
+                    <h2 className="text-2xl font-semibold mb-4">Account</h2>
+                    <Card className="rounded-2xl">
+                      <CardHeader>
+                        <CardTitle>Profile Details</CardTitle>
+                        <CardDescription>Your account information</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-1 text-sm">
+                          <div><span className="text-slate-500">Name:</span> <span className="font-medium">{profile?.name || "-"}</span></div>
+                          <div><span className="text-slate-500">Email:</span> <span className="font-medium">{profile?.email || "-"}</span></div>
+                          <div><span className="text-slate-500">Role:</span> <span className="font-medium">{profile?.role || "student"}</span></div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
               </div>
             )}
           </main>
         </div>
+        {/* Footer with Logout */}
+        {/* <div className="flex items-center justify-end mt-4">
+          <Button variant="destructive" onClick={logout}>Logout</Button>
+        </div> */}
       </div>
     </div>
   );

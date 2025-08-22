@@ -1,20 +1,8 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose from 'mongoose';
 
-export interface ICenter extends Document {
-  _id: mongoose.Types.ObjectId;
-  instituteName: string;
-  ownerName: string;
-  email: string;
-  domain: string;
-  plan: string;
-  razorpay_order_id: string;
-  razorpay_payment_id: string;
-  status: 'active' | 'inactive' | 'expired';
-  createdAt: Date;
-  expiresAt: Date;
-}
+const { Schema } = mongoose;
 
-const CenterSchema: Schema = new Schema({
+const CenterSchema = new Schema({
   instituteName: { type: String, required: true },
   ownerName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
@@ -27,4 +15,4 @@ const CenterSchema: Schema = new Schema({
   expiresAt: { type: Date, required: true },
 });
 
-export default mongoose.model<ICenter>('Center', CenterSchema);
+export default mongoose.models.Center || mongoose.model('Center', CenterSchema);

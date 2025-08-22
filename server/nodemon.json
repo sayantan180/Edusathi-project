@@ -1,5 +1,5 @@
 {
-  "watch": ["**/*.ts"],
-  "ext": "ts",
-  "exec": "node --import tsx start.ts"
+  "watch": ["**/*.js", ".env"],
+  "ext": "js,json",
+  "exec": "node start.js"
 }

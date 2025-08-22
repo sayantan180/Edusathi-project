@@ -10,10 +10,57 @@ const api = axios.create({
   },
 });
 
+// Helpers for token handling
+function getAccessToken(): string | null {
+  return (
+    sessionStorage.getItem('access_token') ||
+    localStorage.getItem('access_token') ||
+    sessionStorage.getItem('accessToken') ||
+    localStorage.getItem('accessToken')
+  );
+}
+
+function getRefreshTokenAndStorage(): { token: string | null; storage: Storage | null } {
+  if (sessionStorage.getItem('refresh_token') || sessionStorage.getItem('refreshToken')) {
+    return {
+      token: sessionStorage.getItem('refresh_token') || sessionStorage.getItem('refreshToken'),
+      storage: sessionStorage,
+    };
+  }
+  if (localStorage.getItem('refresh_token') || localStorage.getItem('refreshToken')) {
+    return {
+      token: localStorage.getItem('refresh_token') || localStorage.getItem('refreshToken'),
+      storage: localStorage,
+    };
+  }
+  return { token: null, storage: null };
+}
+
+function setAccessTokenIn(storage: Storage, token: string) {
+  storage.setItem('access_token', token);
+  storage.setItem('accessToken', token);
+}
+
+function clearAllAuthStorage() {
+  for (const storage of [localStorage, sessionStorage]) {
+    storage.removeItem('access_token');
+    storage.removeItem('refresh_token');
+    storage.removeItem('accessToken');
+    storage.removeItem('refreshToken');
+    storage.removeItem('user');
+    storage.removeItem('userProfile');
+    storage.removeItem('isLoggedIn');
+    storage.removeItem('userRole');
+  }
+}
+
+let isRefreshing = false as boolean;
+let refreshPromise: Promise<string> | null = null;
+
 // Request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('access_token') || localStorage.getItem('accessToken');
+    const token = getAccessToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -28,19 +75,40 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401) {
-      // Token expired, redirect to login
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('user');
-      localStorage.removeItem('userProfile');
-      localStorage.removeItem('isLoggedIn');
-      const role = localStorage.getItem('userRole') || '';
-      localStorage.removeItem('userRole');
-      const authPath = role ? `/auth?role=${role}` : '/auth';
-      window.location.href = authPath;
+    const originalRequest = error.config || {};
+    if (error.response?.status === 401 && !originalRequest._retry && !originalRequest?.url?.endsWith('/auth/refresh')) {
+      originalRequest._retry = true;
+      try {
+        // Ensure only one refresh runs
+        if (!isRefreshing) {
+          isRefreshing = true;
+          const { token: rt, storage } = getRefreshTokenAndStorage();
+          if (!rt || !storage) {
+            throw new Error('No refresh token');
+          }
+          refreshPromise = api
+            .post('/auth/refresh', { refresh_token: rt })
+            .then((res) => {
+              const newAccess = res?.data?.access_token as string | undefined;
+              if (!newAccess) throw new Error('No access_token in refresh response');
+              setAccessTokenIn(storage, newAccess);
+              return newAccess;
+            })
+            .finally(() => {
+              isRefreshing = false;
+            });
+        }
+        const newToken = await (refreshPromise as Promise<string>);
+        // Retry original request with new token
+        originalRequest.headers = originalRequest.headers || {};
+        originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
+        return api(originalRequest);
+      } catch (_e) {
+        clearAllAuthStorage();
+        const role = localStorage.getItem('userRole') || sessionStorage.getItem('userRole') || '';
+        const authPath = role ? `/auth?role=${role}` : '/auth';
+        window.location.href = authPath;
+      }
     }
     return Promise.reject(error);
   }
@@ -51,7 +119,7 @@ export const authAPI = {
   register: (data: { name: string; email: string; password: string; role?: string }) =>
     api.post('/auth/register', data),
   
-  login: (data: { email: string; password: string }) =>
+  login: (data: { email: string; password: string; role?: string }) =>
     api.post('/auth/login', data),
   
   getProfile: () =>

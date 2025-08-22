@@ -6,14 +6,15 @@ interface User {
   name: string;
   email: string;
   role: string;
+  roles?: string[];
   avatarUrl?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string, role?: string) => Promise<void>;
+  login: (email: string, password: string, remember?: boolean, role?: string) => Promise<void>;
+  register: (name: string, email: string, password: string, role?: string, remember?: boolean) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
   refreshProfile: () => Promise<void>;
@@ -42,9 +43,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Check if user is logged in on app start
     const checkAuth = async () => {
       try {
-        // Prefer snake_case tokens to match server and the rest of the app
-        const token = localStorage.getItem('access_token') || localStorage.getItem('accessToken');
-        const savedUser = localStorage.getItem('user') || localStorage.getItem('userProfile');
+        // Prefer snake_case tokens. Check sessionStorage first, then localStorage.
+        const token =
+          sessionStorage.getItem('access_token') ||
+          localStorage.getItem('access_token') ||
+          sessionStorage.getItem('accessToken') ||
+          localStorage.getItem('accessToken');
+        const savedUser =
+          sessionStorage.getItem('user') ||
+          localStorage.getItem('user') ||
+          sessionStorage.getItem('userProfile') ||
+          localStorage.getItem('userProfile');
         
         if (token && savedUser) {
           setUser(JSON.parse(savedUser));
@@ -52,15 +61,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           await authAPI.getProfile();
         }
       } catch (error) {
-        // Token invalid, clear storage
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('user');
-        localStorage.removeItem('userProfile');
-        localStorage.removeItem('isLoggedIn');
-        localStorage.removeItem('userRole');
+        // Token invalid, clear both storages
+        for (const storage of [localStorage, sessionStorage]) {
+          storage.removeItem('access_token');
+          storage.removeItem('refresh_token');
+          storage.removeItem('accessToken');
+          storage.removeItem('refreshToken');
+          storage.removeItem('user');
+          storage.removeItem('userProfile');
+          storage.removeItem('isLoggedIn');
+          storage.removeItem('userRole');
+        }
       } finally {
         setLoading(false);
       }
@@ -69,22 +80,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     checkAuth();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, remember: boolean = false, role?: string) => {
     try {
-      const response = await authAPI.login({ email, password });
+      const response = await authAPI.login({ email, password, role });
       const { user: userData, access_token, refresh_token } = response.data;
 
-      // Store snake_case tokens (primary)
-      if (access_token) localStorage.setItem('access_token', access_token);
-      if (refresh_token) localStorage.setItem('refresh_token', refresh_token);
-      // Back-compat: also store camelCase if some parts still read them
-      if (access_token) localStorage.setItem('accessToken', access_token);
-      if (refresh_token) localStorage.setItem('refreshToken', refresh_token);
-      localStorage.setItem('user', JSON.stringify(userData));
-      // Compatibility with some pages using these keys
-      localStorage.setItem('userProfile', JSON.stringify(userData));
-      localStorage.setItem('isLoggedIn', 'true');
-      if (userData?.role) localStorage.setItem('userRole', userData.role);
+      const primary = remember ? localStorage : sessionStorage;
+      const secondary = remember ? sessionStorage : localStorage;
+      // Clear secondary to avoid conflicts
+      for (const storage of [secondary]) {
+        storage.removeItem('access_token');
+        storage.removeItem('refresh_token');
+        storage.removeItem('accessToken');
+        storage.removeItem('refreshToken');
+        storage.removeItem('user');
+        storage.removeItem('userProfile');
+        storage.removeItem('isLoggedIn');
+        storage.removeItem('userRole');
+      }
+      // Store tokens/user in chosen storage
+      if (access_token) primary.setItem('access_token', access_token);
+      if (refresh_token) primary.setItem('refresh_token', refresh_token);
+      if (access_token) primary.setItem('accessToken', access_token);
+      if (refresh_token) primary.setItem('refreshToken', refresh_token);
+      primary.setItem('user', JSON.stringify(userData));
+      primary.setItem('userProfile', JSON.stringify(userData));
+      primary.setItem('isLoggedIn', 'true');
+      if (userData?.role) primary.setItem('userRole', userData.role);
       
       setUser(userData);
     } catch (error: any) {
@@ -92,19 +114,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const register = async (name: string, email: string, password: string, role: string = 'creator') => {
+  const register = async (name: string, email: string, password: string, role: string = 'creator', remember: boolean = false) => {
     try {
       const response = await authAPI.register({ name, email, password, role });
       const { user: userData, access_token, refresh_token } = response.data;
 
-      if (access_token) localStorage.setItem('access_token', access_token);
-      if (refresh_token) localStorage.setItem('refresh_token', refresh_token);
-      if (access_token) localStorage.setItem('accessToken', access_token);
-      if (refresh_token) localStorage.setItem('refreshToken', refresh_token);
-      localStorage.setItem('user', JSON.stringify(userData));
-      localStorage.setItem('userProfile', JSON.stringify(userData));
-      localStorage.setItem('isLoggedIn', 'true');
-      if (userData?.role) localStorage.setItem('userRole', userData.role);
+      const primary = remember ? localStorage : sessionStorage;
+      const secondary = remember ? sessionStorage : localStorage;
+      for (const storage of [secondary]) {
+        storage.removeItem('access_token');
+        storage.removeItem('refresh_token');
+        storage.removeItem('accessToken');
+        storage.removeItem('refreshToken');
+        storage.removeItem('user');
+        storage.removeItem('userProfile');
+        storage.removeItem('isLoggedIn');
+        storage.removeItem('userRole');
+      }
+      if (access_token) primary.setItem('access_token', access_token);
+      if (refresh_token) primary.setItem('refresh_token', refresh_token);
+      if (access_token) primary.setItem('accessToken', access_token);
+      if (refresh_token) primary.setItem('refreshToken', refresh_token);
+      primary.setItem('user', JSON.stringify(userData));
+      primary.setItem('userProfile', JSON.stringify(userData));
+      primary.setItem('isLoggedIn', 'true');
+      if (userData?.role) primary.setItem('userRole', userData.role);
       
       setUser(userData);
     } catch (error: any) {
@@ -113,14 +147,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('user');
-    localStorage.removeItem('userProfile');
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('userRole');
+    for (const storage of [localStorage, sessionStorage]) {
+      storage.removeItem('access_token');
+      storage.removeItem('refresh_token');
+      storage.removeItem('accessToken');
+      storage.removeItem('refreshToken');
+      storage.removeItem('user');
+      storage.removeItem('userProfile');
+      storage.removeItem('isLoggedIn');
+      storage.removeItem('userRole');
+    }
     setUser(null);
   };
 

@@ -1,4 +1,3 @@
-import { Request, Response } from 'express';
 import Business from '../models/Business.js';
 import { z } from 'zod';
 
@@ -10,14 +9,13 @@ const businessSchema = z.object({
   address: z.string().optional()
 });
 
-export const createBusiness = async (req: Request, res: Response) => {
+export const createBusiness = async (req, res) => {
   try {
     if (!req.user) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
     const validatedData = businessSchema.parse(req.body);
 
-    // Check if business already exists with this email
     const existingBusiness = await Business.findOne({ email: validatedData.email });
     if (existingBusiness) {
       return res.status(400).json({ error: 'Business already exists with this email' });
@@ -30,10 +28,7 @@ export const createBusiness = async (req: Request, res: Response) => {
 
     await business.save();
 
-    res.status(201).json({
-      message: 'Business created successfully',
-      business
-    });
+    res.status(201).json({ message: 'Business created successfully', business });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({ error: error.errors[0].message });
@@ -43,7 +38,7 @@ export const createBusiness = async (req: Request, res: Response) => {
   }
 };
 
-export const getBusinesses = async (req: Request, res: Response) => {
+export const getBusinesses = async (_req, res) => {
   try {
     const businesses = await Business.find({ isActive: true })
       .select('_id name description email')

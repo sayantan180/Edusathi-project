@@ -8,12 +8,28 @@ import { useAuth } from "@/src/contexts/AuthContext";
 import CreatorUpload from "./CreatorUpload";
 import CreatorContents from "./CreatorContents";
 import CreatorSales from "./CreatorSales";
+import { useNavigate } from "react-router-dom";
 
 export default function CreatorDashboard() {
   const { user, updateAvatar } = useAuth();
   const [section, setSection] = useState<"profile" | "upload" | "contents" | "sales">("profile");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const navigate = useNavigate();
+
+  function logout() {
+    for (const storage of [localStorage, sessionStorage]) {
+      storage.removeItem("access_token");
+      storage.removeItem("refresh_token");
+      storage.removeItem("accessToken");
+      storage.removeItem("refreshToken");
+      storage.removeItem("user");
+      storage.removeItem("userProfile");
+      storage.removeItem("isLoggedIn");
+      storage.removeItem("userRole");
+    }
+    navigate("/auth?role=creator", { replace: true });
+  }
 
   const onUploadAvatar = async () => {
     if (!avatarFile) return;
@@ -31,7 +47,12 @@ export default function CreatorDashboard() {
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="container max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-2xl md:text-3xl font-bold mb-6">Creator Dashboard</h1>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold">Creator Dashboard</h1>
+          <div className="flex items-center gap-2">
+            <Button variant="secondary" onClick={() => navigate("/profile")}>Profile</Button>
+          </div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           {/* Sidebar */}
           <aside className="md:col-span-3">
@@ -46,6 +67,9 @@ export default function CreatorDashboard() {
                   <Button variant={section === "upload" ? "default" : "outline"} onClick={() => setSection("upload")}>Upload Content</Button>
                   <Button variant={section === "contents" ? "default" : "outline"} onClick={() => setSection("contents")}>Manage Contents</Button>
                   <Button variant={section === "sales" ? "default" : "outline"} onClick={() => setSection("sales")}>View Sales</Button>
+                  <Button variant="secondary" onClick={() => navigate("/profile")}>Account</Button>
+                  <div className="h-px bg-slate-200 my-1" />
+                  <Button variant="destructive" onClick={logout}>Logout</Button>
                 </div>
               </CardContent>
             </Card>
@@ -99,6 +123,9 @@ export default function CreatorDashboard() {
             )}
           </main>
         </div>
+        {/* <div className="flex items-center justify-end mt-4">
+          <Button variant="destructive" onClick={logout}>Logout</Button>
+        </div> */}
       </div>
     </div>
   );

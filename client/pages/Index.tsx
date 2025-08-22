@@ -294,7 +294,7 @@ export default function Index() {
 
             {/* Desktop CTA & Mobile Menu Button */}
             <div className="flex items-center gap-3">
-              <Link to="/pricing" className="hidden sm:block">
+              <Link to="/get-started" className="hidden sm:block">
                 <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-4 sm:px-6 py-2 text-sm sm:text-base shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                   <Sparkles className="w-4 h-4 mr-2" />
                   Join Now
@@ -358,7 +358,7 @@ export default function Index() {
                   Contact us
                 </Link>
                 <div className="pt-3 border-t border-slate-200">
-                  <Link to="/pricing" onClick={() => setMobileMenuOpen(false)}>
+                  <Link to="/get-started" onClick={() => setMobileMenuOpen(false)}>
                     <Button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
                       <Sparkles className="w-4 h-4 mr-2" />
                       Join Now

@@ -1,4 +1,4 @@
- import "dotenv/config";
+import "dotenv/config";
 import express from "express";
 import connectDB from "./db.js";
 import cors from "cors";
@@ -114,7 +114,7 @@ export function createServer() {
   app.get("/api/student/my-courses", requireAuth, getMyEnrollments);
   
   // Global error handler (handle multer and other runtime errors)
-  app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  app.use((err, _req, res, _next) => {
     console.error('[ERR]', err);
     // Multer errors or our fileFilter error message
     if (err?.name === 'MulterError' || (typeof err?.message === 'string' && err.message.toLowerCase().includes('invalid file type'))) {

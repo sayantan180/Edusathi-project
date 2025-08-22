@@ -1,7 +1,6 @@
-import { RequestHandler } from "express";
 import Content from "../models/Content.js";
 
-export const listContents: RequestHandler = async (_req, res) => {
+export const listContents = async (_req, res) => {
   try {
     const items = await Content.find().sort({ createdAt: -1 });
     res.json({ items });

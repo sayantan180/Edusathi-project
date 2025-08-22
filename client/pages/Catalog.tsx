@@ -120,7 +120,7 @@ export default function Catalog() {
                     <CardDescription>by {c.businessName}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Link to="/my-courses">
+                    <Link to="/student/my-courses">
                       <Button size="sm" variant="secondary">View</Button>
                     </Link>
                   </CardContent>

@@ -1,23 +1,10 @@
-import { RequestHandler } from "express";
-import Center, { ICenter } from "../models/Center.js";
+import Center from "../models/Center.js";
 
-type CenterType = {
-  id: string;
-  name: string;
-  domain: string;
-  website: string;
-  superAdminPath: string;
-  createdAt: string;
-  expireDate: string;
-  status: 'active' | 'inactive';
-};
-
-// GET /api/centers - Get all centers
-export const getCenters: RequestHandler = async (req, res) => {
+export const getCenters = async (_req, res) => {
   try {
     const centersFromDb = await Center.find().sort({ createdAt: -1 });
 
-    const centers: CenterType[] = centersFromDb.map((center: ICenter) => ({
+    const centers = centersFromDb.map((center) => ({
       id: center._id.toString(),
       name: center.instituteName,
       domain: center.domain,
@@ -35,18 +22,15 @@ export const getCenters: RequestHandler = async (req, res) => {
   }
 };
 
-// POST /api/centers - Create a new center
-export const createCenter: RequestHandler = async (req, res) => {
+export const createCenter = async (req, res) => {
   try {
     const { instituteName, ownerName, email, domain, plan, razorpay_order_id, razorpay_payment_id } = req.body;
 
-    // Check if domain or email already exists
     const existingCenter = await Center.findOne({ $or: [{ domain }, { email }] });
     if (existingCenter) {
       return res.status(409).json({ error: "A center with this domain or email already exists" });
     }
 
-    // Calculate expiresAt date based on plan duration
     const expiresAt = new Date();
     if (plan === '1 Year Plan') {
       expiresAt.setFullYear(expiresAt.getFullYear() + 1);
@@ -55,7 +39,6 @@ export const createCenter: RequestHandler = async (req, res) => {
     } else if (plan === '5 Year Plan') {
       expiresAt.setFullYear(expiresAt.getFullYear() + 5);
     } else {
-      // Default to 1 year for unknown plans
       expiresAt.setFullYear(expiresAt.getFullYear() + 1);
     }
 
@@ -78,8 +61,7 @@ export const createCenter: RequestHandler = async (req, res) => {
   }
 };
 
-// GET /api/centers/:id - Get a specific center
-export const getCenterById: RequestHandler = async (req, res) => {
+export const getCenterById = async (req, res) => {
   try {
     const { id } = req.params;
     const center = await Center.findById(id);
@@ -95,8 +77,7 @@ export const getCenterById: RequestHandler = async (req, res) => {
   }
 };
 
-// DELETE /api/centers/:id - Delete a center
-export const deleteCenter: RequestHandler = async (req, res) => {
+export const deleteCenter = async (req, res) => {
   try {
     const { id } = req.params;
     const deletedCenter = await Center.findByIdAndDelete(id);

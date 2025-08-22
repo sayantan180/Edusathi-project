@@ -1,24 +1,8 @@
-import mongoose, { Schema, Document, Types } from 'mongoose';
+import mongoose from 'mongoose';
 
-export type ContentType = 'pdf' | 'video' | 'live';
+const { Schema } = mongoose;
 
-export interface IContent extends Document {
-  title: string;
-  description: string;
-  type: ContentType;
-  price: number;
-  fileUrl: string;
-  thumbnailUrl: string;
-  resourceUrl?: string;
-  liveLink: string;
-  creatorId: Types.ObjectId;
-  businessId?: Types.ObjectId | null;
-  businessName?: string;
-  isActive: boolean;
-  createdAt: Date;
-}
-
-const ContentSchema: Schema = new Schema<IContent>({
+const ContentSchema = new Schema({
   title: { type: String, required: true, trim: true },
   description: { type: String, required: true },
   type: { type: String, enum: ['pdf', 'video', 'live'], required: true },
@@ -34,4 +18,4 @@ const ContentSchema: Schema = new Schema<IContent>({
   createdAt: { type: Date, default: Date.now }
 });
 
-export default mongoose.model<IContent>('Content', ContentSchema);
+export default mongoose.models.Content || mongoose.model('Content', ContentSchema);
