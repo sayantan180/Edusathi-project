@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import RoleDashboardLayout from "@/components/RoleDashboardLayout";
+import { LayoutDashboard, User, CreditCard, Settings, FileText, HelpCircle } from "lucide-react";
 import Pricing from "./Pricing";
 
 export default function BusinessDashboard() {
@@ -32,70 +34,123 @@ export default function BusinessDashboard() {
     navigate("/auth?role=business", { replace: true });
   }
 
+  // Build navigation for RoleDashboardLayout
+  const navigationItems = [
+    { title: "Dashboard", href: "/business", icon: LayoutDashboard, isActive: location.pathname === "/business", isExpandable: false as const },
+    { title: "Profile", href: "/business/account", icon: User, isActive: location.pathname.startsWith("/business/account"), isExpandable: false as const },
+    { title: "Subscription Plan", href: "/business/subscription-plan", icon: CreditCard, isActive: location.pathname.startsWith("/business/subscription-plan"), isExpandable: false as const },
+    { title: "Setup Details", href: "/business/setup", icon: Settings, isActive: location.pathname.startsWith("/business/setup"), isExpandable: false as const },
+    { title: "Subscription Details", href: "/business/subscription-details", icon: FileText, isActive: location.pathname.startsWith("/business/subscription-details"), isExpandable: false as const },
+    { title: "Help & Contact", href: "/business/contact", icon: HelpCircle, isActive: location.pathname.startsWith("/business/contact"), isExpandable: false as const },
+  ];
+
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="container max-w-7xl mx-auto px-4 py-8 space-y-6">
-        {/* Header with Profile option */}
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl md:text-3xl font-bold">Business Dashboard</h1>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-6">
-          {/* Sidebar with Profile + Logout */}
-          <aside className="bg-white border border-slate-200 rounded-2xl p-5 h-fit sticky top-4 self-start">
-            <div className="mb-4">
-              <div className="font-semibold leading-5">{profile?.name || "Business Admin"}</div>
-              <div className="text-xs text-slate-600">{profile?.email || "-"}</div>
-            </div>
-            <div className="grid gap-2">
-              <Button variant="outline" onClick={() => navigate("/pricing")} className="justify-start">Subscription Plan</Button>
-              <Button variant="outline" onClick={() => navigate("#")} className="justify-start">Setup Details</Button>
-              <Button variant="outline" onClick={() => navigate("#")} className="justify-start">Subscription Details</Button>
-              <Button variant="outline" onClick={() => navigate("/contact")} className="justify-start">Help & Contact Us</Button>
-              <Button variant="destructive" onClick={logout}>Logout</Button>
-            </div>
-          </aside>
-
-          {/* Main content */}
-          <main className="space-y-6">
-            {location.pathname.startsWith("/business/subscription-plan") ? (
-              <div>
-                <Pricing />
-              </div>
-            ) : (
-              <div className="grid md:grid-cols-2 gap-6">
-                <Card className="rounded-2xl">
-                  <CardHeader>
-                    <CardTitle>Profile</CardTitle>
-                    <CardDescription>Organization profile</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-1">
-                      <p><strong>Admin:</strong> {profile?.name || "-"}</p>
-                      <p><strong>Email:</strong> {profile?.email || "-"}</p>
-                      <p><strong>Role:</strong> {profile?.role || "business"}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card className="rounded-2xl">
-                  <CardHeader>
-                    <CardTitle>Team & Analytics</CardTitle>
-                    <CardDescription>Manage members and view reports</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-slate-600">No data yet. Invite your team to get started.</p>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-          </main>
-        </div>
-
-        {/* Footer with Logout */}
-        {/* <div className="flex items-center justify-end">
-          <Button variant="destructive" onClick={logout}>Logout</Button>
-        </div> */}
+    <RoleDashboardLayout
+      title="Business Dashboard"
+      navigationItems={navigationItems}
+      headerActions={<Button size="sm" variant="destructive" onClick={logout}>Logout</Button>}
+    >
+      {/* Main content */}
+      <div className="space-y-6">
+        {location.pathname.startsWith("/business/subscription-plan") ? (
+          <div>
+            <Pricing />
+          </div>
+        ) : location.pathname.startsWith("/business/account") ? (
+          <div className="grid md:grid-cols-2 gap-6">
+            <Card className="rounded-2xl">
+              <CardHeader>
+                <CardTitle>Organization Profile</CardTitle>
+                <CardDescription>Your business account information</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-1">
+                  <p><strong>Admin:</strong> {profile?.name || "-"}</p>
+                  <p><strong>Email:</strong> {profile?.email || "-"}</p>
+                  <p><strong>Role:</strong> {profile?.role || "business"}</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="rounded-2xl">
+              <CardHeader>
+                <CardTitle>Team & Analytics</CardTitle>
+                <CardDescription>Manage members and view reports</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-slate-600">No data yet. Invite your team to get started.</p>
+              </CardContent>
+            </Card>
+          </div>
+        ) : location.pathname.startsWith("/business/setup") ? (
+          <div className="grid gap-6">
+            <Card className="rounded-2xl">
+              <CardHeader>
+                <CardTitle>Setup Details</CardTitle>
+                <CardDescription>Complete your business profile and onboarding</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="list-disc pl-5 space-y-1 text-slate-700">
+                  <li>Business profile configuration</li>
+                  <li>Payment setup</li>
+                  <li>Branding and contact info</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        ) : location.pathname.startsWith("/business/subscription-details") ? (
+          <div className="grid gap-6">
+            <Card className="rounded-2xl">
+              <CardHeader>
+                <CardTitle>Subscription Details</CardTitle>
+                <CardDescription>Your current plan and billing history</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-slate-700">Plan: —</p>
+                <p className="text-slate-700">Status: —</p>
+                <p className="text-slate-700">Next billing: —</p>
+              </CardContent>
+            </Card>
+          </div>
+        ) : location.pathname.startsWith("/business/contact") ? (
+          <div className="grid gap-6">
+            <Card className="rounded-2xl">
+              <CardHeader>
+                <CardTitle>Help & Contact Us</CardTitle>
+                <CardDescription>We are here to help you</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-slate-700 mb-2">Email: support@example.com</p>
+                <p className="text-slate-700">You can also reach us via the contact page.</p>
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 gap-6">
+            <Card className="rounded-2xl">
+              <CardHeader>
+                <CardTitle>Profile</CardTitle>
+                <CardDescription>Organization profile</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-1">
+                  <p><strong>Admin:</strong> {profile?.name || "-"}</p>
+                  <p><strong>Email:</strong> {profile?.email || "-"}</p>
+                  <p><strong>Role:</strong> {profile?.role || "business"}</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="rounded-2xl">
+              <CardHeader>
+                <CardTitle>Team & Analytics</CardTitle>
+                <CardDescription>Manage members and view reports</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-slate-600">No data yet. Invite your team to get started.</p>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
-    </div>
+    </RoleDashboardLayout>
   );
 }
