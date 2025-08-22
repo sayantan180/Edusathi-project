@@ -20,7 +20,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import Admin from "./pages/business/admin";
 import Settings from "./pages/EdusathiDashboard/Settings";
 import GetStarted from "./pages/Edusathihome/GetStarted";
-import Auth from "./pages/Edusathihome/Auth";
+import Auth from "./pages/Auth";
 import StudentDashboard from "./pages/student/StudentDashboard";
 import CreatorDashboard from "./pages/creator/CreatorDashboard";
 import BusinessDashboard from "./pages/business/BusinessDashboard";
