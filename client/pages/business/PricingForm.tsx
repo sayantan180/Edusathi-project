@@ -34,7 +34,7 @@ interface FormData {
   selectedPlan: {
     name: string;
     price: number;
-    billing: "monthly" | "annual";
+    billing: "monthly" | "quarterly" | "yearly";
   };
 }
 
@@ -53,7 +53,8 @@ export default function PricingForm() {
       name: searchParams.get("plan") || "Professional",
       price: parseInt(searchParams.get("price") || "79"),
       billing:
-        (searchParams.get("billing") as "monthly" | "annual") || "monthly",
+        (searchParams.get("billing") as "monthly" | "quarterly" | "yearly") ||
+        "monthly",
     },
   });
 
@@ -93,6 +94,13 @@ export default function PricingForm() {
         owner: formData.ownerName,
         email: formData.email,
         plan: formData.selectedPlan.name,
+        billing: formData.selectedPlan.billing,
+        durationDays:
+          formData.selectedPlan.billing === "monthly"
+            ? 30
+            : formData.selectedPlan.billing === "quarterly"
+            ? 90
+            : 365,
         domain: formData.domainName,
       };
 
@@ -409,16 +417,22 @@ export default function PricingForm() {
                         <div className="flex justify-between">
                           <span className="text-slate-600">Billing:</span>
                           <span className="font-medium capitalize">
-                            {formData.selectedPlan.billing}
+                            {formData.selectedPlan.billing === 'monthly'
+                              ? 'Monthly'
+                              : formData.selectedPlan.billing === 'quarterly'
+                              ? '3 months'
+                              : 'Yearly'}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-slate-600">Amount:</span>
                           <span className="text-xl font-bold text-blue-600">
                             ₹{formData.selectedPlan.price}/
-                            {formData.selectedPlan.billing === "monthly"
-                              ? "month"
-                              : "year"}
+                            {formData.selectedPlan.billing === 'monthly'
+                              ? 'month'
+                              : formData.selectedPlan.billing === 'quarterly'
+                              ? '3 months'
+                              : 'year'}
                           </span>
                         </div>
                       </div>
@@ -478,9 +492,11 @@ export default function PricingForm() {
                       {formData.selectedPlan.name} Plan
                     </h3>
                     <p className="text-sm text-slate-600">
-                      {formData.selectedPlan.billing === "monthly"
-                        ? "Monthly"
-                        : "Annual"}{" "}
+                      {formData.selectedPlan.billing === 'monthly'
+                        ? 'Monthly'
+                        : formData.selectedPlan.billing === 'quarterly'
+                        ? '3 months'
+                        : 'Yearly'}{" "}
                       billing
                     </p>
                   </div>

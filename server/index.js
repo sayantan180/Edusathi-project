@@ -3,34 +3,16 @@ import express from "express";
 import connectDB from "./db.js";
 import cors from "cors";
 import path from "path";
-import { handleDemo } from "./routes/demo.js";
-import {
-  getCenters,
-  createCenter,
-  getCenterById,
-  deleteCenter,
-} from "./routes/centers.js";
-import {
-  createPaymentOrder,
-  verifyPayment,
-  getPaymentConfig,
-} from "./routes/payment.js";
-import { register, login, refresh, getProfile, updateAvatar } from "./routes/auth.js";
-import {
-  createContent,
-  getMyContents,
-  updateContent,
-  deleteContent,
-  assignToBusiness,
-  getBusinesses,
-  getContentById,
-} from "./routes/content.js";
-import { getMySales, getContentSales } from "./routes/sales.js";
-import { createBusiness } from "./routes/business.js";
-import { authenticateToken, requireRole, requireAuth } from "./middleware/auth.js";
-import { upload } from "./middleware/upload.js";
-import { listContents } from "./routes/contents.js";
-import { createStudentOrder, verifyStudentPayment, getMyEnrollments } from "./routes/student.js";
+import demoRoutes from "./routes/demo.routes.js";
+import authRoutes from "./routes/auth.routes.js";
+import contentRoutes from "./routes/content.routes.js";
+import businessRoutes from "./routes/business.routes.js";
+import salesRoutes from "./routes/sales.routes.js";
+import centersRoutes from "./routes/centers.routes.js";
+import paymentRoutes from "./routes/payment.routes.js";
+import contentsRoutes from "./routes/contents.routes.js";
+import studentRoutes from "./routes/student.routes.js";
+import pricingRoutes from "./routes/pricing.routes.js";
 
 export function createServer() {
   const app = express();
@@ -60,58 +42,35 @@ export function createServer() {
     res.json({ message: ping });
   });
 
-  app.get("/api/demo", handleDemo);
+  // Demo
+  app.use("/api/demo", demoRoutes);
 
   // Auth routes
-  app.post("/api/auth/register", register);
-  app.post("/api/auth/login", login);
-  app.post("/api/auth/refresh", refresh);
-  app.get("/api/auth/profile", authenticateToken, getProfile);
-  app.put("/api/auth/avatar", authenticateToken, upload.single('avatar'), updateAvatar);
+  app.use("/api/auth", authRoutes);
 
   // Content routes (Creator only)
-  app.post(
-    "/api/content",
-    authenticateToken,
-    requireRole(['creator']),
-    upload.fields([
-      { name: 'file', maxCount: 1 },
-      { name: 'thumbnail', maxCount: 1 },
-    ]),
-    createContent
-  );
-  app.get("/api/content/my", authenticateToken, requireRole(['creator']), getMyContents);
-  app.get("/api/content/:id", authenticateToken, requireRole(['creator']), getContentById);
-  app.put("/api/content/:id", authenticateToken, requireRole(['creator']), updateContent);
-  app.delete("/api/content/:id", authenticateToken, requireRole(['creator']), deleteContent);
-  app.put("/api/content/:id/assign", authenticateToken, requireRole(['creator']), assignToBusiness);
+  app.use("/api/content", contentRoutes);
 
   // Business routes
-  app.get("/api/businesses", authenticateToken, getBusinesses);
-  app.post("/api/businesses", authenticateToken, requireRole(['creator', 'business']), createBusiness);
+  app.use("/api/businesses", businessRoutes);
 
   // Sales routes (Creator only)
-  app.get("/api/sales/my", authenticateToken, requireRole(['creator']), getMySales);
-  app.get("/api/sales/content/:contentId", authenticateToken, requireRole(['creator']), getContentSales);
+  app.use("/api/sales", salesRoutes);
 
   // Centers API routes
-  app.get("/api/centers", getCenters);
-  app.post("/api/centers", createCenter);
-  app.get("/api/centers/:id", getCenterById);
-  app.delete("/api/centers/:id", deleteCenter);
+  app.use("/api/centers", centersRoutes);
 
   // Payment API routes
-  app.post("/api/payment/create-order", createPaymentOrder);
-  app.post("/api/payment/verify", verifyPayment);
-  app.get("/api/payment/config", getPaymentConfig);
+  app.use("/api/payment", paymentRoutes);
 
   // Catalog
-  app.get("/api/contents", listContents);
+  app.use("/api/contents", contentsRoutes);
 
   // Student checkout and enrollments
-  app.post("/api/student/create-order", requireAuth, createStudentOrder);
-  app.post("/api/student/verify", requireAuth, verifyStudentPayment);
-  app.get("/api/student/my-courses", requireAuth, getMyEnrollments);
+  app.use("/api/student", studentRoutes);
+
+  // Pricing management routes
+  app.use("/api/pricing", pricingRoutes);
   
   // Global error handler (handle multer and other runtime errors)
   app.use((err, _req, res, _next) => {

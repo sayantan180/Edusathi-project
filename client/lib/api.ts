@@ -84,3 +84,20 @@ export async function apiPost<T>(path: string, body: any): Promise<T> {
     body: JSON.stringify(body),
   });
 }
+
+export async function apiPut<T>(path: string, body: any): Promise<T> {
+  const headers: Record<string, string> = { "Content-Type": "application/json", ...authHeaders() };
+  return request<T>(path, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(body),
+  });
+}
+
+export async function apiDelete<T>(path: string): Promise<T> {
+  const headers: Record<string, string> = { "Content-Type": "application/json", ...authHeaders() };
+  return request<T>(path, {
+    method: "DELETE",
+    headers,
+  });
+}

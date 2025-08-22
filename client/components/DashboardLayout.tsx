@@ -9,6 +9,7 @@ import {
   List,
   BarChart3,
   Settings as SettingsIcon,
+  DollarSign,
 } from "lucide-react";
 import {
   Sidebar,
@@ -67,15 +68,16 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const location = useLocation();
   const [centerManagementOpen, setCenterManagementOpen] = useState(true);
   const [creatorManagementOpen, setCreatorManagementOpen] = useState(true);
+  const [settingsOpen, setSettingsOpen] = useState(true);
 
   const isExpandableItem = (i: NavigationItem): i is NavExpandable => i.isExpandable === true;
 
   const navigationItems: NavigationItem[] = [
     {
       title: "Dashboard",
-      href: "/dashboard",
+      href: "/dashboard/overview",
       icon: LayoutDashboard,
-      isActive: location.pathname === "/dashboard",
+      isActive: location.pathname === "/dashboard/overview",
       isExpandable: false,
     },
     {
@@ -103,10 +105,18 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
      
     {
       title: "Settings",
-      href: "/dashboard/settings",
       icon: SettingsIcon,
-      isActive: location.pathname === "/dashboard/settings",
-      isExpandable: false,
+      isExpandable: true,
+      isOpen: settingsOpen,
+      onToggle: () => setSettingsOpen(!settingsOpen),
+      subItems: [
+        {
+          title: "Price Management",
+          href: "/dashboard/settings/pricing",
+          icon: DollarSign,
+          isActive: location.pathname === "/dashboard/settings/pricing",
+        },
+      ],
     },
   ];
 

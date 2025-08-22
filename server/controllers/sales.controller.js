@@ -5,12 +5,12 @@ import mongoose from 'mongoose';
 
 export const getMySales = async (req, res) => {
   try {
-    const contents = await Content.find({ 
+    const contents = await Content.find({
       creatorId: req.user?._id,
-      isActive: true 
+      isActive: true,
     });
 
-    const contentIds = contents.map(content => content._id);
+    const contentIds = contents.map((content) => content._id);
 
     const salesData = await Order.aggregate([
       { $match: { status: 'paid' } },
@@ -24,7 +24,7 @@ export const getMySales = async (req, res) => {
       { $unwind: '$content' },
       { $lookup: { from: 'businesses', localField: 'content.businessId', foreignField: '_id', as: 'business' } },
       { $project: { contentId: '$_id', contentTitle: '$content.title', contentType: '$content.type', contentPrice: '$content.price', businessName: { $arrayElemAt: ['$business.name', 0] }, totalSales: 1, totalEarnings: 1 } },
-      { $sort: { totalEarnings: -1 } }
+      { $sort: { totalEarnings: -1 } },
     ]);
 
     const overallStats = await Order.aggregate([
@@ -33,7 +33,7 @@ export const getMySales = async (req, res) => {
       { $unwind: '$items' },
       { $match: { 'items.contentId': { $in: contentIds } } },
       { $addFields: { amountPerItem: { $cond: [{ $gt: ['$itemsCount', 0] }, { $divide: ['$amount', '$itemsCount'] }, '$amount'] } } },
-      { $group: { _id: null, totalSales: { $sum: 1 }, totalEarnings: { $sum: '$amountPerItem' } } }
+      { $group: { _id: null, totalSales: { $sum: 1 }, totalEarnings: { $sum: '$amountPerItem' } } },
     ]);
 
     const stats = overallStats[0] || { totalSales: 0, totalEarnings: 0 };
@@ -43,8 +43,8 @@ export const getMySales = async (req, res) => {
       overallStats: {
         totalSales: stats.totalSales,
         totalEarnings: stats.totalEarnings,
-        totalContents: contents.length
-      }
+        totalContents: contents.length,
+      },
     });
   } catch (error) {
     console.error('Get my sales error:', error);
@@ -59,7 +59,7 @@ export const getContentSales = async (req, res) => {
     const content = await Content.findOne({
       _id: contentId,
       creatorId: req.user?._id,
-      isActive: true
+      isActive: true,
     }).populate('businessId', 'name');
 
     if (!content) {
@@ -76,7 +76,7 @@ export const getContentSales = async (req, res) => {
       { $unwind: '$items' },
       { $match: { 'items.contentId': new mongoose.Types.ObjectId(contentId) } },
       { $addFields: { amountPerItem: { $cond: [{ $gt: ['$itemsCount', 0] }, { $divide: ['$amount', '$itemsCount'] }, '$amount'] } } },
-      { $group: { _id: null, totalSales: { $sum: 1 }, totalEarnings: { $sum: '$amountPerItem' } } }
+      { $group: { _id: null, totalSales: { $sum: 1 }, totalEarnings: { $sum: '$amountPerItem' } } },
     ]);
 
     const salesStats = stats[0] || { totalSales: 0, totalEarnings: 0 };
@@ -87,10 +87,10 @@ export const getContentSales = async (req, res) => {
         title: content.title,
         type: content.type,
         price: content.price,
-        businessName: (content.businessId && content.businessId.name) || null
+        businessName: (content.businessId && content.businessId.name) || null,
       },
       stats: salesStats,
-      orders
+      orders,
     });
   } catch (error) {
     console.error('Get content sales error:', error);
@@ -110,7 +110,7 @@ export const updateRevenue = async (contentId, amount) => {
         contentId: contentId,
         businessId: content.businessId,
         totalSales: 1,
-        totalEarnings: amount
+        totalEarnings: amount,
       });
     } else {
       revenue.totalSales += 1;

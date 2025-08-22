@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   GraduationCap,
   Check,
@@ -21,56 +22,120 @@ import {
   Shield,
   Heart,
 } from "lucide-react";
+import { apiGet } from "@/lib/api";
+
+interface PricingPlan {
+  _id: string;
+  name: string;
+  description: string;
+  pricing: {
+    monthly: { price: number; currency: string };
+    quarterly: { price: number; currency: string };
+    yearly: { price: number; currency: string };
+  };
+  features: Array<{
+    name: string;
+    description: string;
+    included: boolean;
+  }>;
+  isActive: boolean;
+  isPopular: boolean;
+  order: number;
+}
 
 export default function Pricing() {
+  const [plans, setPlans] = useState<PricingPlan[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'quarterly' | 'yearly'>('monthly');
 
-  const plans = [
+  useEffect(() => {
+    fetchPlans();
+  }, []);
+
+  const fetchPlans = async () => {
+    try {
+      setLoading(true);
+      const response = await apiGet<PricingPlan[]>('/api/pricing');
+      setPlans(response);
+    } catch (error) {
+      console.error('Error fetching plans:', error);
+      // Fallback to static plans if API fails
+      setPlans(staticPlans);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const staticPlans: PricingPlan[] = [
     {
+      _id: '1',
       name: "1 Year Plan",
       description: "Perfect for institutes starting their journey",
-      monthlyPrice: 5000,
-      annualPrice: 5000,
-      icon: <Zap className="w-8 h-8 text-blue-500" />,
-      badge: null,
+      pricing: {
+        monthly: { price: 5000, currency: 'INR' },
+        quarterly: { price: 14000, currency: 'INR' },
+        yearly: { price: 50000, currency: 'INR' }
+      },
       features: [
-        "From Control",
-        "Home Page",
-        "AI-Chatbot",
+        { name: "From Control", description: "", included: true },
+        { name: "Home Page", description: "", included: true },
+        { name: "AI-Chatbot", description: "", included: true },
       ],
-      buttonText: "Get Started",
-      buttonVariant: "outline" as const,
+      isActive: true,
+      isPopular: false,
+      order: 1
     },
     {
+      _id: '2',
       name: "3 Year Plan",
       description: "For institutes with medium-term commitment",
-      monthlyPrice: 7000,
-      annualPrice: 7000,
-      icon: <Building className="w-8 h-8 text-green-500" />,
-      badge: "Most Popular",
+      pricing: {
+        monthly: { price: 7000, currency: 'INR' },
+        quarterly: { price: 20000, currency: 'INR' },
+        yearly: { price: 70000, currency: 'INR' }
+      },
       features: [
-        "From Control",
-        "Home Page",
-        "AI-Chatbot",
+        { name: "From Control", description: "", included: true },
+        { name: "Home Page", description: "", included: true },
+        { name: "AI-Chatbot", description: "", included: true },
       ],
-      buttonText: "Get Started",
-      buttonVariant: "default" as const,
+      isActive: true,
+      isPopular: true,
+      order: 2
     },
     {
+      _id: '3',
       name: "5 Year Plan",
       description: "For institutes with long-term vision",
-      monthlyPrice: 10000,
-      annualPrice: 10000,
-      icon: <Crown className="w-8 h-8 text-purple-500" />,
-      badge: "Best Value",
+      pricing: {
+        monthly: { price: 10000, currency: 'INR' },
+        quarterly: { price: 28000, currency: 'INR' },
+        yearly: { price: 100000, currency: 'INR' }
+      },
       features: [
-        "From Control",
-        "Home Page",
-        "AI-Chatbot",
+        { name: "From Control", description: "", included: true },
+        { name: "Home Page", description: "", included: true },
+        { name: "AI-Chatbot", description: "", included: true },
       ],
-      buttonText: "Get Started",
-      buttonVariant: "outline" as const,
+      isActive: true,
+      isPopular: false,
+      order: 3
     },
   ];
+
+  const currencySymbol = (currency?: string) => {
+    if (!currency) return '';
+    switch (currency.toUpperCase()) {
+      case 'INR':
+        return '₹';
+      case 'USD':
+        return '$';
+      case 'EUR':
+        return '€';
+      default:
+        return currency;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -141,32 +206,45 @@ export default function Pricing() {
           </div>
         </section>
 
-        {/* Pricing Plans */}
+        {/* Billing cycle toggle + Pricing Plans */}
         <section className="container max-w-7xl mx-auto px-4 pb-20">
+          <div className="flex justify-center mb-8">
+            <Tabs value={billingCycle} onValueChange={(v) => setBillingCycle(v as 'monthly' | 'quarterly' | 'yearly')}>
+              <TabsList className="grid grid-cols-3">
+                <TabsTrigger value="monthly">Monthly</TabsTrigger>
+                <TabsTrigger value="quarterly">3 months</TabsTrigger>
+                <TabsTrigger value="yearly">Yearly</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
           <div className="grid md:grid-cols-3 gap-8">
             {plans.map((plan, index) => (
               <div
-                key={plan.name}
+                key={plan._id}
                 className="animate-in fade-in slide-in-from-bottom-8 duration-700 relative"
                 style={{ animationDelay: `${index * 200}ms` }}
               >
-                {plan.badge && (
+                {plan.isPopular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                     <Badge className="bg-gradient-to-r from-blue-500 to-green-500 text-white px-4 py-1">
-                      {plan.badge}
+                      Most Popular
                     </Badge>
                   </div>
                 )}
 
                 <Card
                   className={`rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all duration-300 h-full ${
-                    plan.badge
+                    plan.isPopular
                       ? "ring-2 ring-blue-200 bg-white"
                       : "bg-white/70 backdrop-blur-sm"
                   }`}
                 >
                   <CardHeader className="text-center pb-8">
-                    <div className="flex justify-center mb-4">{plan.icon}</div>
+                    <div className="flex justify-center mb-4">
+                      {index === 0 && <Zap className="w-8 h-8 text-blue-500" />}
+                      {index === 1 && <Building className="w-8 h-8 text-green-500" />}
+                      {index === 2 && <Crown className="w-8 h-8 text-purple-500" />}
+                    </div>
                     <CardTitle className="text-2xl font-bold">
                       {plan.name}
                     </CardTitle>
@@ -176,9 +254,10 @@ export default function Pricing() {
 
                     <div className="pt-4">
                       <div className="text-4xl font-bold text-slate-900">
-                        ₹{plan.annualPrice}
+                        {currencySymbol(plan.pricing[billingCycle]?.currency)}
+                        {plan.pricing[billingCycle]?.price}
                         <span className="text-lg font-normal text-slate-500">
-                          /{plan.name.includes("1 Year") ? "year" : plan.name.includes("3 Year") ? "3 years" : "5 years"}
+                          /{billingCycle === 'monthly' ? 'month' : billingCycle === 'quarterly' ? '3 months' : 'year'}
                         </span>
                       </div>
                     </div>
@@ -186,18 +265,18 @@ export default function Pricing() {
 
                   <CardContent className="space-y-6">
                     <Link
-                      to={`/pricing/setup?plan=${plan.name}&price=${plan.annualPrice}&billing=annual`}
+                      to={`/pricing/setup?plan=${encodeURIComponent(plan.name)}&price=${plan.pricing[billingCycle]?.price}&billing=${billingCycle}`}
                     >
                       <Button
                         className={`w-full ${
-                          plan.buttonVariant === "default"
+                          plan.isPopular
                             ? "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
                             : ""
                         }`}
-                        variant={plan.buttonVariant}
+                        variant={plan.isPopular ? "default" : "outline"}
                         size="lg"
                       >
-                        {plan.buttonText}
+                        Get Started
                       </Button>
                     </Link>
 
@@ -205,10 +284,10 @@ export default function Pricing() {
 
                     <div className="space-y-3">
                       <h4 className="font-semibold text-slate-900">Everything included:</h4>
-                      {plan.features.map((feature, featureIndex) => (
+                      {plan.features.filter((f) => f.included).map((feature, featureIndex) => (
                         <div key={featureIndex} className="flex items-center gap-3">
                           <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                          <span className="text-slate-600">{feature}</span>
+                          <span className="text-slate-700">{feature.name}</span>
                         </div>
                       ))}
                     </div>
