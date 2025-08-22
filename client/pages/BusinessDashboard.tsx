@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import Pricing from "./Pricing";
 
 export default function BusinessDashboard() {
   const [profile, setProfile] = useState<{name?: string; email?: string; role?: string} | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const p =
@@ -50,7 +52,13 @@ export default function BusinessDashboard() {
             </div>
             <div className="grid gap-2">
               <Button variant="secondary" onClick={() => navigate("/profile")}>Profile</Button>
-              <Button variant="outline" onClick={() => navigate("/pricing")} className="justify-start">Subscription Plan</Button>
+              <Button
+                variant={location.pathname.startsWith("/business/subscription-plan") ? "default" : "outline"}
+                onClick={() => navigate("/business/subscription-plan")}
+                className="justify-start"
+              >
+                Subscription Plan
+              </Button>
               <Button variant="outline" onClick={() => navigate("#")} className="justify-start">Setup Details</Button>
               <Button variant="outline" onClick={() => navigate("#")} className="justify-start">Subscription Details</Button>
               <Button variant="outline" onClick={() => navigate("/contact")} className="justify-start">Help & Contact Us</Button>
@@ -60,30 +68,36 @@ export default function BusinessDashboard() {
 
           {/* Main content */}
           <main className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="rounded-2xl">
-                <CardHeader>
-                  <CardTitle>Profile</CardTitle>
-                  <CardDescription>Organization profile</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-1">
-                    <p><strong>Admin:</strong> {profile?.name || "-"}</p>
-                    <p><strong>Email:</strong> {profile?.email || "-"}</p>
-                    <p><strong>Role:</strong> {profile?.role || "business"}</p>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="rounded-2xl">
-                <CardHeader>
-                  <CardTitle>Team & Analytics</CardTitle>
-                  <CardDescription>Manage members and view reports</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-slate-600">No data yet. Invite your team to get started.</p>
-                </CardContent>
-              </Card>
-            </div>
+            {location.pathname.startsWith("/business/subscription-plan") ? (
+              <div>
+                <Pricing />
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card className="rounded-2xl">
+                  <CardHeader>
+                    <CardTitle>Profile</CardTitle>
+                    <CardDescription>Organization profile</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-1">
+                      <p><strong>Admin:</strong> {profile?.name || "-"}</p>
+                      <p><strong>Email:</strong> {profile?.email || "-"}</p>
+                      <p><strong>Role:</strong> {profile?.role || "business"}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="rounded-2xl">
+                  <CardHeader>
+                    <CardTitle>Team & Analytics</CardTitle>
+                    <CardDescription>Manage members and view reports</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-slate-600">No data yet. Invite your team to get started.</p>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
           </main>
         </div>
 

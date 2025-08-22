@@ -214,7 +214,7 @@ export default function PricingForm() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-sm">
+      {/* <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-sm">
         <div className="container max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white">
@@ -226,7 +226,7 @@ export default function PricingForm() {
             Step {currentStep} of {totalSteps}
           </Badge>
         </div>
-      </header>
+      </header> */}
 
       <main className="container max-w-4xl mx-auto px-4 py-12">
         {/* Progress Bar */}

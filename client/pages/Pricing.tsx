@@ -75,7 +75,7 @@ export default function Pricing() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-sm">
+      {/* <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-sm">
         <div className="container max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white">
@@ -84,7 +84,7 @@ export default function Pricing() {
             <span className="text-2xl font-bold text-slate-900">Edusathi</span>
           </Link>
 
-          {/* <nav className="hidden lg:flex items-center space-x-8">
+          <nav className="hidden lg:flex items-center space-x-8">
             <Link
               to="/#features"
               className="text-slate-600 hover:text-slate-900 transition-colors"
@@ -118,10 +118,10 @@ export default function Pricing() {
             >
               Contact us
             </Link>
-          </nav> */}
+          </nav>
 
         </div>
-      </header>
+      </header> */}
 
       <main>
         {/* Hero Section */}

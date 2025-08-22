@@ -77,6 +77,14 @@ const router = createBrowserRouter(
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/business/*"
+        element={
+          <ProtectedRoute roles={["business"]}>
+            <BusinessDashboard />
+          </ProtectedRoute>
+        }
+      />
       <Route path="/catalog" element={<Catalog />} />
       <Route
         path="/profile"
