@@ -7,36 +7,39 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import Dashboard from "./pages/Dashboard";
-import CreateCenter from "./pages/CreateCenter";
-import CenterList from "./pages/CenterList";
-import Pricing from "./pages/Pricing";
-import PricingForm from "./pages/PricingForm";
-import AboutUs from "./pages/AboutUs";
-import ContactUs from "./pages/ContactUs";
-import Login from "./pages/Login";
+import Dashboard from "./pages/EdusathiDashboard/Dashboard";
+import CreateCenter from "./pages/EdusathiDashboard/CreateCenter";
+import CenterList from "./pages/EdusathiDashboard/CenterList";
+import Pricing from "./pages/business/Pricing";
+import PricingForm from "./pages/business/PricingForm";
+import AboutUs from "./pages/Edusathihome/AboutUs";
+import ContactUs from "./pages/Edusathihome/ContactUs";
+import Login from "./pages/EdusathiDashboard/Login";
 // import Admin from "./pages/admin";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import Admin from "./pages/admin";
-import Settings from "./pages/Settings";
-import GetStarted from "./pages/GetStarted";
-import Auth from "./pages/Auth";
-import StudentDashboard from "./pages/StudentDashboard";
-import CreatorDashboard from "./pages/CreatorDashboard";
-import BusinessDashboard from "./pages/BusinessDashboard";
-import CreatorUpload from "./pages/CreatorUpload";
-import CreatorContents from "./pages/CreatorContents";
-import CreatorSales from "./pages/CreatorSales";
-import CreatorContentDetail from "./pages/CreatorContentDetail";
-import Catalog from "./pages/Catalog";
-import MyCourses from "./pages/MyCourses";
+import Admin from "./pages/business/admin";
+import Settings from "./pages/EdusathiDashboard/Settings";
+import GetStarted from "./pages/Edusathihome/GetStarted";
+import Auth from "./pages/Edusathihome/Auth";
+import StudentDashboard from "./pages/student/StudentDashboard";
+import CreatorDashboard from "./pages/creator/CreatorDashboard";
+import BusinessDashboard from "./pages/business/BusinessDashboard";
+import CreatorUpload from "./pages/creator/CreatorUpload";
+import CreatorContents from "./pages/creator/CreatorContents";
+import CreatorSales from "./pages/creator/CreatorSales";
+import CreatorContentDetail from "./pages/creator/CreatorContentDetail";
+import Catalog from "./pages/student/Catalog";
+import MyCourses from "./pages/student/MyCourses";
 import Profile from "./pages/Profile";
+import PriceManagement from "./pages/business/PriceManagement";
+import DashboardLogin from "./pages/DashboardLogin";
 
 const queryClient = new QueryClient();
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
+     
       <Route path="/" element={<Index />} />
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/pricing/setup" element={<PricingForm />} />
@@ -93,6 +96,12 @@ const router = createBrowserRouter(
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/dashboard/settings/pricing"
+        element={
+          <PriceManagement />
+        }
+      />
       <Route path="/catalog" element={<Catalog />} />
       <Route
         path="/profile"
@@ -110,8 +119,9 @@ const router = createBrowserRouter(
           </ProtectedRoute>
         }
       />
+      <Route path="/dashboard" element={<DashboardLogin />} />
       <Route
-        path="/dashboard"
+        path="/dashboard/overview"
         element={
           <ProtectedRoute>
             <Dashboard />

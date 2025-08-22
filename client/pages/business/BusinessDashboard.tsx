@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import RoleDashboardLayout from "@/components/RoleDashboardLayout";
-import { LayoutDashboard, User, CreditCard, Settings, FileText, HelpCircle } from "lucide-react";
+import { LayoutDashboard, User, CreditCard, FileText, HelpCircle, Settings } from "lucide-react";
 import Pricing from "./Pricing";
 
 export default function BusinessDashboard() {
@@ -52,7 +52,7 @@ export default function BusinessDashboard() {
     >
       {/* Main content */}
       <div className="space-y-6">
-        {location.pathname.startsWith("/business/subscription-plan") ? (
+        { location.pathname.startsWith("/business/subscription-plan") ? (
           <div>
             <Pricing />
           </div>

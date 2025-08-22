@@ -12,6 +12,7 @@ const CenterSchema = new Schema({
   razorpay_payment_id: { type: String, required: true },
   status: { type: String, required: true, default: 'active' },
   createdAt: { type: Date, default: Date.now },
+  subscriptionStartAt: { type: Date },
   expiresAt: { type: Date, required: true },
 });
 

@@ -40,3 +40,6 @@ export const requireRole = (roles) => {
     next();
   };
 };
+
+// Default export for backward compatibility
+export default authenticateToken;

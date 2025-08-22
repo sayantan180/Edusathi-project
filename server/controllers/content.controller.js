@@ -107,12 +107,12 @@ export const getMyContents = async (req, res) => {
     if (!req.user) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    const contents = await Content.find({ 
+    const contents = await Content.find({
       creatorId: req.user._id,
-      isActive: true 
+      isActive: true,
     })
-    .populate('businessId', 'name')
-    .sort({ createdAt: -1 });
+      .populate('businessId', 'name')
+      .sort({ createdAt: -1 });
 
     res.json({ contents });
   } catch (error) {
@@ -129,13 +129,13 @@ export const updateContent = async (req, res) => {
     }
     const validatedData = updateContentSchema.parse({
       ...req.body,
-      price: req.body.price ? parseFloat(req.body.price) : undefined
+      price: req.body.price ? parseFloat(req.body.price) : undefined,
     });
 
-    const content = await Content.findOne({ 
-      _id: id, 
+    const content = await Content.findOne({
+      _id: id,
       creatorId: req.user._id,
-      isActive: true 
+      isActive: true,
     });
 
     if (!content) {
@@ -154,7 +154,7 @@ export const updateContent = async (req, res) => {
 
     res.json({
       message: 'Content updated successfully',
-      content
+      content,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -172,10 +172,10 @@ export const deleteContent = async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const content = await Content.findOne({ 
-      _id: id, 
+    const content = await Content.findOne({
+      _id: id,
       creatorId: req.user._id,
-      isActive: true 
+      isActive: true,
     });
 
     if (!content) {
@@ -204,10 +204,10 @@ export const assignToBusiness = async (req, res) => {
       return res.status(400).json({ error: 'Business ID is required' });
     }
 
-    const content = await Content.findOne({ 
-      _id: id, 
+    const content = await Content.findOne({
+      _id: id,
       creatorId: req.user._id,
-      isActive: true 
+      isActive: true,
     });
 
     if (!content) {
@@ -224,7 +224,7 @@ export const assignToBusiness = async (req, res) => {
 
     res.json({
       message: 'Content assigned to business successfully',
-      content
+      content,
     });
   } catch (error) {
     console.error('Assign to business error:', error);
