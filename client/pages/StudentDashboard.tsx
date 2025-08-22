@@ -113,9 +113,9 @@ export default function StudentDashboard() {
         {/* Desktop header */}
         <div className="hidden md:flex items-center justify-between mb-4">
           <h1 className="text-2xl md:text-3xl font-bold">Student Dashboard</h1>
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <Button variant="secondary" onClick={() => navigate("/student/account")}>Profile</Button>
-          </div>
+          </div> */}
         </div>
 
         {/* Mobile drawer removed: sidebar always visible */}

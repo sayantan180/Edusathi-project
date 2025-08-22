@@ -72,7 +72,7 @@ export default function ContactUs() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-sm">
+      {/* <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-sm">
         <div className="container max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white">
@@ -89,7 +89,7 @@ export default function ContactUs() {
             Back to Home
           </Button>
         </div>
-      </header>
+      </header> */}
 
       <main className="container max-w-7xl mx-auto px-4 py-12">
         {/* Hero Section */}

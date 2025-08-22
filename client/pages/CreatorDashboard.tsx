@@ -49,9 +49,9 @@ export default function CreatorDashboard() {
       <div className="container max-w-7xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl md:text-3xl font-bold">Creator Dashboard</h1>
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <Button variant="secondary" onClick={() => navigate("/profile")}>Profile</Button>
-          </div>
+          </div> */}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           {/* Sidebar */}
