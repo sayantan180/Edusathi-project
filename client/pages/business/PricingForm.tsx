@@ -167,6 +167,8 @@ export default function PricingForm() {
               });
               // Mark user as authenticated so ProtectedRoute allows access
               localStorage.setItem("isLoggedIn", "true");
+              // Mark plan as purchased to enable Template access in Business Dashboard
+              localStorage.setItem("planPurchased", "true");
               // Optionally, delay slightly to show toast before redirect
               setTimeout(() => {
                 navigate("/admin");

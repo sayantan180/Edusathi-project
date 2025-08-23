@@ -6,6 +6,9 @@ import { apiGet } from "@/lib/api";
 import { ChevronDown, LayoutDashboard, List, Video, FileText, GraduationCap, ClipboardList, User } from "lucide-react";
 import MyCourses from "./MyCourses";
 import RoleDashboardLayout from "@/components/RoleDashboardLayout";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface CourseItem {
   enrollmentId: string;
@@ -32,6 +35,8 @@ export default function StudentDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
   const [openClassRoom, setOpenClassRoom] = useState(true);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const p =
@@ -41,6 +46,23 @@ export default function StudentDashboard() {
       localStorage.getItem("user");
     setProfile(p ? JSON.parse(p) : null);
   }, []);
+
+  useEffect(() => {
+    const u = localStorage.getItem("studentAvatarUrl") || undefined;
+    setAvatarUrl(u);
+  }, []);
+
+  const onUploadAvatar = () => {
+    if (!avatarFile) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result as string;
+      localStorage.setItem("studentAvatarUrl", dataUrl);
+      setAvatarUrl(dataUrl);
+      setAvatarFile(null);
+    };
+    reader.readAsDataURL(avatarFile);
+  };
 
   useEffect(() => {
     apiGet<{ items: CourseItem[] }>("/api/student/my-courses")
@@ -136,7 +158,21 @@ export default function StudentDashboard() {
     <RoleDashboardLayout
       title="Student Dashboard"
       navigationItems={navigationItems}
-      headerActions={<Button size="sm" variant="destructive" onClick={logout}>Logout</Button>}
+      sidebarProfile={
+        <div className="flex items-center gap-3">
+          <button className="rounded-full" onClick={() => navigate("/student/account")} title="Profile">
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={avatarUrl} alt={profile?.name || "S"} />
+              <AvatarFallback>{initials}</AvatarFallback>
+            </Avatar>
+          </button>
+          <div className="flex flex-col">
+            <span className="text-sm font-medium line-clamp-1">{profile?.name || "Student"}</span>
+            <span className="text-xs text-muted-foreground">View profile</span>
+          </div>
+        </div>
+      }
+      sidebarFooter={<Button className="w-full" size="sm" variant="destructive" onClick={logout}>Logout</Button>}
     >
       {/* Main content (section router) */}
       {section === "home" && (
@@ -352,6 +388,21 @@ export default function StudentDashboard() {
                   <CardDescription>Your account information</CardDescription>
                 </CardHeader>
                 <CardContent>
+                  <div className="flex items-center gap-4 mb-4">
+                    <Avatar className="h-16 w-16">
+                      <AvatarImage src={avatarUrl} alt={profile?.name || "S"} />
+                      <AvatarFallback>{initials}</AvatarFallback>
+                    </Avatar>
+                    <div className="grid gap-2">
+                      <div>
+                        <Label htmlFor="student-avatar">Profile picture</Label>
+                        <Input id="student-avatar" type="file" accept="image/*" onChange={(e) => setAvatarFile(e.target.files?.[0] || null)} />
+                      </div>
+                      <div>
+                        <Button size="sm" onClick={onUploadAvatar} disabled={!avatarFile}>Upload Avatar</Button>
+                      </div>
+                    </div>
+                  </div>
                   <div className="space-y-1 text-sm">
                     <div><span className="text-slate-500">Name:</span> <span className="font-medium">{profile?.name || "-"}</span></div>
                     <div><span className="text-slate-500">Email:</span> <span className="font-medium">{profile?.email || "-"}</span></div>

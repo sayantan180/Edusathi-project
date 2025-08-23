@@ -94,6 +94,39 @@ export const getCenters = async (_req, res) => {
   }
 };
 
+// Lookup a single center by email or domain and return subscription details
+export const findCenter = async (req, res) => {
+  try {
+    const { email, domain } = req.query || {};
+    if (!email && !domain) {
+      return res.status(400).json({ error: "Provide email or domain to lookup" });
+    }
+
+    const orConds = [];
+    if (email) orConds.push({ email });
+    if (domain) orConds.push({ domain });
+    const center = await Center.findOne({ $or: orConds });
+    if (!center) {
+      return res.status(404).json({ error: "Center not found" });
+    }
+
+    const status = new Date(center.expiresAt) > new Date() ? 'active' : 'inactive';
+    return res.json({
+      id: center._id.toString(),
+      instituteName: center.instituteName,
+      domain: center.domain,
+      email: center.email,
+      plan: center.plan,
+      status,
+      subscriptionStartAt: center.subscriptionStartAt ? center.subscriptionStartAt.toISOString() : null,
+      expiresAt: center.expiresAt ? center.expiresAt.toISOString() : null,
+    });
+  } catch (error) {
+    console.error("Error looking up center:", error);
+    res.status(500).json({ error: "Failed to lookup center" });
+  }
+};
+
 export const createCenter = async (req, res) => {
   try {
     const { instituteName, ownerName, email, domain, plan, durationDays, razorpay_order_id, razorpay_payment_id } = req.body;
