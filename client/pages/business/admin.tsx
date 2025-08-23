@@ -1,8 +1,31 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const Admin = () => {
+  const navigate = useNavigate()
   const [tilt, setTilt] = useState({ rx: 0, ry: 0 })
   const [glare, setGlare] = useState({ x: 50, y: 50 })
+  const [countdown, setCountdown] = useState(10)
+
+  useEffect(() => {
+    if (localStorage.getItem('planPurchased') === 'true') {
+      const timer = setTimeout(() => {
+        navigate('/business/templates', { replace: true })
+      }, 10000)
+      return () => clearTimeout(timer)
+    }
+  }, [navigate])
+
+  // Visual countdown from 10s (3D-styled) matching the redirect timer
+  useEffect(() => {
+    if (localStorage.getItem('planPurchased') === 'true') {
+      setCountdown(10)
+      const id = setInterval(() => {
+        setCountdown((prev) => (prev > 0 ? prev - 1 : 0))
+      }, 1000)
+      return () => clearInterval(id)
+    }
+  }, [])
 
   const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect()
@@ -46,6 +69,17 @@ const Admin = () => {
               className="pointer-events-none absolute inset-0 rounded-3xl"
               style={{ background: `radial-gradient(650px circle at ${glare.x}% ${glare.y}%, rgba(255,255,255,0.25), transparent 60%)` }}
             />
+
+            {/* countdown overlay (3D-style) */}
+            <div className="absolute -top-6 left-1/2 -translate-x-1/2 z-20">
+              <div
+                className="rounded-full border border-white/15 bg-black/50 backdrop-blur-md shadow-2xl px-4 py-1 flex items-center gap-2"
+                style={{ transform: `translateZ(30px)` }}
+              >
+                <span className="text-xs text-slate-200/80">Redirect in</span>
+                <span className="text-lg font-extrabold threeDText">{countdown}s</span>
+              </div>
+            </div>
 
             <div className="relative z-10">
               <h1 className="text-center text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">

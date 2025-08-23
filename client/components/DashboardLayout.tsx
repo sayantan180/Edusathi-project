@@ -66,9 +66,9 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const location = useLocation();
-  const [centerManagementOpen, setCenterManagementOpen] = useState(true);
+  const [centerManagementOpen, setCenterManagementOpen] = useState(false);
   const [creatorManagementOpen, setCreatorManagementOpen] = useState(true);
-  const [settingsOpen, setSettingsOpen] = useState(true);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const isExpandableItem = (i: NavigationItem): i is NavExpandable => i.isExpandable === true;
 

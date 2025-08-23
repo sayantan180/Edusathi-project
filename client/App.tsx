@@ -15,7 +15,7 @@ import PricingForm from "./pages/business/PricingForm";
 import AboutUs from "./pages/Edusathihome/AboutUs";
 import ContactUs from "./pages/Edusathihome/ContactUs";
 import Login from "./pages/EdusathiDashboard/Login";
-// import Admin from "./pages/admin";
+// import Admin from "./pages/admin"; 
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import Admin from "./pages/business/admin";
 import Settings from "./pages/EdusathiDashboard/Settings";

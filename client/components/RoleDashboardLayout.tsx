@@ -17,6 +17,7 @@ import {
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
+  SidebarFooter,
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { LayoutDashboard, ChevronDown, ChevronRight } from "lucide-react";
@@ -55,26 +56,28 @@ interface RoleDashboardLayoutProps {
   navigationItems: NavigationItem[];
   children: React.ReactNode;
   headerActions?: React.ReactNode;
+  sidebarProfile?: React.ReactNode;
+  sidebarFooter?: React.ReactNode;
 }
 
 const isExpandableItem = (i: NavigationItem): i is NavExpandable => (i as any).isExpandable === true;
 
-export default function RoleDashboardLayout({ title, navigationItems, children, headerActions }: RoleDashboardLayoutProps) {
+export default function RoleDashboardLayout({ title, navigationItems, children, headerActions, sidebarProfile, sidebarFooter }: RoleDashboardLayoutProps) {
   return (
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader className="border-b border-sidebar-border">
-          <div className="flex items-center gap-2 px-2 py-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <LayoutDashboard className="h-4 w-4" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-semibold">Edusathi</span>
-              <span className="text-xs text-muted-foreground">{title}</span>
-            </div>
-          </div>
+          {sidebarProfile ? (
+            <SidebarGroup>
+              {/* <SidebarGroupLabel>Profile</SidebarGroupLabel> */}
+              <SidebarGroupContent>
+                <div className="px-2 py-2">{sidebarProfile}</div>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          ) : null}
         </SidebarHeader>
         <SidebarContent>
+
           <SidebarGroup>
             <SidebarGroupLabel>Navigation</SidebarGroupLabel>
             <SidebarGroupContent>
@@ -131,6 +134,11 @@ export default function RoleDashboardLayout({ title, navigationItems, children, 
           </SidebarGroup>
         </SidebarContent>
         <SidebarRail />
+        <SidebarFooter>
+          {sidebarFooter ? <div className="w-full px-2 py-2">{sidebarFooter}</div> : null}
+        </SidebarFooter>
+
+
       </Sidebar>
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-b px-4">

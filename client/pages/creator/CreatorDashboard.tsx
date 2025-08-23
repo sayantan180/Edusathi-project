@@ -67,11 +67,28 @@ export default function CreatorDashboard() {
     { title: "Account", href: "/creator/account", icon: User, isActive: currentPath.startsWith("/creator/account"), isExpandable: false as const },
   ];
 
+  const initials = (user?.name || user?.email || "C").slice(0, 1).toUpperCase();
+  const avatarSrc = user?.avatarUrl || undefined;
+
   return (
     <RoleDashboardLayout
       title="Creator Dashboard"
       navigationItems={navigationItems}
-      headerActions={<Button size="sm" variant="destructive" onClick={logout}>Logout</Button>}
+      sidebarProfile={
+        <div className="flex items-center gap-3">
+          <button className="rounded-full" onClick={() => navigate("/creator/account")} title="Profile">
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={avatarSrc} alt={user?.name || "C"} />
+              <AvatarFallback>{initials}</AvatarFallback>
+            </Avatar>
+          </button>
+          <div className="flex flex-col">
+            <span className="text-sm font-medium line-clamp-1">{user?.name || "Creator"}</span>
+            <span className="text-xs text-muted-foreground">View profile</span>
+          </div>
+        </div>
+      }
+      sidebarFooter={<Button className="w-full" size="sm" variant="destructive" onClick={logout}>Logout</Button>}
     >
       {/* Main content */}
       <div className="space-y-6">
@@ -88,6 +105,23 @@ export default function CreatorDashboard() {
               <CardDescription>Your account information</CardDescription>
             </CardHeader>
             <CardContent>
+              <div className="flex items-center gap-4 mb-4">
+                <Avatar className="h-16 w-16">
+                  <AvatarImage src={avatarSrc} alt={user?.name || "C"} />
+                  <AvatarFallback>{initials}</AvatarFallback>
+                </Avatar>
+                <div className="grid gap-2">
+                  <div>
+                    <Label htmlFor="creator-avatar">Profile picture</Label>
+                    <Input id="creator-avatar" type="file" accept="image/*" onChange={(e) => setAvatarFile(e.target.files?.[0] || null)} />
+                  </div>
+                  <div>
+                    <Button size="sm" disabled={!avatarFile || uploading} onClick={onUploadAvatar}>
+                      {uploading ? "Uploading..." : "Upload Avatar"}
+                    </Button>
+                  </div>
+                </div>
+              </div>
               <div className="space-y-1">
                 <p><strong>Name:</strong> {user?.name || "-"}</p>
                 <p><strong>Email:</strong> {user?.email || "-"}</p>
