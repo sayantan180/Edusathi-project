@@ -149,6 +149,9 @@ export default function PricingForm() {
               localStorage.setItem("isLoggedIn", "true");
               // Mark that a plan has been purchased so Admin page triggers countdown redirect
               localStorage.setItem("planPurchased", "true");
+              // Persist identifiers so BusinessDashboard can fetch subscription if profile email is absent
+              localStorage.setItem("businessEmail", formData.email);
+              localStorage.setItem("businessDomain", formData.domainName);
               // Optionally, delay slightly to show toast before redirect
               setTimeout(() => {
                 // Go to Admin page first; it will auto-redirect to /business/templates after 10s
