@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   GraduationCap,
   Check,
@@ -40,13 +39,15 @@ interface PricingPlan {
   }>;
   isActive: boolean;
   isPopular: boolean;
+  activeDuration?: 'monthly' | 'quarterly' | 'yearly';
+  quarterlyMonths?: number;
+  yearlyYears?: number;
   order: number;
 }
 
 export default function Pricing() {
   const [plans, setPlans] = useState<PricingPlan[]>([]);
   const [loading, setLoading] = useState(true);
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'quarterly' | 'yearly'>('monthly');
 
   useEffect(() => {
     fetchPlans();
@@ -206,17 +207,8 @@ export default function Pricing() {
           </div>
         </section>
 
-        {/* Billing cycle toggle + Pricing Plans */}
+        {/* Pricing Plans */}
         <section className="container max-w-7xl mx-auto px-4 pb-20">
-          <div className="flex justify-center mb-8">
-            <Tabs value={billingCycle} onValueChange={(v) => setBillingCycle(v as 'monthly' | 'quarterly' | 'yearly')}>
-              <TabsList className="grid grid-cols-3">
-                <TabsTrigger value="monthly">Monthly</TabsTrigger>
-                <TabsTrigger value="quarterly">3 months</TabsTrigger>
-                <TabsTrigger value="yearly">Yearly</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
           <div className="grid md:grid-cols-3 gap-8">
             {plans.map((plan, index) => (
               <div
@@ -251,35 +243,27 @@ export default function Pricing() {
                     <CardDescription className="text-slate-600">
                       {plan.description}
                     </CardDescription>
-
                     <div className="pt-4">
                       <div className="text-4xl font-bold text-slate-900">
-                        {currencySymbol(plan.pricing[billingCycle]?.currency)}
-                        {plan.pricing[billingCycle]?.price}
+                        {currencySymbol(plan.pricing[(plan.activeDuration || 'monthly') as 'monthly' | 'quarterly' | 'yearly']?.currency)}
+                        {plan.pricing[(plan.activeDuration || 'monthly') as 'monthly' | 'quarterly' | 'yearly']?.price}
                         <span className="text-lg font-normal text-slate-500">
-                          /{billingCycle === 'monthly' ? 'month' : billingCycle === 'quarterly' ? '3 months' : 'year'}
+                          {(() => {
+                            const d = (plan.activeDuration || 'monthly') as 'monthly' | 'quarterly' | 'yearly';
+                            if (d === 'monthly') return '/month';
+                            if (d === 'quarterly') {
+                              const m = plan.quarterlyMonths || 3;
+                              return `/ ${m} month${m > 1 ? 's' : ''}`;
+                            }
+                            const y = plan.yearlyYears || 1;
+                            return `/ ${y} year${y > 1 ? 's' : ''}`;
+                          })()}
                         </span>
                       </div>
                     </div>
                   </CardHeader>
 
                   <CardContent className="space-y-6">
-                    <Link
-                      to={`/pricing/setup?plan=${encodeURIComponent(plan.name)}&price=${plan.pricing[billingCycle]?.price}&billing=${billingCycle}`}
-                    >
-                      <Button
-                        className={`w-full ${
-                          plan.isPopular
-                            ? "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
-                            : ""
-                        }`}
-                        variant={plan.isPopular ? "default" : "outline"}
-                        size="lg"
-                      >
-                        Get Started
-                      </Button>
-                    </Link>
-
                     <Separator />
 
                     <div className="space-y-3">
@@ -291,6 +275,22 @@ export default function Pricing() {
                         </div>
                       ))}
                     </div>
+
+                    <Link
+                      to={`/pricing/setup?plan=${encodeURIComponent(plan.name)}&price=${plan.pricing[(plan.activeDuration || 'monthly') as 'monthly' | 'quarterly' | 'yearly']?.price}&billing=${(plan.activeDuration || 'monthly')}`}
+                    >
+                      <Button
+                        className={`w-full ${
+                          plan.isPopular
+                            ? "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+                            : ""
+                          }`}
+                        variant={plan.isPopular ? "default" : "outline"}
+                        size="lg"
+                      >
+                        Get Started
+                      </Button>
+                    </Link>
                   </CardContent>
                 </Card>
               </div>
