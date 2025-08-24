@@ -94,6 +94,31 @@ export const getCenters = async (_req, res) => {
   }
 };
 
+// Set or update the selected website template for a center by email
+export const setCenterTemplate = async (req, res) => {
+  try {
+    const { email, templateId } = req.body || {};
+    if (!email || !templateId) {
+      return res.status(400).json({ error: "email and templateId are required" });
+    }
+
+    const center = await Center.findOneAndUpdate(
+      { email },
+      { $set: { templateId } },
+      { new: true }
+    );
+
+    if (!center) {
+      return res.status(404).json({ error: "Center not found" });
+    }
+
+    return res.json({ ok: true, templateId: center.templateId });
+  } catch (error) {
+    console.error("Error setting center template:", error);
+    res.status(500).json({ error: "Failed to set template" });
+  }
+};
+
 // Lookup a single center by email or domain and return subscription details
 export const findCenter = async (req, res) => {
   try {
@@ -120,6 +145,7 @@ export const findCenter = async (req, res) => {
       status,
       subscriptionStartAt: center.subscriptionStartAt ? center.subscriptionStartAt.toISOString() : null,
       expiresAt: center.expiresAt ? center.expiresAt.toISOString() : null,
+      templateId: center.templateId || null,
     });
   } catch (error) {
     console.error("Error looking up center:", error);

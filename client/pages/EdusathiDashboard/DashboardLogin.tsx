@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { GraduationCap, Lock, User, Eye, EyeOff } from 'lucide-react';
-import { API_BASE } from '@/lib/api';
+import { AuthAPI } from '@/Api/api';
 
 export default function DashboardLogin() {
   const [email, setEmail] = useState('');
@@ -45,33 +45,17 @@ export default function DashboardLogin() {
         try {
           // Try login first
           let data: any | undefined;
-          const loginRes = await fetch(`${API_BASE}/api/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password, role: 'admin' }),
-          });
-          if (loginRes.ok) {
-            data = await loginRes.json();
-            // If logged-in user isn't admin, try to add admin role via register
+          try {
+            data = await AuthAPI.login({ email, password, role: 'admin' });
             if (data?.user?.role !== 'admin') {
-              const regRes = await fetch(`${API_BASE}/api/auth/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: 'Admin User', email, password, role: 'admin' }),
-              });
-              if (regRes.ok) {
-                data = await regRes.json();
-              }
+              data = await AuthAPI.register({ name: 'Admin User', email, password, role: 'admin' });
             }
-          } else {
+          } catch (_e) {
             // If login fails (user may not exist), attempt register as admin
-            const regRes = await fetch(`${API_BASE}/api/auth/register`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ name: 'Admin User', email, password, role: 'admin' }),
-            });
-            if (regRes.ok) {
-              data = await regRes.json();
+            try {
+              data = await AuthAPI.register({ name: 'Admin User', email, password, role: 'admin' });
+            } catch (_e2) {
+              data = undefined;
             }
           }
           if (data?.access_token) {

@@ -8,7 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus, Edit, Trash2, Star } from 'lucide-react';
-import { apiGet, apiPost, apiPut, apiDelete, authHeaders, API_BASE } from '@/lib/api';
+import { apiGet, apiPost, apiPut, apiDelete, authHeaders, API_BASE } from '@/Api/api';
 import { useToast } from '@/hooks/use-toast';
 import { DashboardLayout } from '@/components/DashboardLayout';
 

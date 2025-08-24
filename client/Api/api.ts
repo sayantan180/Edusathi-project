@@ -101,3 +101,50 @@ export async function apiDelete<T>(path: string): Promise<T> {
     headers,
   });
 }
+
+// Domain-specific helpers to centralize endpoints
+// Centers
+export const CentersAPI = {
+  list: () => apiGet<any>("/api/centers"),
+  create: (body: any) => apiPost<any>("/api/centers", body),
+  lookupByEmail: (email: string) => apiGet<any>(`/api/centers/lookup?email=${encodeURIComponent(email)}`),
+  lookupByDomain: (domain: string) => apiGet<any>(`/api/centers/lookup?domain=${encodeURIComponent(domain)}`),
+  setTemplate: (email: string, templateId: string) => apiPost<any>("/api/centers/template", { email, templateId }),
+};
+
+// Pricing
+export const PricingAPI = {
+  listPublic: () => apiGet<any>("/api/pricing"),
+  listAdmin: () => apiGet<any>("/api/pricing/admin"),
+  create: (plan: any) => apiPost<any>("/api/pricing", plan),
+  update: (id: string, plan: any) => apiPut<any>(`/api/pricing/${id}`, plan),
+  remove: (id: string) => apiDelete<any>(`/api/pricing/${id}`),
+};
+
+// Payment
+export const PaymentAPI = {
+  createOrder: (order: any) => apiPost<any>("/api/payment/create-order", order),
+  getConfig: () => apiGet<any>("/api/payment/config"),
+  verify: (payload: any) => apiPost<any>("/api/payment/verify", payload),
+};
+
+// Templates
+export const TemplatesAPI = {
+  apply: (templateId: string) => apiPost<any>("/api/templates/apply", { templateId }),
+};
+
+// Auth
+export const AuthAPI = {
+  login: (payload: { email: string; password: string; role?: string }) =>
+    request<any>("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }),
+  register: (payload: { name: string; email: string; password: string; role?: string }) =>
+    request<any>("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }),
+};
