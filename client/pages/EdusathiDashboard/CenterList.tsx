@@ -19,9 +19,25 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Center, CentersResponse } from "@shared/api";
 import { Building, ExternalLink, Plus, RefreshCw } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CentersAPI } from "@/Api/api";
+
+// Local types (replacing missing @shared/api)
+type Center = {
+  id: string;
+  name: string;
+  domain: string;
+  website: string;
+  createdAt: string;
+  expireDate: string;
+  status: string;
+  superAdminPath: string;
+};
+
+type CentersResponse = {
+  centers: Center[];
+};
 
 export default function CenterList() {
   const [centers, setCenters] = useState<Center[]>([]);
@@ -37,13 +53,7 @@ export default function CenterList() {
     }
 
     try {
-      const response = await fetch("/api/centers");
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch centers");
-      }
-
-      const data: CentersResponse = await response.json();
+      const data = (await CentersAPI.list()) as CentersResponse;
       setCenters(data.centers);
     } catch (error) {
       console.error("Error fetching centers:", error);

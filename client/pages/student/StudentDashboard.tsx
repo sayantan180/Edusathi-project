@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { apiGet } from "@/lib/api";
+import { apiGet } from "@/Api/api";
 import { ChevronDown, LayoutDashboard, List, Video, FileText, GraduationCap, ClipboardList, User } from "lucide-react";
 import MyCourses from "./MyCourses";
 import RoleDashboardLayout from "@/components/RoleDashboardLayout";

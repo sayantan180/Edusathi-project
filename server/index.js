@@ -1,6 +1,6 @@
 import "dotenv/config";
 import express from "express";
-import connectDB from "./db.js";
+import connectDB from "./config/db.js";
 import cors from "cors";
 import path from "path";
 import demoRoutes from "./routes/demo.routes.js";
@@ -13,6 +13,7 @@ import paymentRoutes from "./routes/payment.routes.js";
 import contentsRoutes from "./routes/contents.routes.js";
 import studentRoutes from "./routes/student.routes.js";
 import pricingRoutes from "./routes/pricing.routes.js";
+import templatesRoutes from "./routes/templates.routes.js";
 
 export function createServer() {
   const app = express();
@@ -71,6 +72,9 @@ export function createServer() {
 
   // Pricing management routes
   app.use("/api/pricing", pricingRoutes);
+  
+  // Templates selection routes
+  app.use("/api/templates", templatesRoutes);
   
   // Global error handler (handle multer and other runtime errors)
   app.use((err, _req, res, _next) => {
