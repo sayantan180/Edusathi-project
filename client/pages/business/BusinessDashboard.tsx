@@ -31,7 +31,7 @@ export default function BusinessDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
-  const [selectedTemplate, setSelectedTemplate] = useState<string>(() => localStorage.getItem("businessTemplate") || "t1");
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(() => localStorage.getItem("businessTemplate") || null);
   const [applyingId, setApplyingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -247,7 +247,7 @@ export default function BusinessDashboard() {
                       disabled={applyingId === `t${n}` || !planPurchased}
                       title={!planPurchased ? 'Purchase a plan to apply this template' : undefined}
                     >
-                      {selectedTemplate === `t${n}` ? "Applied" : (!planPurchased ? "Apply (locked)" : "Apply")}
+                      {selectedTemplate === `t${n}` ? "Applied" : "Apply"}
                     </Button>
                     <Button onClick={() => chooseTemplate(`t${n}`)}>View Template</Button>
                     {!planPurchased && (
