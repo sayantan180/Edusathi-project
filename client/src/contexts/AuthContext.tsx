@@ -14,7 +14,14 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string, remember?: boolean, role?: string) => Promise<void>;
-  register: (name: string, email: string, password: string, role?: string, remember?: boolean) => Promise<void>;
+  register: (
+    name: string,
+    email: string,
+    password: string,
+    role?: string,
+    remember?: boolean
+  ) => Promise<{ otpRequired: true; email: string; role: string } | void>;
+  verifyOtp: (email: string, role: string, otp: string, remember?: boolean) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
   refreshProfile: () => Promise<void>;
@@ -131,6 +138,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const register = async (name: string, email: string, password: string, role: string = 'creator', remember: boolean = false) => {
     try {
       const response = await authAPI.register({ name, email, password, role });
+      // If OTP is required, do not set tokens; return info to caller
+      if (response?.data?.otp_required) {
+        return { otpRequired: true as const, email: response.data.email, role: response.data.role };
+      }
       const { user: userData, access_token, refresh_token } = response.data;
 
       const primary = remember ? localStorage : sessionStorage;
@@ -167,6 +178,46 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(userData);
     } catch (error: any) {
       throw new Error(error?.response?.data?.message || error?.response?.data?.error || error?.message || 'Registration failed');
+    }
+  };
+
+  const verifyOtp = async (email: string, role: string, otp: string, remember: boolean = false) => {
+    try {
+      const response = await authAPI.verifyOtp({ email, role, otp });
+      const { user: userData, access_token, refresh_token } = response.data || {};
+      const primary = remember ? localStorage : sessionStorage;
+      const secondary = remember ? sessionStorage : localStorage;
+      for (const storage of [secondary]) {
+        storage.removeItem('access_token');
+        storage.removeItem('refresh_token');
+        storage.removeItem('accessToken');
+        storage.removeItem('refreshToken');
+        storage.removeItem('user');
+        storage.removeItem('userProfile');
+        storage.removeItem('isLoggedIn');
+        storage.removeItem('userRole');
+        storage.removeItem('businessTemplate');
+        storage.removeItem('businessAvatarUrl');
+        storage.removeItem('planPurchased');
+      }
+      for (const storage of [localStorage, sessionStorage]) {
+        storage.removeItem('businessTemplate');
+        storage.removeItem('businessAvatarUrl');
+        storage.removeItem('planPurchased');
+      }
+      if (access_token) primary.setItem('access_token', access_token);
+      if (refresh_token) primary.setItem('refresh_token', refresh_token);
+      if (access_token) primary.setItem('accessToken', access_token);
+      if (refresh_token) primary.setItem('refreshToken', refresh_token);
+      if (userData) {
+        primary.setItem('user', JSON.stringify(userData));
+        primary.setItem('userProfile', JSON.stringify(userData));
+        primary.setItem('isLoggedIn', 'true');
+        if (userData?.role) primary.setItem('userRole', userData.role);
+        setUser(userData);
+      }
+    } catch (error: any) {
+      throw new Error(error?.response?.data?.message || error?.response?.data?.error || error?.message || 'OTP verification failed');
     }
   };
 
@@ -213,6 +264,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     loading,
     login,
     register,
+    verifyOtp,
     logout,
     isAuthenticated: !!user,
     refreshProfile,

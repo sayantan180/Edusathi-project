@@ -122,6 +122,9 @@ export const authAPI = {
   login: (data: { email: string; password: string; role?: string }) =>
     api.post('/auth/login', data),
   
+  verifyOtp: (data: { email: string; role: string; otp: string }) =>
+    api.post('/auth/verify-otp', data),
+  
   getProfile: () =>
     api.get('/auth/profile'),
   
