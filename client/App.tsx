@@ -32,7 +32,7 @@ import Catalog from "./pages/student/Catalog";
 import MyCourses from "./pages/student/MyCourses";
 import Profile from "./pages/Profile";
 import PriceManagement from "./pages/business/PriceManagement";
-import DashboardLogin from "./pages/DashboardLogin";
+import DashboardLogin from "./pages/EdusathiDashboard/DashboardLogin";
 
 const queryClient = new QueryClient();
 

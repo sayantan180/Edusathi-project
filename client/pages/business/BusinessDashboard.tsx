@@ -12,6 +12,8 @@ import InstituteLanding from "@/components/templates/InstituteLanding";
 import SplitLanding from "@/components/templates/SplitLanding";
 import MinimalSpotlightLanding from "@/components/templates/MinimalSpotlightLanding";
 import FeatureFirstLanding from "@/components/templates/FeatureFirstLanding";
+import { CentersAPI, TemplatesAPI } from "@/Api/api";
+import { useToast } from "@/hooks/use-toast";
 
 export default function BusinessDashboard() {
   const [profile, setProfile] = useState<{name?: string; email?: string; role?: string} | null>(null);
@@ -28,6 +30,9 @@ export default function BusinessDashboard() {
   } | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { toast } = useToast();
+  const [selectedTemplate, setSelectedTemplate] = useState<string>(() => localStorage.getItem("businessTemplate") || "t1");
+  const [applyingId, setApplyingId] = useState<string | null>(null);
 
   useEffect(() => {
     const p =
@@ -44,33 +49,63 @@ export default function BusinessDashboard() {
   }, []);
 
   useEffect(() => {
-    setPlanPurchased(localStorage.getItem("planPurchased") === "true");
+    // Initialize as false; will be updated from subscription lookup
+    setPlanPurchased(false);
   }, []);
 
   // Fetch subscription details for current business by email
-  useEffect(() => {
+  const refreshSubscription = () => {
     const email = profile?.email;
     if (!email) return;
     setSubError(null);
     setSubLoading(true);
-    fetch(`/api/centers/lookup?email=${encodeURIComponent(email)}`)
-      .then(async (res) => {
-        if (!res.ok) throw new Error(await res.text());
-        return res.json();
-      })
-      .then((data) => {
+    CentersAPI.lookupByEmail(email)
+      .then((data: any) => {
         setSubscription({
           plan: data?.plan,
           status: data?.status,
           subscriptionStartAt: data?.subscriptionStartAt || null,
           expiresAt: data?.expiresAt || null,
         });
+        // Derive planPurchased from server data to avoid stale localStorage
+        setPlanPurchased(!!(data?.status === "active" || data?.plan));
+        // Sync selected template from server if available
+        if (data?.templateId) {
+          setSelectedTemplate(data.templateId);
+          localStorage.setItem("businessTemplate", data.templateId);
+        }
       })
-      .catch((_e) => {
+      .catch(() => {
         setSubscription(null);
         setSubError("No active subscription found.");
       })
       .finally(() => setSubLoading(false));
+  };
+
+  useEffect(() => {
+    refreshSubscription();
+  }, [profile?.email]);
+
+  // Also refresh subscription when navigating to relevant pages
+  useEffect(() => {
+    if (!profile?.email) return;
+    const p = location.pathname;
+    if (
+      p.startsWith("/business/templates") ||
+      p.startsWith("/business/subscription-plan") ||
+      p.startsWith("/business/subscription-details")
+    ) {
+      refreshSubscription();
+    }
+  }, [location.pathname, profile?.email]);
+
+  // Refresh on window focus (returning from payment or switching tabs)
+  useEffect(() => {
+    const onFocus = () => {
+      if (profile?.email) refreshSubscription();
+    };
+    window.addEventListener("focus", onFocus);
+    return () => window.removeEventListener("focus", onFocus);
   }, [profile?.email]);
 
   const onUploadAvatar = () => {
@@ -95,6 +130,10 @@ export default function BusinessDashboard() {
       storage.removeItem("userProfile");
       storage.removeItem("isLoggedIn");
       storage.removeItem("userRole");
+      // Business-specific keys to prevent old session leakage
+      storage.removeItem("businessTemplate");
+      storage.removeItem("businessAvatarUrl");
+      storage.removeItem("planPurchased");
     }
     navigate("/auth?role=business", { replace: true });
   }
@@ -102,6 +141,26 @@ export default function BusinessDashboard() {
   const chooseTemplate = (id: string) => {
     localStorage.setItem("businessTemplate", id);
     navigate("/business/website");
+  };
+
+  const applyTemplate = async (id: string) => {
+    if (!profile?.email) {
+      toast({ title: "Not logged in", description: "Please re-login to apply template.", variant: "destructive" });
+      return;
+    }
+    try {
+      setApplyingId(id);
+      // Secure, JWT-authenticated endpoint updates Center by current user and stores selection history
+      await TemplatesAPI.apply(id);
+      localStorage.setItem("businessTemplate", id);
+      setSelectedTemplate(id);
+      toast({ title: "Template applied", description: `Your website will use ${id.toUpperCase()}.` });
+    } catch (e: any) {
+      const msg = typeof e?.message === "string" ? e.message : "Failed to apply template";
+      toast({ title: "Error", description: msg, variant: "destructive" });
+    } finally {
+      setApplyingId(null);
+    }
   };
 
   // Build navigation for RoleDashboardLayout
@@ -145,7 +204,10 @@ export default function BusinessDashboard() {
           planPurchased ? (
             <div className="grid md:grid-cols-2 gap-6">
               {[1,2,3,4].map((n) => (
-                <Card key={n} className="rounded-2xl overflow-hidden">
+                <Card
+                  key={n}
+                  className={`rounded-2xl overflow-hidden ${selectedTemplate === ('t' + n) ? "ring-2 ring-blue-500 border-blue-500" : ""}`}
+                >
                   <CardHeader>
                     <CardTitle>Template {n}</CardTitle>
                     <CardDescription>Select to create your website home</CardDescription>
@@ -155,7 +217,12 @@ export default function BusinessDashboard() {
                       <h1 className="text-3xl font-bold text-center m-10">Choose your Template</h1>
                     </div>
                     <div className="flex justify-end gap-3">
-                      <Button>Apply</Button>
+                      <Button
+                        onClick={() => applyTemplate(`t${n}`)}
+                        disabled={applyingId === `t${n}`}
+                      >
+                        {selectedTemplate === `t${n}` ? "Applied" : "Apply"}
+                      </Button>
                       <Button onClick={() => chooseTemplate(`t${n}`)}>View Template</Button>
                     </div>
                   </CardContent>

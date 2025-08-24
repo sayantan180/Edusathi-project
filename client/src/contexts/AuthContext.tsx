@@ -71,6 +71,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           storage.removeItem('userProfile');
           storage.removeItem('isLoggedIn');
           storage.removeItem('userRole');
+          // Business-specific
+          storage.removeItem('businessTemplate');
+          storage.removeItem('businessAvatarUrl');
+          storage.removeItem('planPurchased');
         }
       } finally {
         setLoading(false);
@@ -97,6 +101,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         storage.removeItem('userProfile');
         storage.removeItem('isLoggedIn');
         storage.removeItem('userRole');
+        // Business-specific
+        storage.removeItem('businessTemplate');
+        storage.removeItem('businessAvatarUrl');
+        storage.removeItem('planPurchased');
+      }
+      // Also clear any business-specific keys from both storages before starting a fresh session
+      for (const storage of [localStorage, sessionStorage]) {
+        storage.removeItem('businessTemplate');
+        storage.removeItem('businessAvatarUrl');
+        storage.removeItem('planPurchased');
       }
       // Store tokens/user in chosen storage
       if (access_token) primary.setItem('access_token', access_token);
@@ -130,6 +144,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         storage.removeItem('userProfile');
         storage.removeItem('isLoggedIn');
         storage.removeItem('userRole');
+        // Business-specific
+        storage.removeItem('businessTemplate');
+        storage.removeItem('businessAvatarUrl');
+        storage.removeItem('planPurchased');
+      }
+      // Also clear any business-specific keys from both storages before starting a fresh session
+      for (const storage of [localStorage, sessionStorage]) {
+        storage.removeItem('businessTemplate');
+        storage.removeItem('businessAvatarUrl');
+        storage.removeItem('planPurchased');
       }
       if (access_token) primary.setItem('access_token', access_token);
       if (refresh_token) primary.setItem('refresh_token', refresh_token);
@@ -156,6 +180,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       storage.removeItem('userProfile');
       storage.removeItem('isLoggedIn');
       storage.removeItem('userRole');
+      // Business-specific
+      storage.removeItem('businessTemplate');
+      storage.removeItem('businessAvatarUrl');
+      storage.removeItem('planPurchased');
     }
     setUser(null);
   };

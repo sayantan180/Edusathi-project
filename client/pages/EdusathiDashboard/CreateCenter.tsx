@@ -23,8 +23,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { CreateCenterRequest } from "@shared/api";
 import { Building, Globe, Link as LinkIcon, Shield } from "lucide-react";
+import { CentersAPI } from "@/Api/api";
+
+// Local type replacing missing @shared/api
+type CreateCenterRequest = {
+  name: string;
+  domain: string;
+  website: string;
+  superAdminPath: string;
+};
 
 const createSubCenterSchema = z.object({
   name: z
@@ -67,19 +75,7 @@ export default function CreateCenter() {
   const onSubmit = async (data: CreateSubCenterForm) => {
     setIsSubmitting(true);
     try {
-      const response = await fetch("/api/centers", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data as CreateCenterRequest),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create sub center");
-      }
-
-      const result = await response.json();
+      await CentersAPI.create(data as CreateCenterRequest);
 
       toast({
         title: "Success!",

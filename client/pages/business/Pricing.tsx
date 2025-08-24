@@ -21,7 +21,7 @@ import {
   Shield,
   Heart,
 } from "lucide-react";
-import { apiGet } from "@/lib/api";
+import { apiGet } from "@/Api/api";
 
 interface PricingPlan {
   _id: string;

@@ -24,6 +24,7 @@ import {
   Globe,
   CreditCard,
 } from "lucide-react";
+import { PaymentAPI } from "@/Api/api";
 
 interface FormData {
   brandName: string;
@@ -104,27 +105,14 @@ export default function PricingForm() {
         domain: formData.domainName,
       };
 
-      const response = await fetch("/api/payment/create-order", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(orderData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create payment order");
-      }
-
-      const order = await response.json();
+      const order = await PaymentAPI.createOrder(orderData);
 
       if (!order.success) {
         throw new Error(order.error || "Failed to create order");
       }
 
       // Get Razorpay config
-      const configResponse = await fetch("/api/payment/config");
-      const config = await configResponse.json();
+      const config = await PaymentAPI.getConfig();
 
       // Initialize Razorpay payment
       const options = {
@@ -145,19 +133,11 @@ export default function PricingForm() {
         handler: async function (response: any) {
           // Verify payment
           try {
-            const verifyResponse = await fetch("/api/payment/verify", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-              }),
+            const verification = await PaymentAPI.verify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
             });
-
-            const verification = await verifyResponse.json();
 
             if (verification.success) {
               toast({
@@ -167,10 +147,11 @@ export default function PricingForm() {
               });
               // Mark user as authenticated so ProtectedRoute allows access
               localStorage.setItem("isLoggedIn", "true");
-              // Mark plan as purchased to enable Template access in Business Dashboard
+              // Mark that a plan has been purchased so Admin page triggers countdown redirect
               localStorage.setItem("planPurchased", "true");
               // Optionally, delay slightly to show toast before redirect
               setTimeout(() => {
+                // Go to Admin page first; it will auto-redirect to /business/templates after 10s
                 navigate("/admin");
               }, 800);
             } else {

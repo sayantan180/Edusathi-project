@@ -1,5 +1,5 @@
 import express from 'express';
-import { getCenters, createCenter, getCenterById, deleteCenter, findCenter } from '../controllers/centers.controller.js';
+import { getCenters, createCenter, getCenterById, deleteCenter, findCenter, setCenterTemplate } from '../controllers/centers.controller.js';
 
 const router = express.Router();
 
@@ -9,6 +9,8 @@ router.get('/', getCenters);
 router.get('/lookup', findCenter);
 // POST /api/centers
 router.post('/', createCenter);
+// POST /api/centers/template
+router.post('/template', setCenterTemplate);
 // GET /api/centers/:id
 router.get('/:id', getCenterById);
 // DELETE /api/centers/:id
