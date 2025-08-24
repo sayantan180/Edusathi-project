@@ -34,7 +34,7 @@ export const getPlanById = async (req, res) => {
 // Admin: Create plan
 export const createPlan = async (req, res) => {
   try {
-    const { name, description, pricing, features, isPopular, order } = req.body;
+    const { name, description, pricing, features, isPopular, order, activeDuration, quarterlyMonths, yearlyYears } = req.body;
 
     const plan = new PricingPlan({
       name,
@@ -43,6 +43,11 @@ export const createPlan = async (req, res) => {
       features: features || [],
       isPopular: isPopular || false,
       order: order || 0,
+      activeDuration: ["monthly", "quarterly", "yearly"].includes(activeDuration)
+        ? activeDuration
+        : undefined,
+      quarterlyMonths: typeof quarterlyMonths === 'number' && quarterlyMonths > 0 ? quarterlyMonths : undefined,
+      yearlyYears: typeof yearlyYears === 'number' && yearlyYears > 0 ? yearlyYears : undefined,
     });
 
     const savedPlan = await plan.save();
@@ -58,7 +63,7 @@ export const updatePlan = async (req, res) => {
     const plan = await PricingPlan.findById(req.params.id);
     if (!plan) return res.status(404).json({ message: "Pricing plan not found" });
 
-    const { name, description, pricing, features, isActive, isPopular, order } = req.body;
+    const { name, description, pricing, features, isActive, isPopular, order, activeDuration, quarterlyMonths, yearlyYears } = req.body;
 
     if (name) plan.name = name;
     if (description) plan.description = description;
@@ -67,6 +72,9 @@ export const updatePlan = async (req, res) => {
     if (typeof isActive !== "undefined") plan.isActive = isActive;
     if (typeof isPopular !== "undefined") plan.isPopular = isPopular;
     if (typeof order !== "undefined") plan.order = order;
+    if (["monthly", "quarterly", "yearly"].includes(activeDuration)) plan.activeDuration = activeDuration;
+    if (typeof quarterlyMonths === 'number' && quarterlyMonths > 0) plan.quarterlyMonths = quarterlyMonths;
+    if (typeof yearlyYears === 'number' && yearlyYears > 0) plan.yearlyYears = yearlyYears;
 
     const updatedPlan = await plan.save();
     res.json(updatedPlan);

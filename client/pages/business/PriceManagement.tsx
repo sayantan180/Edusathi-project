@@ -11,6 +11,7 @@ import { Plus, Edit, Trash2, Star } from 'lucide-react';
 import { apiGet, apiPost, apiPut, apiDelete, authHeaders, API_BASE } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
 import { DashboardLayout } from '@/components/DashboardLayout';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 interface Feature {
   _id?: string;
@@ -31,6 +32,9 @@ interface PricingPlan {
   features: Feature[];
   isActive: boolean;
   isPopular: boolean;
+  activeDuration?: 'monthly' | 'quarterly' | 'yearly';
+  quarterlyMonths?: number;
+  yearlyYears?: number;
   order: number;
 }
 
@@ -52,6 +56,9 @@ export default function PriceManagement() {
     features: [],
     isActive: true,
     isPopular: false,
+    activeDuration: 'monthly',
+    quarterlyMonths: 3,
+    yearlyYears: 1,
     order: 0
   };
 
@@ -88,8 +95,8 @@ export default function PriceManagement() {
         storage.removeItem('user');
         storage.removeItem('userRole');
       }
-      const baseEmail = (import.meta as any).env?.VITE_ADMIN_EMAIL || 'admin@edusathi.com';
-      const password = (import.meta as any).env?.VITE_ADMIN_PASSWORD || 'edusathi2025';
+      const baseEmail = (import.meta as any).env?.VITE_ADMIN_EMAIL;
+      const password = (import.meta as any).env?.VITE_ADMIN_PASSWORD;
 
       // Try login
       let data: any | undefined;
@@ -302,15 +309,17 @@ export default function PriceManagement() {
               <div className="space-y-3">
                 <div className="text-sm text-gray-700">
                   <div>
-                    <span className="font-semibold">₹{plan.pricing.monthly.price}</span>
-                    <span className="text-slate-500">/month</span>
-                  </div>
-                  <div className="mt-1">
-                    <span>₹{plan.pricing.quarterly.price}</span>
-                    <span className="text-slate-500">/ 3 months</span>
-                    <span className="mx-2 text-gray-400">·</span>
-                    <span>₹{plan.pricing.yearly.price}</span>
-                    <span className="text-slate-500">/ year</span>
+                    <span className="font-semibold">
+                      ₹{plan.pricing[(plan.activeDuration || 'monthly') as 'monthly' | 'quarterly' | 'yearly'].price}
+                    </span>
+                    <span className="text-slate-500">
+                      {(() => {
+                        const d = plan.activeDuration || 'monthly';
+                        if (d === 'monthly') return '/ month';
+                        if (d === 'quarterly') return `/ ${(plan.quarterlyMonths || 3)} month${(plan.quarterlyMonths || 3) > 1 ? 's' : ''}`;
+                        return `/ ${(plan.yearlyYears || 1)} year${(plan.yearlyYears || 1) > 1 ? 's' : ''}`;
+                      })()}
+                    </span>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -404,7 +413,7 @@ export default function PriceManagement() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>3 months Price (₹)</Label>
+                      <Label>Price for {(editingPlan.quarterlyMonths || 3)} month{(editingPlan.quarterlyMonths || 3) > 1 ? 's' : ''} (₹)</Label>
                       <Input
                         type="number"
                         value={editingPlan.pricing.quarterly.price}
@@ -423,7 +432,7 @@ export default function PriceManagement() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>Yearly Price (₹)</Label>
+                      <Label>Price for {(editingPlan.yearlyYears || 1)} year{(editingPlan.yearlyYears || 1) > 1 ? 's' : ''} (₹)</Label>
                       <Input
                         type="number"
                         value={editingPlan.pricing.yearly.price}
@@ -527,6 +536,49 @@ export default function PriceManagement() {
                         checked={editingPlan.isPopular}
                         onCheckedChange={(checked: boolean) => setEditingPlan({ ...editingPlan, isPopular: checked })}
                       />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Active Billing Duration</Label>
+                      <RadioGroup
+                        className="flex gap-6"
+                        value={editingPlan.activeDuration || 'monthly'}
+                        onValueChange={(value) =>
+                          setEditingPlan({ ...editingPlan, activeDuration: value as 'monthly' | 'quarterly' | 'yearly' })
+                        }
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="monthly" id="ad-monthly" />
+                          <Label htmlFor="ad-monthly" className="text-sm">Monthly</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="quarterly" id="ad-quarterly" />
+                          <Label htmlFor="ad-quarterly" className="text-sm">{(editingPlan.quarterlyMonths || 3)} months</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="yearly" id="ad-yearly" />
+                          <Label htmlFor="ad-yearly" className="text-sm">{(editingPlan.yearlyYears || 1)} year{(editingPlan.yearlyYears || 1) > 1 ? 's' : ''}</Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Multi-month duration (months)</Label>
+                        <Input
+                          type="number"
+                          min={1}
+                          value={editingPlan.quarterlyMonths ?? 3}
+                          onChange={(e) => setEditingPlan({ ...editingPlan, quarterlyMonths: Math.max(1, parseInt(e.target.value) || 1) })}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Yearly duration (years)</Label>
+                        <Input
+                          type="number"
+                          min={1}
+                          value={editingPlan.yearlyYears ?? 1}
+                          onChange={(e) => setEditingPlan({ ...editingPlan, yearlyYears: Math.max(1, parseInt(e.target.value) || 1) })}
+                        />
+                      </div>
                     </div>
                   </div>
                 </TabsContent>

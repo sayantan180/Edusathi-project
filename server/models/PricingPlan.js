@@ -38,6 +38,17 @@ const pricingPlanSchema = new mongoose.Schema({
       currency: { type: String, default: 'USD' }
     }
   },
+  // Customizable durations for display/communication
+  quarterlyMonths: {
+    type: Number,
+    default: 3,
+    min: 1
+  },
+  yearlyYears: {
+    type: Number,
+    default: 1,
+    min: 1
+  },
   features: [featureSchema],
   isActive: {
     type: Boolean,
@@ -46,6 +57,11 @@ const pricingPlanSchema = new mongoose.Schema({
   isPopular: {
     type: Boolean,
     default: false
+  },
+  activeDuration: {
+    type: String,
+    enum: ['monthly', 'quarterly', 'yearly'],
+    default: 'monthly'
   },
   order: {
     type: Number,
