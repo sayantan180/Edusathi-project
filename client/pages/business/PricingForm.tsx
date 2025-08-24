@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Link, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -23,8 +23,16 @@ import {
   Building,
   Globe,
   CreditCard,
+  LayoutDashboard,
+  User,
+  FileText,
+  HelpCircle,
+  Settings,
+  LayoutTemplate,
 } from "lucide-react";
 import { PaymentAPI } from "@/Api/api";
+import RoleDashboardLayout from "@/components/RoleDashboardLayout";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface FormData {
   brandName: string;
@@ -41,6 +49,7 @@ interface FormData {
 
 export default function PricingForm() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
@@ -59,11 +68,59 @@ export default function PricingForm() {
     },
   });
 
+  // Sidebar profile state (match BusinessDashboard behavior)
+  const [profile, setProfile] = useState<{ name?: string; email?: string; role?: string } | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const p =
+      sessionStorage.getItem("userProfile") ||
+      localStorage.getItem("userProfile") ||
+      sessionStorage.getItem("user") ||
+      localStorage.getItem("user");
+    setProfile(p ? JSON.parse(p) : null);
+  }, []);
+
+  useEffect(() => {
+    const u = localStorage.getItem("businessAvatarUrl") || undefined;
+    setAvatarUrl(u);
+  }, []);
+
+  function logout() {
+    for (const storage of [localStorage, sessionStorage]) {
+      storage.removeItem("access_token");
+      storage.removeItem("refresh_token");
+      storage.removeItem("accessToken");
+      storage.removeItem("refreshToken");
+      storage.removeItem("user");
+      storage.removeItem("userProfile");
+      storage.removeItem("isLoggedIn");
+      storage.removeItem("userRole");
+      storage.removeItem("businessTemplate");
+      storage.removeItem("businessAvatarUrl");
+      storage.removeItem("planPurchased");
+      storage.removeItem("businessEmail");
+      storage.removeItem("businessDomain");
+    }
+    navigate("/auth?role=business", { replace: true });
+  }
+
   const totalSteps = 3;
   const stepTitles = [
     "Institute Details",
     "Owner Information",
     "Review & Payment",
+  ];
+
+  // Sidebar navigation (same as BusinessDashboard)
+  const navigationItems = [
+    { title: "Dashboard", href: "/business", icon: LayoutDashboard, isActive: location.pathname === "/business", isExpandable: false as const },
+    { title: "Profile", href: "/business/account", icon: User, isActive: location.pathname.startsWith("/business/account"), isExpandable: false as const },
+    { title: "Subscription Plan", href: "/business/subscription-plan", icon: CreditCard, isActive: location.pathname.startsWith("/business/subscription-plan"), isExpandable: false as const },
+    { title: "Setup Details", href: "/business/setup", icon: Settings, isActive: location.pathname.startsWith("/business/setup"), isExpandable: false as const },
+    { title: "Template", href: "/business/templates", icon: LayoutTemplate, isActive: location.pathname.startsWith("/business/templates"), isExpandable: false as const },
+    { title: "Subscription Details", href: "/business/subscription-details", icon: FileText, isActive: location.pathname.startsWith("/business/subscription-details"), isExpandable: false as const },
+    { title: "Help & Contact", href: "/business/contact", icon: HelpCircle, isActive: location.pathname.startsWith("/business/contact"), isExpandable: false as const },
   ];
 
   const handleInputChange = (field: keyof FormData, value: string) => {
@@ -206,7 +263,32 @@ export default function PricingForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <RoleDashboardLayout
+      title="Business Dashboard"
+      navigationItems={navigationItems}
+      sidebarProfile={
+        <div className="flex items-center gap-3">
+          <button
+            className="rounded-full"
+            onClick={() => navigate("/business/account")}
+            title="Profile"
+          >
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={avatarUrl} alt={profile?.name || "B"} />
+              <AvatarFallback>
+                {(profile?.name || profile?.email || "B").slice(0, 1).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </button>
+          <div className="flex flex-col">
+            <span className="text-sm font-medium line-clamp-1">{profile?.name || "Business User"}</span>
+            <span className="text-xs text-muted-foreground">View profile</span>
+          </div>
+        </div>
+      }
+      sidebarFooter={<Button className="w-full" size="sm" variant="destructive" onClick={logout}>Logout</Button>}
+    >
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Header */}
       {/* <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-sm">
         <div className="container max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -222,7 +304,7 @@ export default function PricingForm() {
         </div>
       </header> */}
 
-      <main className="container max-w-4xl mx-auto px-4 py-12">
+        <div className="container max-w-4xl mx-auto px-4 py-12">
         {/* Progress Bar */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-4">
@@ -520,7 +602,8 @@ export default function PricingForm() {
             </Card>
           </div>
         </div>
-      </main>
-    </div>
+        </div>
+      </div>
+    </RoleDashboardLayout>
   );
 }

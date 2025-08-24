@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const EnrollmentSchema = new Schema(
   {
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    userId: { type: Schema.Types.ObjectId, ref: 'Student', required: true },
     contentId: { type: Schema.Types.ObjectId, ref: 'Content', required: true },
     orderId: { type: Schema.Types.ObjectId, ref: 'Order' },
   },

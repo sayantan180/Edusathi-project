@@ -6,7 +6,7 @@ export const requireAuth = (req, res, next) => {
     const token = auth.startsWith('Bearer ') ? auth.substring(7) : '';
     if (!token) return res.status(401).json({ message: 'Missing token' });
     const payload = verifyAccessToken(token);
-    req.user = payload;
+    req.user = { ...payload, _id: payload.sub };
     next();
   } catch (_err) {
     return res.status(401).json({ message: 'Invalid or expired token' });
@@ -21,7 +21,7 @@ export const authenticateToken = (req, res, next) => {
       return res.status(401).json({ error: 'No token provided' });
     }
     const payload = verifyAccessToken(token); // { sub, role }
-    req.user = { _id: payload.sub, role: payload.role };
+    req.user = { _id: payload.sub, sub: payload.sub, role: payload.role };
     next();
   } catch (_error) {
     return res.status(401).json({ error: 'Authentication failed' });
