@@ -86,12 +86,9 @@ const Admin = () => {
                 <span className="bg-gradient-to-r from-indigo-300 via-white to-fuchsia-300 bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(99,102,241,0.35)]">
                   Launching Soon
                 </span>
-                <span className="bg-gradient-to-r from-indigo-300 via-white to-fuchsia-300 bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(99,102,241,0.35)]">
-                  Jaldi Gandhi Laooo
-                </span>
               </h1>
 
-              <p className="mt-4 text-center text-base md:text-lg text-slate-200/90">
+              {/* <p className="mt-4 text-center text-base md:text-lg text-slate-200/90">
                 Please wait a few hours — your website will be live soon.
               </p>
               <p className="mt-1 text-center text-sm text-slate-300/80">
@@ -102,7 +99,7 @@ const Admin = () => {
               </p>
               <p className="mt-1 text-center text-sm text-slate-300/80">
                 (  Agar Chiye "GANDHI", Kam To Karna Padega Mere Bhai  )
-              </p>
+              </p> */}
 
               <div className="mt-8 flex items-center justify-center gap-3">
                 <div className="h-5 w-5 rounded-full border-2 border-white/40 border-t-transparent animate-spin" />
