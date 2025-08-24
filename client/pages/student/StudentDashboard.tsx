@@ -3,7 +3,7 @@ import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { apiGet } from "@/Api/api";
-import { ChevronDown, LayoutDashboard, List, Video, FileText, GraduationCap, ClipboardList, User } from "lucide-react";
+import { ChevronDown, LayoutDashboard, List, Video, FileText, GraduationCap, ClipboardList, User, Sparkles } from "lucide-react";
 import MyCourses from "./MyCourses";
 import RoleDashboardLayout from "@/components/RoleDashboardLayout";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -159,90 +159,211 @@ export default function StudentDashboard() {
       title="Student Dashboard"
       navigationItems={navigationItems}
       sidebarProfile={
-        <div className="flex items-center gap-3">
-          <button className="rounded-full" onClick={() => navigate("/student/account")} title="Profile">
-            <Avatar className="h-10 w-10">
+        <div className="flex items-center gap-3 p-3 rounded-2xl bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-100/50 hover:from-blue-100 hover:to-purple-100 transition-all duration-300">
+          <button className="rounded-full ring-2 ring-blue-200 ring-offset-2 hover:ring-blue-300 transition-all duration-300" onClick={() => navigate("/student/account")} title="Profile">
+            <Avatar className="h-11 w-11">
               <AvatarImage src={avatarUrl} alt={profile?.name || "S"} />
-              <AvatarFallback>{initials}</AvatarFallback>
+              <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">{initials}</AvatarFallback>
             </Avatar>
           </button>
           <div className="flex flex-col">
-            <span className="text-sm font-medium line-clamp-1">{profile?.name || "Student"}</span>
-            <span className="text-xs text-muted-foreground">View profile</span>
+            <span className="text-sm font-semibold text-slate-800 line-clamp-1">{profile?.name || "Student"}</span>
+            <span className="text-xs text-blue-600 font-medium">View profile</span>
           </div>
         </div>
       }
-      sidebarFooter={<Button className="w-full" size="sm" variant="destructive" onClick={logout}>Logout</Button>}
+      sidebarFooter={
+        <Button 
+          className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" 
+          size="sm" 
+          onClick={logout}
+        >
+          Logout
+        </Button>
+      }
     >
       {/* Main content (section router) */}
       {section === "home" && (
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold mb-4">Welcome back{profile?.name ? `, ${profile.name}` : ""}</h1>
-          <div className="grid sm:grid-cols-2 gap-4 mb-6">
-            <Card className="rounded-2xl">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg">Quick Actions</CardTitle>
-                <CardDescription>Jump right into learning</CardDescription>
+        <div className="space-y-8">
+          {/* Enhanced Welcome Header */}
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-500 via-purple-600 to-indigo-600 p-8 text-white">
+            <div className="absolute inset-0 bg-black/10"></div>
+            <div className="relative z-10">
+              <h1 className="text-3xl md:text-4xl font-bold mb-3 font-display">
+                Welcome back{profile?.name ? `, ${profile.name}` : ""}! 👋
+              </h1>
+              <p className="text-blue-100 text-lg">
+                Ready to continue your learning journey today?
+              </p>
+            </div>
+            <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+            <div className="absolute -left-8 -bottom-8 w-40 h-40 bg-white/5 rounded-full blur-2xl"></div>
+          </div>
+
+          {/* Enhanced Stats Grid */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {[
+              { label: "Total Courses", value: total, icon: "📚", color: "from-blue-500 to-blue-600" },
+              { label: "Live Classes", value: liveCount, icon: "🎥", color: "from-red-500 to-red-600" },
+              { label: "Video Courses", value: videoCount, icon: "📹", color: "from-green-500 to-green-600" },
+              { label: "Study Materials", value: pdfCount, icon: "📄", color: "from-purple-500 to-purple-600" },
+            ].map((stat, index) => (
+              <Card key={index} className="relative overflow-hidden rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 interactive">
+                <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-5`}></div>
+                <CardContent className="p-6 relative z-10">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-2xl">{stat.icon}</span>
+                    <span className={`text-3xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>
+                      {stat.value}
+                    </span>
+                  </div>
+                  <p className="text-sm font-medium text-slate-600">{stat.label}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Enhanced Quick Actions */}
+          <div className="grid sm:grid-cols-2 gap-6">
+            <Card className="rounded-3xl border-0 shadow-lg hover:shadow-xl transition-all duration-300 card-elevated">
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 rounded-xl bg-gradient-to-br from-blue-100 to-purple-100">
+                    <Sparkles className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <CardTitle className="text-xl font-bold text-slate-800">Quick Actions</CardTitle>
+                </div>
+                <CardDescription className="text-slate-600">Jump right into learning</CardDescription>
               </CardHeader>
-              <CardContent className="flex flex-wrap gap-2">
-                <Button onClick={() => navigate("/my-courses")}>Continue Learning</Button>
-                <Button variant="secondary" onClick={() => navigate("/student/courses")}>Browse Courses</Button>
+              <CardContent className="space-y-3">
+                <Button 
+                  onClick={() => navigate("/my-courses")} 
+                  className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                >
+                  Continue Learning
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => navigate("/student/courses")}
+                  className="w-full border-2 border-slate-200 hover:border-blue-500 hover:bg-blue-50 text-slate-700 hover:text-blue-600 font-semibold rounded-xl transition-all duration-300"
+                >
+                  Browse Courses
+                </Button>
               </CardContent>
             </Card>
 
-            <Card className="rounded-2xl">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg">Account</CardTitle>
-                <CardDescription>Profile details</CardDescription>
+            <Card className="rounded-3xl border-0 shadow-lg hover:shadow-xl transition-all duration-300 card-elevated">
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100">
+                    <User className="w-5 h-5 text-emerald-600" />
+                  </div>
+                  <CardTitle className="text-xl font-bold text-slate-800">Account</CardTitle>
+                </div>
+                <CardDescription className="text-slate-600">Profile details</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-1 text-sm">
-                  <div><span className="text-slate-500">Name:</span> <span className="font-medium">{profile?.name || "-"}</span></div>
-                  <div><span className="text-slate-500">Email:</span> <span className="font-medium">{profile?.email || "-"}</span></div>
-                  <div><span className="text-slate-500">Role:</span> <span className="font-medium">{profile?.role || "student"}</span></div>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between items-center p-3 rounded-xl bg-slate-50">
+                    <span className="text-slate-500 font-medium">Name:</span> 
+                    <span className="font-semibold text-slate-800">{profile?.name || "-"}</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 rounded-xl bg-slate-50">
+                    <span className="text-slate-500 font-medium">Email:</span> 
+                    <span className="font-semibold text-slate-800">{profile?.email || "-"}</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 rounded-xl bg-slate-50">
+                    <span className="text-slate-500 font-medium">Role:</span> 
+                    <span className="font-semibold text-slate-800 capitalize">{profile?.role || "student"}</span>
+                  </div>
                 </div>
-                <div className="mt-3">
-                  <Button size="sm" variant="secondary" onClick={() => navigate("/profile")}>Manage Profile</Button>
+                <div className="mt-4">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    onClick={() => navigate("/profile")}
+                    className="w-full border-2 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 text-slate-700 hover:text-emerald-600 font-semibold rounded-xl transition-all duration-300"
+                  >
+                    Manage Profile
+                  </Button>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          <Card className="rounded-2xl">
+          {/* Enhanced Recent Enrollments */}
+          <Card className="rounded-3xl border-0 shadow-lg card-elevated">
             <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span>Recent Enrollments</span>
-                <Link to="/my-courses" className="text-sm text-blue-600">View all</Link>
-              </CardTitle>
-              <CardDescription>Your latest courses</CardDescription>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-xl bg-gradient-to-br from-indigo-100 to-purple-100">
+                    <GraduationCap className="w-5 h-5 text-indigo-600" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl font-bold text-slate-800">Recent Enrollments</CardTitle>
+                    <CardDescription className="text-slate-600">Your latest courses</CardDescription>
+                  </div>
+                </div>
+                <Link to="/my-courses" className="text-sm text-blue-600 hover:text-blue-700 font-semibold hover:underline transition-colors">
+                  View all →
+                </Link>
+              </div>
             </CardHeader>
             <CardContent>
               {loadingCourses ? (
-                <div className="text-slate-600">Loading...</div>
+                <div className="flex items-center justify-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                  <span className="ml-3 text-slate-600">Loading courses...</span>
+                </div>
               ) : courses.length === 0 ? (
-                <div className="text-slate-600">No courses yet. Enroll from the catalog.</div>
+                <div className="text-center py-8">
+                  <div className="text-6xl mb-4">📚</div>
+                  <div className="text-slate-600 mb-4">No courses yet. Enroll from the catalog.</div>
+                  <Button onClick={() => navigate("/catalog")} className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl">
+                    Browse Catalog
+                  </Button>
+                </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {courses.slice(0, 4).map((en) => (
-                    <div key={en.enrollmentId} className="flex items-center justify-between rounded-lg border border-slate-200 p-3">
-                      <div>
-                        <div className="font-medium leading-5 line-clamp-1">{en.content.title}</div>
-                        <div className="text-xs text-slate-600">{en.content.type.toUpperCase()} • {en.content.businessName}</div>
+                    <div key={en.enrollmentId} className="flex items-center justify-between p-4 rounded-2xl border border-slate-200 hover:border-blue-300 hover:bg-blue-50/50 transition-all duration-300 interactive">
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200">
+                          {en.content.type === "live" ? "🎥" : en.content.type === "video" ? "📹" : "📄"}
+                        </div>
+                        <div>
+                          <div className="font-semibold text-slate-800 leading-5 line-clamp-1">{en.content.title}</div>
+                          <div className="text-sm text-slate-500 mt-1">
+                            <span className="px-2 py-1 rounded-full bg-slate-100 text-xs font-medium uppercase">
+                              {en.content.type}
+                            </span>
+                            <span className="mx-2">•</span>
+                            <span>{en.content.businessName}</span>
+                          </div>
+                        </div>
                       </div>
                       {en.content.type === "live" && en.content.liveLink ? (
                         <a href={en.content.liveLink} target="_blank" rel="noreferrer">
-                          <Button size="sm">Join Now</Button>
+                          <Button size="sm" className="bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl">
+                            Join Live
+                          </Button>
                         </a>
                       ) : en.content.resourceUrl ? (
                         en.content.type === "pdf" ? (
                           <a href={en.content.resourceUrl} target="_blank" rel="noreferrer">
-                            <Button size="sm" variant="secondary">Open</Button>
+                            <Button size="sm" variant="outline" className="border-2 border-slate-300 hover:border-blue-500 hover:bg-blue-50 text-slate-700 hover:text-blue-600 font-semibold rounded-xl">
+                              Open PDF
+                            </Button>
                           </a>
                         ) : (
-                          <Button size="sm" variant="secondary" onClick={() => navigate("/my-courses")}>Open</Button>
+                          <Button size="sm" variant="outline" onClick={() => navigate("/my-courses")} className="border-2 border-slate-300 hover:border-blue-500 hover:bg-blue-50 text-slate-700 hover:text-blue-600 font-semibold rounded-xl">
+                            Continue
+                          </Button>
                         )
                       ) : (
-                        <Button size="sm" variant="secondary" onClick={() => navigate("/my-courses")}>Open</Button>
+                        <Button size="sm" variant="outline" onClick={() => navigate("/my-courses")} className="border-2 border-slate-300 hover:border-blue-500 hover:bg-blue-50 text-slate-700 hover:text-blue-600 font-semibold rounded-xl">
+                          Open
+                        </Button>
                       )}
                     </div>
                   ))}

@@ -1,141 +1,122 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, Sparkles, Menu, X } from "lucide-react";
+import { GraduationCap, Sparkles, Menu, X, ChevronDown } from "lucide-react";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur-md shadow-sm">
+    <header className={`sticky top-0 z-50 border-b transition-all duration-300 ${
+      scrolled 
+        ? 'bg-white/95 backdrop-blur-xl shadow-lg border-slate-200/50' 
+        : 'bg-white/90 backdrop-blur-md shadow-sm border-slate-200/30'
+    }`}>
       <div className="container max-w-7xl mx-auto px-4 py-3 sm:py-4">
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg">
-              <GraduationCap className="h-4 w-4 sm:h-5 sm:w-5" />
+          {/* Enhanced Logo */}
+          <Link to="/" className="flex items-center gap-2 sm:gap-3 group">
+            <div className="flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 text-white shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+              <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6" />
             </div>
-            <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent font-display">
               Edusathi
             </span>
-          </div>
+          </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
-            <Link
-              to="/creator"
-              className="text-slate-600 hover:text-blue-600 transition-colors font-medium relative group py-2"
-            >
-              Creator
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
-            </Link>
-            <Link
-              to="/business"
-              className="text-slate-600 hover:text-blue-600 transition-colors font-medium relative group py-2"
-            >
-              For Business
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
-            </Link>
-            <Link
-              to="/student"
-              className="text-slate-600 hover:text-blue-600 transition-colors font-medium relative group py-2"
-            >
-              For Students
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
-            </Link>
-            <Link
-              to="/about"
-              className="text-slate-600 hover:text-blue-600 transition-colors font-medium relative group py-2"
-            >
-              About us
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
-            </Link>
-            <Link
-              to="/contact"
-              className="text-slate-600 hover:text-blue-600 transition-colors font-medium relative group py-2"
-            >
-              Contact us
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
-            </Link>
+          {/* Enhanced Desktop Navigation */}
+          <nav className="hidden lg:flex items-center space-x-1 xl:space-x-2">
+            {[
+              { to: "/creator", label: "Creator" },
+              { to: "/business", label: "For Business" },
+              { to: "/student", label: "For Students" },
+              { to: "/about", label: "About us" },
+              { to: "/contact", label: "Contact us" },
+            ].map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                className="relative px-4 py-2 text-slate-600 hover:text-slate-900 transition-all duration-300 font-medium group rounded-xl hover:bg-slate-50"
+              >
+                {item.label}
+                <span className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-8 group-hover:left-1/2 transform -translate-x-1/2"></span>
+              </Link>
+            ))}
           </nav>
 
-          {/* Desktop CTA & Mobile Menu Button */}
+          {/* Enhanced Desktop CTA & Mobile Menu Button */}
           <div className="flex items-center gap-3">
             <Link to="/get-started" className="hidden sm:block">
-              <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-4 sm:px-6 py-2 text-sm sm:text-base shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-                <Sparkles className="w-4 h-4 mr-2" />
-                Join Now
+              <Button className="relative overflow-hidden bg-gradient-to-r from-blue-500 via-purple-600 to-indigo-600 hover:from-blue-600 hover:via-purple-700 hover:to-indigo-700 text-white px-4 sm:px-6 py-2 text-sm sm:text-base shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-xl font-semibold group">
+                <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <Sparkles className="w-4 h-4 mr-2 relative z-10 group-hover:rotate-12 transition-transform duration-300" />
+                <span className="relative z-10">Join Now</span>
               </Button>
             </Link>
             
-            {/* Mobile Menu Button */}
+            {/* Enhanced Mobile Menu Button */}
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden p-2"
+              className="lg:hidden p-2 rounded-xl hover:bg-slate-100 transition-colors duration-300"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              <div className="relative w-5 h-5">
+                <Menu className={`absolute inset-0 transition-all duration-300 ${mobileMenuOpen ? 'opacity-0 rotate-90' : 'opacity-100 rotate-0'}`} />
+                <X className={`absolute inset-0 transition-all duration-300 ${mobileMenuOpen ? 'opacity-100 rotate-0' : 'opacity-0 -rotate-90'}`} />
+              </div>
             </Button>
           </div>
-          
-          {/* Mobile Navigation Menu */}
-          {mobileMenuOpen && (
-            <div className="lg:hidden mt-4 pb-4 border-t border-slate-200 animate-in slide-in-from-top-2 duration-300">
-              <nav className="flex flex-col space-y-3 pt-4">
+        </div>
+
+        {/* Enhanced Mobile Navigation Menu */}
+        <div className={`lg:hidden transition-all duration-300 ease-in-out ${
+          mobileMenuOpen 
+            ? 'max-h-96 opacity-100 mt-4 pb-4' 
+            : 'max-h-0 opacity-0 overflow-hidden'
+        }`}>
+          <div className="border-t border-slate-200/50 pt-4">
+            <nav className="flex flex-col space-y-1">
+              {[
+                { to: "/creator", label: "Creator" },
+                { to: "/business", label: "For Business" },
+                { to: "/student", label: "For Students" },
+                { to: "/catalog", label: "Catalog" },
+                { to: "/about", label: "About us" },
+                { to: "/contact", label: "Contact us" },
+              ].map((item) => (
                 <Link
-                  to="/creator"
-                  className="text-slate-600 hover:text-blue-600 transition-colors font-medium py-2 px-2 rounded-lg hover:bg-blue-50"
+                  key={item.to}
+                  to={item.to}
+                  className="text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all duration-300 font-medium py-3 px-4 rounded-xl"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Creator
+                  {item.label}
                 </Link>
-                <Link
-                  to="/business"
-                  className="text-slate-600 hover:text-blue-600 transition-colors font-medium py-2 px-2 rounded-lg hover:bg-blue-50"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  For Business
-                </Link>
-                <Link
-                  to="/student"
-                  className="text-slate-600 hover:text-blue-600 transition-colors font-medium py-2 px-2 rounded-lg hover:bg-blue-50"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  For Students
-                </Link>
-                <Link
-                  to="/catalog"
-                  className="text-slate-600 hover:text-blue-600 transition-colors font-medium py-2 px-2 rounded-lg hover:bg-blue-50"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Catalog
-                </Link>
-                <Link
-                  to="/about"
-                  className="text-slate-600 hover:text-blue-600 transition-colors font-medium py-2 px-2 rounded-lg hover:bg-blue-50"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  About us
-                </Link>
-                <Link
-                  to="/contact"
-                  className="text-slate-600 hover:text-blue-600 transition-colors font-medium py-2 px-2 rounded-lg hover:bg-blue-50"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Contact us
-                </Link>
-                <div className="pt-3 border-t border-slate-200">
-                  <Link to="/get-started" onClick={() => setMobileMenuOpen(false)}>
-                    <Button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
-                      <Sparkles className="w-4 h-4 mr-2" />
-                      Join Now
-                    </Button>
-                  </Link>
-                </div>
-              </nav>
+              ))}
+            </nav>
+            
+            {/* Enhanced Mobile CTA */}
+            <div className="pt-4 border-t border-slate-200/50 mt-4">
+              <Link to="/get-started" onClick={() => setMobileMenuOpen(false)}>
+                <Button className="w-full bg-gradient-to-r from-blue-500 via-purple-600 to-indigo-600 hover:from-blue-600 hover:via-purple-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl font-semibold group">
+                  <Sparkles className="w-4 h-4 mr-2 group-hover:rotate-12 transition-transform duration-300" />
+                  Join Now
+                </Button>
+              </Link>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </header>
