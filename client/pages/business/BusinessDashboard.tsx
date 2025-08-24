@@ -55,12 +55,35 @@ export default function BusinessDashboard() {
 
   // Fetch subscription details for current business by email
   const refreshSubscription = () => {
-    const email = profile?.email;
-    if (!email) return;
+    const storedEmail = localStorage.getItem("businessEmail") || sessionStorage.getItem("businessEmail") || undefined;
+    const storedDomain = localStorage.getItem("businessDomain") || sessionStorage.getItem("businessDomain") || undefined;
+    const email = profile?.email || storedEmail;
+    const domain = storedDomain;
+
+    if (!email && !domain) {
+      setSubscription(null);
+      setPlanPurchased(false);
+      setSubError("No identifier found. Please purchase a plan or log in.");
+      return;
+    }
     setSubError(null);
     setSubLoading(true);
-    CentersAPI.lookupByEmail(email)
-      .then((data: any) => {
+
+    (async () => {
+      try {
+        let data: any | null = null;
+        if (email) {
+          try {
+            data = await CentersAPI.lookupByEmail(email);
+          } catch (_e) {
+            data = null;
+          }
+        }
+        if (!data && domain) {
+          data = await CentersAPI.lookupByDomain(domain);
+        }
+        if (!data) throw new Error("lookup failed");
+
         setSubscription({
           plan: data?.plan,
           status: data?.status,
@@ -74,12 +97,14 @@ export default function BusinessDashboard() {
           setSelectedTemplate(data.templateId);
           localStorage.setItem("businessTemplate", data.templateId);
         }
-      })
-      .catch(() => {
+      } catch {
         setSubscription(null);
+        setPlanPurchased(false);
         setSubError("No active subscription found.");
-      })
-      .finally(() => setSubLoading(false));
+      } finally {
+        setSubLoading(false);
+      }
+    })();
   };
 
   useEffect(() => {
@@ -88,7 +113,6 @@ export default function BusinessDashboard() {
 
   // Also refresh subscription when navigating to relevant pages
   useEffect(() => {
-    if (!profile?.email) return;
     const p = location.pathname;
     if (
       p.startsWith("/business/templates") ||
@@ -102,7 +126,7 @@ export default function BusinessDashboard() {
   // Refresh on window focus (returning from payment or switching tabs)
   useEffect(() => {
     const onFocus = () => {
-      if (profile?.email) refreshSubscription();
+      refreshSubscription();
     };
     window.addEventListener("focus", onFocus);
     return () => window.removeEventListener("focus", onFocus);
@@ -134,6 +158,8 @@ export default function BusinessDashboard() {
       storage.removeItem("businessTemplate");
       storage.removeItem("businessAvatarUrl");
       storage.removeItem("planPurchased");
+      storage.removeItem("businessEmail");
+      storage.removeItem("businessDomain");
     }
     navigate("/auth?role=business", { replace: true });
   }
@@ -201,45 +227,39 @@ export default function BusinessDashboard() {
             <Pricing />
           </div>
         ) : location.pathname.startsWith("/business/templates") ? (
-          planPurchased ? (
-            <div className="grid md:grid-cols-2 gap-6">
-              {[1,2,3,4].map((n) => (
-                <Card
-                  key={n}
-                  className={`rounded-2xl overflow-hidden ${selectedTemplate === ('t' + n) ? "ring-2 ring-blue-500 border-blue-500" : ""}`}
-                >
-                  <CardHeader>
-                    <CardTitle>Template {n}</CardTitle>
-                    <CardDescription>Select to create your website home</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="h-32 rounded-lg border bg-gradient-to-r from-slate-100 to-slate-200">
-                      <h1 className="text-3xl font-bold text-center m-10">Choose your Template</h1>
-                    </div>
-                    <div className="flex justify-end gap-3">
-                      <Button
-                        onClick={() => applyTemplate(`t${n}`)}
-                        disabled={applyingId === `t${n}`}
-                      >
-                        {selectedTemplate === `t${n}` ? "Applied" : "Apply"}
+          <div className="grid md:grid-cols-2 gap-6">
+            {[1,].map((n) => (
+              <Card
+                key={n}
+                className={`rounded-2xl overflow-hidden ${selectedTemplate === ('t' + n) ? "ring-2 ring-blue-500 border-blue-500" : ""}`}
+              >
+                <CardHeader>
+                  <CardTitle>Template {n}</CardTitle>
+                  <CardDescription>Select to create your website home</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="h-32 rounded-lg border bg-gradient-to-r from-slate-100 to-slate-200">
+                    <h1 className="text-3xl font-bold text-center m-10">Choose your Template</h1>
+                  </div>
+                  <div className="flex justify-end gap-3">
+                    <Button
+                      onClick={() => applyTemplate(`t${n}`)}
+                      disabled={applyingId === `t${n}` || !planPurchased}
+                      title={!planPurchased ? 'Purchase a plan to apply this template' : undefined}
+                    >
+                      {selectedTemplate === `t${n}` ? "Applied" : (!planPurchased ? "Apply (locked)" : "Apply")}
+                    </Button>
+                    <Button onClick={() => chooseTemplate(`t${n}`)}>View Template</Button>
+                    {!planPurchased && (
+                      <Button variant="outline" onClick={() => navigate("/business/subscription-plan")}>
+                        View Plans
                       </Button>
-                      <Button onClick={() => chooseTemplate(`t${n}`)}>View Template</Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <Card className="rounded-2xl">
-              <CardHeader>
-                <CardTitle>Templates Locked</CardTitle>
-                <CardDescription>Purchase a plan to unlock website templates.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button onClick={() => navigate("/business/subscription-plan")}>View Plans</Button>
-              </CardContent>
-            </Card>
-          )
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         ) : location.pathname.startsWith("/business/website") ? (
           <div className="grid gap-6">
             <Card className="rounded-2xl">
@@ -322,6 +342,9 @@ export default function BusinessDashboard() {
                 <CardDescription>Your current plan and billing history</CardDescription>
               </CardHeader>
               <CardContent>
+                <div className="flex justify-end mb-3">
+                  <Button size="sm" variant="outline" onClick={refreshSubscription}>Refresh</Button>
+                </div>
                 {subLoading ? (
                   <p className="text-slate-700">Loading subscription...</p>
                 ) : subError ? (
@@ -330,6 +353,7 @@ export default function BusinessDashboard() {
                   <div className="space-y-1">
                     <p className="text-slate-700"><strong>Plan:</strong> {subscription?.plan || "—"}</p>
                     <p className="text-slate-700"><strong>Status:</strong> {(subscription?.status || "—").toString()}</p>
+                    <p className="text-slate-700"><strong>Start date:</strong> {subscription?.subscriptionStartAt ? new Date(subscription.subscriptionStartAt).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric" }) : "—"}</p>
                     <p className="text-slate-700"><strong>Next billing:</strong> {subscription?.expiresAt ? new Date(subscription.expiresAt).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric" }) : "—"}</p>
                   </div>
                 )}
