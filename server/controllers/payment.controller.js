@@ -1,6 +1,8 @@
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import Center from '../models/Center.js';
+import Business from '../models/Business.js';
+import BusinessPurchase from '../models/BusinessPurchase.js';
 
 function computeExpiresAt(plan, durationDays) {
   const now = new Date();
@@ -104,6 +106,33 @@ export const createPaymentOrder = async (req, res) => {
       notes: { institute, owner, email, plan, domain, durationDays: durationDays ?? null, billing: billing ?? null, timestamp: new Date().toISOString() },
     });
 
+    // Persist a purchase record with status 'created'
+    try {
+      const authBizId = req.user?.role === 'business' ? req.user._id : null;
+      const bizByEmail = email ? await Business.findOne({ email: String(email).toLowerCase() }).lean() : null;
+      await BusinessPurchase.findOneAndUpdate(
+        { razorpay_order_id: order.id },
+        {
+          $set: {
+            businessId: authBizId || (bizByEmail ? bizByEmail._id : null),
+            email: String(email || '').toLowerCase(),
+            instituteName: institute || '',
+            ownerName: owner || '',
+            domain: domain || '',
+            plan: plan || '',
+            amount: Number(order.amount) || Number(amount) || 0,
+            currency: order.currency || 'INR',
+            durationDays: durationDays ?? null,
+            billing: billing ?? null,
+            status: 'created',
+          },
+        },
+        { upsert: true, new: true }
+      );
+    } catch (persistErr) {
+      console.error('Failed to persist business purchase (create):', persistErr);
+    }
+
     res.json({ success: true, order: { id: order.id, amount: Number(order.amount), currency: order.currency, receipt: order.receipt || '' } });
   } catch (error) {
     console.error('Payment order creation failed:', error?.statusCode, error?.error || error);
@@ -158,6 +187,19 @@ export const verifyPayment = async (req, res) => {
         existingCenter.expiresAt = newExpiry;
         await existingCenter.save();
 
+        // Update purchase record to 'paid' and link center/business
+        try {
+          const authBizId = req.user?.role === 'business' ? req.user._id : null;
+          const biz = authBizId ? await Business.findById(authBizId).lean() : (email ? await Business.findOne({ email: String(email).toLowerCase() }).lean() : null);
+          await BusinessPurchase.findOneAndUpdate(
+            { razorpay_order_id },
+            { $set: { status: 'paid', razorpay_payment_id, centerId: existingCenter._id, businessId: (authBizId || (biz ? biz._id : null)), plan, domain } },
+            { upsert: true }
+          );
+        } catch (persistErr) {
+          console.error('Failed to persist business purchase (verify-update):', persistErr);
+        }
+
         return res.json({ success: true, message: 'Payment verified and subscription updated successfully', payment_id: razorpay_payment_id, order_id: razorpay_order_id, center: existingCenter, updated: true });
       }
 
@@ -177,8 +219,33 @@ export const verifyPayment = async (req, res) => {
 
       await newCenter.save();
 
+      // Update purchase record to 'paid' and link new center/business
+      try {
+        const authBizId = req.user?.role === 'business' ? req.user._id : null;
+        const biz = authBizId ? await Business.findById(authBizId).lean() : (email ? await Business.findOne({ email: String(email).toLowerCase() }).lean() : null);
+        await BusinessPurchase.findOneAndUpdate(
+          { razorpay_order_id },
+          { $set: { status: 'paid', razorpay_payment_id, centerId: newCenter._id, businessId: (authBizId || (biz ? biz._id : null)), plan, domain } },
+          { upsert: true }
+        );
+      } catch (persistErr) {
+        console.error('Failed to persist business purchase (verify-create):', persistErr);
+      }
+
       res.json({ success: true, message: 'Payment verified and institute created successfully', payment_id: razorpay_payment_id, order_id: razorpay_order_id, center: newCenter });
     } else {
+      // Mark purchase as failed if we have an order id
+      try {
+        if (razorpay_order_id) {
+          await BusinessPurchase.findOneAndUpdate(
+            { razorpay_order_id },
+            { $set: { status: 'failed' } },
+            { upsert: true }
+          );
+        }
+      } catch (persistErr) {
+        console.error('Failed to persist business purchase (failed):', persistErr);
+      }
       res.status(400).json({ success: false, error: 'Payment verification failed' });
     }
   } catch (error) {
@@ -189,4 +256,31 @@ export const verifyPayment = async (req, res) => {
 
 export const getPaymentConfig = (_req, res) => {
   res.json({ key_id: process.env.RAZORPAY_KEY_ID || null, configured: Boolean(process.env.RAZORPAY_KEY_ID) });
+};
+
+// List purchases for the authenticated business
+export const getMyBusinessPurchases = async (req, res) => {
+  try {
+    if (!req.user || req.user.role !== 'business') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    const businessId = req.user._id;
+    const biz = await Business.findById(businessId).lean();
+    const email = biz?.email || null;
+
+    const query = email
+      ? { $or: [ { businessId }, { email: String(email).toLowerCase() } ] }
+      : { businessId };
+
+    const purchases = await BusinessPurchase.find(query)
+      .populate('centerId', 'instituteName domain plan expiresAt')
+      .sort({ createdAt: -1 })
+      .lean();
+
+    res.json({ success: true, purchases });
+  } catch (e) {
+    console.error('getMyBusinessPurchases failed:', e);
+    res.status(500).json({ success: false, error: 'Failed to fetch purchases' });
+  }
 };

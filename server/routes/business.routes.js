@@ -5,6 +5,6 @@ import { createBusiness, getBusinesses } from '../controllers/business.controlle
 const router = express.Router();
 
 router.get('/', authenticateToken, getBusinesses);
-router.post('/', authenticateToken, requireRole(['creator', 'business']), createBusiness);
+router.post('/', authenticateToken, requireRole(['business']), createBusiness);
 
 export default router;

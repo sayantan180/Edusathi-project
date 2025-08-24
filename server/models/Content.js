@@ -11,7 +11,7 @@ const ContentSchema = new Schema({
   thumbnailUrl: { type: String, default: '' },
   resourceUrl: { type: String, default: '' },
   liveLink: { type: String, default: '' },
-  creatorId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+  creatorId: { type: Schema.Types.ObjectId, ref: 'Creator', required: true, index: true },
   businessId: { type: Schema.Types.ObjectId, ref: 'Business', default: null },
   businessName: { type: String, default: '' },
   isActive: { type: Boolean, default: true },

@@ -1,5 +1,8 @@
 import bcrypt from 'bcryptjs';
-import User from '../models/User.js';
+import Business from '../models/Business.js';
+import Student from '../models/Student.js';
+import Creator from '../models/Creator.js';
+import Admin from '../models/Admin.js';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/jwt.js';
 import { getFileUrl } from '../middleware/upload.js';
 
@@ -7,46 +10,32 @@ export const register = async (req, res) => {
   try {
     const { name, email, password, role } = req.body || {};
     if (!name || !email || !password) return res.status(400).json({ message: 'Missing fields' });
+    const newRole = (role || 'student').toLowerCase();
 
-    let user = await User.findOne({ email });
-    // If user exists, allow adding a new role if password matches
-    if (user) {
-      const ok = await bcrypt.compare(password, user.password);
-      if (!ok) return res.status(401).json({ message: 'Invalid credentials for existing email' });
-      const currentRoles = Array.isArray(user.roles) && user.roles.length
-        ? user.roles
-        : (user.role ? [user.role] : ['student']);
-      const newRole = (role || 'student').toLowerCase();
-      if (!currentRoles.includes(newRole)) {
-        user.roles = [...currentRoles, newRole];
-        await user.save();
-      } else {
-        // Ensure roles field is normalized even if already had role
-        if (!Array.isArray(user.roles) || !user.roles.length) {
-          user.roles = currentRoles;
-          await user.save();
-        }
-      }
-      const selectedRole = newRole;
-      const access_token = signAccessToken({ sub: user._id.toString(), role: selectedRole });
-      const refresh_token = signRefreshToken({ sub: user._id.toString(), role: selectedRole });
-      return res.status(200).json({
-        user: sanitizeUser(user, selectedRole),
-        access_token,
-        refresh_token,
-      });
+    const Model = getRoleModel(newRole);
+    if (!Model) return res.status(400).json({ message: 'Invalid role' });
+
+    const exists = await Model.findOne({ email: String(email).toLowerCase() });
+    if (exists) return res.status(409).json({ message: 'Email already registered for this role' });
+
+    const hash = await bcrypt.hash(password, 10);
+    const base = { name, email: String(email).toLowerCase(), password: hash };
+    let created;
+    if (newRole === 'business') {
+      created = await Model.create({ ...base });
+    } else if (newRole === 'student') {
+      created = await Model.create({ ...base });
+    } else if (newRole === 'creator') {
+      created = await Model.create({ ...base });
+    } else if (newRole === 'admin') {
+      created = await Model.create({ ...base });
     }
 
-    // Create new user with initial role
-    const hash = await bcrypt.hash(password, 10);
-    const initialRole = (role || 'student').toLowerCase();
-    user = await User.create({ name, email, password: hash, roles: [initialRole] });
-
-    const access_token = signAccessToken({ sub: user._id.toString(), role: initialRole });
-    const refresh_token = signRefreshToken({ sub: user._id.toString(), role: initialRole });
+    const access_token = signAccessToken({ sub: created._id.toString(), role: newRole });
+    const refresh_token = signRefreshToken({ sub: created._id.toString(), role: newRole });
 
     res.status(201).json({
-      user: sanitizeUser(user, initialRole),
+      user: sanitizeRoleUser(created, newRole),
       access_token,
       refresh_token,
     });
@@ -59,29 +48,33 @@ export const register = async (req, res) => {
   }
 };
 
+function getRoleModel(role) {
+  if (role === 'business') return Business;
+  if (role === 'student') return Student;
+  if (role === 'creator') return Creator;
+  if (role === 'admin') return Admin;
+  return null;
+}
+
 export const login = async (req, res) => {
   try {
     const { email, password, role } = req.body || {};
     if (!email || !password) return res.status(400).json({ message: 'Missing credentials' });
+    const selectedRole = (role || '').toLowerCase();
+    const Model = getRoleModel(selectedRole);
+    if (!Model) return res.status(400).json({ message: 'role is required' });
 
-    const user = await User.findOne({ email });
-    if (!user) return res.status(401).json({ message: 'Invalid credentials' });
+    const account = await Model.findOne({ email: String(email).toLowerCase() });
+    if (!account) return res.status(401).json({ message: 'Invalid credentials' });
 
-    const ok = await bcrypt.compare(password, user.password);
+    const ok = await bcrypt.compare(password, account.password || '');
     if (!ok) return res.status(401).json({ message: 'Invalid credentials' });
 
-    const roles = Array.isArray(user.roles) && user.roles.length
-      ? user.roles
-      : (user.role ? [user.role] : ['student']);
-    // If client requests a role, prefer it if the user has it
-    const requestedRole = (role || '').toLowerCase();
-    const selectedRole = roles.includes(requestedRole) ? requestedRole : roles[0];
-
-    const access_token = signAccessToken({ sub: user._id.toString(), role: selectedRole });
-    const refresh_token = signRefreshToken({ sub: user._id.toString(), role: selectedRole });
+    const access_token = signAccessToken({ sub: account._id.toString(), role: selectedRole });
+    const refresh_token = signRefreshToken({ sub: account._id.toString(), role: selectedRole });
 
     res.json({
-      user: sanitizeUser(user, selectedRole),
+      user: sanitizeRoleUser(account, selectedRole),
       access_token,
       refresh_token,
     });
@@ -111,13 +104,14 @@ export const getProfile = async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const user = await User.findById(userId).select('name email roles role avatarUrl');
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
+    const role = req.user?.role;
+    const Model = getRoleModel(role);
+    if (!Model) return res.status(400).json({ error: 'Invalid role' });
 
-    const selectedRole = req.user?.role || (Array.isArray(user.roles) && user.roles[0]) || 'student';
-    res.json({ user: sanitizeUser(user, selectedRole) });
+    const account = await Model.findById(userId).select('name email avatarUrl');
+    if (!account) return res.status(404).json({ error: 'User not found' });
+
+    res.json({ user: sanitizeRoleUser(account, role) });
   } catch (error) {
     console.error('Get profile error:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -136,25 +130,23 @@ export const updateAvatar = async (req, res) => {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
+    const role = req.user?.role;
+    const Model = getRoleModel(role);
+    if (!Model) return res.status(400).json({ error: 'Invalid role' });
 
-    user.avatarUrl = getFileUrl(file.filename);
-    await user.save();
+    const account = await Model.findById(userId);
+    if (!account) return res.status(404).json({ error: 'User not found' });
 
-    const selectedRole = req.user?.role;
-    res.json({ user: sanitizeUser(user, selectedRole) });
+    account.avatarUrl = getFileUrl(file.filename);
+    await account.save();
+
+    res.json({ user: sanitizeRoleUser(account, role) });
   } catch (error) {
     console.error('Update avatar error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
 
-function sanitizeUser(user, selectedRole) {
-  const roles = Array.isArray(user.roles) && user.roles.length
-    ? user.roles
-    : (user.role ? [user.role] : ['student']);
-  return { id: String(user._id), name: user.name, email: user.email, role: selectedRole || roles[0], roles, avatarUrl: user.avatarUrl || '' };
+function sanitizeRoleUser(doc, role) {
+  return { id: String(doc._id), name: doc.name, email: doc.email, role: role, roles: [role], avatarUrl: doc.avatarUrl || '' };
 }
