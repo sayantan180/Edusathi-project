@@ -47,9 +47,9 @@ export default function HeroSection() {
   ];
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 dark:from-slate-900 dark:via-slate-800/30 dark:to-slate-900/50">
       {/* Enhanced Background with Mesh Gradient */}
-      <div className="absolute inset-0 bg-mesh-gradient opacity-5"></div>
+      <div className="absolute inset-0 bg-mesh-gradient opacity-5 dark:opacity-10"></div>
       
       {/* Enhanced Floating Background Cards */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -84,9 +84,9 @@ export default function HeroSection() {
           
           {/* Trust Badge */}
           <div className="animate-in fade-in duration-700 delay-100">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-200/50 backdrop-blur-sm">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-400/20 dark:to-purple-400/20 border border-blue-200/50 dark:border-blue-700/50 backdrop-blur-sm">
               <Star className="w-4 h-4 text-yellow-500 fill-current" />
-              <span className="text-sm font-medium text-slate-700">Trusted by 1000+ Educational Institutes</span>
+              <span className="text-sm font-medium text-slate-800 dark:text-slate-200">Trusted by 1000+ Educational Institutes</span>
               <Star className="w-4 h-4 text-yellow-500 fill-current" />
             </div>
           </div>
@@ -98,7 +98,7 @@ export default function HeroSection() {
 
           {/* Enhanced Description */}
           <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300">
-            <p className="text-lg sm:text-xl md:text-2xl text-slate-700 max-w-4xl mx-auto leading-relaxed px-4 text-balance">
+            <p className="text-lg sm:text-xl md:text-2xl text-slate-700 dark:text-slate-300 max-w-4xl mx-auto leading-relaxed px-4 text-balance">
               Harness the power of{" "}
               <span className="font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
                 artificial intelligence
@@ -130,11 +130,11 @@ export default function HeroSection() {
               <Button
                 variant="outline"
                 size="lg"
-                className="group border-2 border-slate-300 hover:border-blue-500 text-slate-700 hover:text-blue-600 px-8 md:px-10 py-4 text-lg md:text-xl hover:shadow-lg transition-all duration-300 hover:scale-105 w-full sm:w-auto font-semibold bg-white/80 backdrop-blur-sm rounded-2xl hover:bg-white"
+                className="group border-2 border-slate-300 dark:border-slate-600 hover:border-blue-500 dark:hover:border-blue-400 text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 px-8 md:px-10 py-4 text-lg md:text-xl hover:shadow-lg transition-all duration-300 hover:scale-105 w-full sm:w-auto font-semibold bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl hover:bg-white dark:hover:bg-slate-800"
               >
                 <Play className="w-5 md:w-6 h-5 md:h-6 mr-3 group-hover:scale-110 transition-transform duration-300" />
                 Watch Demo
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-400/20 dark:to-purple-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
               </Button>
             </div>
           </div>
@@ -172,12 +172,12 @@ export default function HeroSection() {
               ].map((stat, index) => (
                 <div
                   key={index}
-                  className="text-center p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/30 hover:bg-white/80 transition-all duration-300 card-elevated"
+                  className="text-center p-4 rounded-2xl bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/30 dark:border-slate-700/30 hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 card-elevated"
                 >
-                  <div className="text-2xl md:text-3xl font-bold text-slate-800 mb-1">
+                  <div className="text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-200 mb-1">
                     {stat.number}
                   </div>
-                  <div className="text-sm md:text-base text-slate-600 font-medium">
+                  <div className="text-sm md:text-base text-slate-600 dark:text-slate-400 font-medium">
                     {stat.label}
                   </div>
                 </div>

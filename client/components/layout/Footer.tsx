@@ -4,7 +4,7 @@ import { GraduationCap, Facebook, Twitter, Linkedin, Instagram } from "lucide-re
 
 export default function Footer() {
   return (
-    <footer className="border-t bg-white/80 backdrop-blur-sm">
+    <footer className="border-t border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm">
       <div className="container max-w-7xl mx-auto px-4 py-16">
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Brand */}
@@ -17,7 +17,7 @@ export default function Footer() {
                 Edusathi
               </span>
             </div>
-            <p className="text-slate-600 mb-6 max-w-md">
+            <p className="text-slate-600 dark:text-slate-400 mb-6 max-w-md">
               All-in-one AI-powered platform for institutes. Take your
               institute online and grow with confidence.
             </p>
@@ -25,28 +25,28 @@ export default function Footer() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-full hover:bg-blue-100 hover:text-blue-600 hover:scale-110 transition-all duration-300 hover:shadow-lg"
+                className="rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/50 hover:text-blue-600 dark:hover:text-blue-400 hover:scale-110 transition-all duration-300 hover:shadow-lg"
               >
                 <Facebook className="w-5 h-5" />
               </Button>
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-full hover:bg-sky-100 hover:text-sky-600 hover:scale-110 transition-all duration-300 hover:shadow-lg"
+                className="rounded-full hover:bg-sky-100 dark:hover:bg-sky-900/50 hover:text-sky-600 dark:hover:text-sky-400 hover:scale-110 transition-all duration-300 hover:shadow-lg"
               >
                 <Twitter className="w-5 h-5" />
               </Button>
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-full hover:bg-blue-100 hover:text-blue-700 hover:scale-110 transition-all duration-300 hover:shadow-lg"
+                className="rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/50 hover:text-blue-700 dark:hover:text-blue-400 hover:scale-110 transition-all duration-300 hover:shadow-lg"
               >
                 <Linkedin className="w-5 h-5" />
               </Button>
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-full hover:bg-pink-100 hover:text-pink-600 hover:scale-110 transition-all duration-300 hover:shadow-lg"
+                className="rounded-full hover:bg-pink-100 dark:hover:bg-pink-900/50 hover:text-pink-600 dark:hover:text-pink-400 hover:scale-110 transition-all duration-300 hover:shadow-lg"
               >
                 <Instagram className="w-5 h-5" />
               </Button>
@@ -55,29 +55,29 @@ export default function Footer() {
 
           {/* Links */}
           <div>
-            <h4 className="font-semibold text-slate-900 mb-4">Product</h4>
+            <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-4">Product</h4>
             <div className="space-y-2">
               <a
                 href="#"
-                className="block text-slate-600 hover:text-blue-600 transition-colors"
+                className="block text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 Features
               </a>
               <a
                 href="#"
-                className="block text-slate-600 hover:text-blue-600 transition-colors"
+                className="block text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 Pricing
               </a>
               <a
                 href="#"
-                className="block text-slate-600 hover:text-blue-600 transition-colors"
+                className="block text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 Integrations
               </a>
               <a
                 href="#"
-                className="block text-slate-600 hover:text-blue-600 transition-colors"
+                className="block text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 API
               </a>
@@ -85,29 +85,29 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold text-slate-900 mb-4">Company</h4>
+            <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-4">Company</h4>
             <div className="space-y-2">
               <a
                 href="#"
-                className="block text-slate-600 hover:text-blue-600 transition-colors"
+                className="block text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 About us
               </a>
               <a
                 href="#"
-                className="block text-slate-600 hover:text-blue-600 transition-colors"
+                className="block text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 Careers
               </a>
               <a
                 href="#"
-                className="block text-slate-600 hover:text-blue-600 transition-colors"
+                className="block text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 Blog
               </a>
               <a
                 href="#"
-                className="block text-slate-600 hover:text-blue-600 transition-colors"
+                className="block text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 Contact
               </a>
@@ -115,29 +115,29 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold text-slate-900 mb-4">Legal</h4>
+            <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-4">Legal</h4>
             <div className="space-y-2">
               <a
                 href="#"
-                className="block text-slate-600 hover:text-blue-600 transition-colors"
+                className="block text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 Privacy Policy
               </a>
               <a
                 href="#"
-                className="block text-slate-600 hover:text-blue-600 transition-colors"
+                className="block text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 Terms of Service
               </a>
               <a
                 href="#"
-                className="block text-slate-600 hover:text-blue-600 transition-colors"
+                className="block text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 Cookie Policy
               </a>
               <a
                 href="#"
-                className="block text-slate-600 hover:text-blue-600 transition-colors"
+                className="block text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 GDPR
               </a>
@@ -145,9 +145,9 @@ export default function Footer() {
           </div>
         </div>
 
-        <Separator className="my-8" />
+        <Separator className="my-8 bg-slate-200 dark:bg-slate-700" />
 
-        <div className="text-center text-sm text-slate-600">
+        <div className="text-center text-sm text-slate-600 dark:text-slate-400">
           <p>
             © 2025 Edusathi. All rights reserved. Made with ❤️ for educators
             worldwide.

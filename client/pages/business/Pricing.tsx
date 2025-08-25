@@ -139,7 +139,7 @@ export default function Pricing() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       {/* Header */}
       {/* <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-sm">
         <div className="container max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -193,13 +193,13 @@ export default function Pricing() {
         {/* Hero Section */}
         <section className="container max-w-7xl mx-auto px-4 py-20 text-center">
           <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-slate-900 mb-6">
+            <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-6">
               Choose the perfect{" "}
-              <span className="bg-gradient-to-r from-blue-500 to-green-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-blue-500 to-green-500 dark:from-blue-400 dark:to-green-400 bg-clip-text text-transparent">
                 plan for you
               </span>
             </h1>
-            <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-12">
+            <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-12">
               Start with a free trial. Upgrade or downgrade at any time. No
               hidden fees.
             </p>
@@ -225,29 +225,29 @@ export default function Pricing() {
                 )}
 
                 <Card
-                  className={`rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all duration-300 h-full ${
+                  className={`rounded-2xl border-0 shadow-lg hover:shadow-xl dark:shadow-slate-900/50 dark:hover:shadow-slate-900/70 transition-all duration-300 h-full ${
                     plan.isPopular
-                      ? "ring-2 ring-blue-200 bg-white"
-                      : "bg-white/70 backdrop-blur-sm"
+                      ? "ring-2 ring-blue-200 dark:ring-blue-700 bg-white dark:bg-slate-800"
+                      : "bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm"
                   }`}
                 >
                   <CardHeader className="text-center pb-8">
                     <div className="flex justify-center mb-4">
-                      {index === 0 && <Zap className="w-8 h-8 text-blue-500" />}
-                      {index === 1 && <Building className="w-8 h-8 text-green-500" />}
-                      {index === 2 && <Crown className="w-8 h-8 text-purple-500" />}
+                      {index === 0 && <Zap className="w-8 h-8 text-blue-500 dark:text-blue-400" />}
+                      {index === 1 && <Building className="w-8 h-8 text-green-500 dark:text-green-400" />}
+                      {index === 2 && <Crown className="w-8 h-8 text-purple-500 dark:text-purple-400" />}
                     </div>
-                    <CardTitle className="text-2xl font-bold">
+                    <CardTitle className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                       {plan.name}
                     </CardTitle>
-                    <CardDescription className="text-slate-600">
+                    <CardDescription className="text-slate-600 dark:text-slate-400">
                       {plan.description}
                     </CardDescription>
                     <div className="pt-4">
-                      <div className="text-4xl font-bold text-slate-900">
+                      <div className="text-4xl font-bold text-slate-900 dark:text-slate-100">
                         {currencySymbol(plan.pricing[(plan.activeDuration || 'monthly') as 'monthly' | 'quarterly' | 'yearly']?.currency)}
                         {plan.pricing[(plan.activeDuration || 'monthly') as 'monthly' | 'quarterly' | 'yearly']?.price}
-                        <span className="text-lg font-normal text-slate-500">
+                        <span className="text-lg font-normal text-slate-500 dark:text-slate-400">
                           {(() => {
                             const d = (plan.activeDuration || 'monthly') as 'monthly' | 'quarterly' | 'yearly';
                             if (d === 'monthly') return '/month';
@@ -267,11 +267,11 @@ export default function Pricing() {
                     <Separator />
 
                     <div className="space-y-3">
-                      <h4 className="font-semibold text-slate-900">Everything included:</h4>
+                      <h4 className="font-semibold text-slate-900 dark:text-slate-100">Everything included:</h4>
                       {plan.features.filter((f) => f.included).map((feature, featureIndex) => (
                         <div key={featureIndex} className="flex items-center gap-3">
-                          <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                          <span className="text-slate-700">{feature.name}</span>
+                          <Check className="w-5 h-5 text-green-500 dark:text-green-400 flex-shrink-0" />
+                          <span className="text-slate-700 dark:text-slate-300">{feature.name}</span>
                         </div>
                       ))}
                     </div>
@@ -301,10 +301,10 @@ export default function Pricing() {
         {/* FAQ Section */}
         <section className="container max-w-4xl mx-auto px-4 py-20">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-semibold text-slate-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-semibold text-slate-900 dark:text-slate-100 mb-4">
               Frequently asked questions
             </h2>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-xl text-slate-600 dark:text-slate-400">
               Still have questions? We're here to help.
             </p>
           </div>
@@ -330,11 +330,11 @@ export default function Pricing() {
             ].map((faq, index) => (
               <Card
                 key={index}
-                className="rounded-2xl border-0 shadow-sm bg-white/70 backdrop-blur-sm"
+                className="rounded-2xl border-0 shadow-sm bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm"
               >
                 <CardContent className="p-6">
-                  <h4 className="font-semibold text-slate-900 mb-2">{faq.q}</h4>
-                  <p className="text-slate-600">{faq.a}</p>
+                  <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">{faq.q}</h4>
+                  <p className="text-slate-600 dark:text-slate-300">{faq.a}</p>
                 </CardContent>
               </Card>
             ))}

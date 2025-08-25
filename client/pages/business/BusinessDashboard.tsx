@@ -237,8 +237,8 @@ export default function BusinessDashboard() {
             </Avatar>
           </button>
           <div className="flex flex-col">
-            <span className="text-sm font-medium line-clamp-1">{profile?.name || "Business User"}</span>
-            <span className="text-xs text-muted-foreground" onClick={() => navigate("/business/account")} title="View profile">View profile</span>
+            <span className="text-sm font-medium line-clamp-1 text-slate-900 dark:text-slate-100">{profile?.name || "Business User"}</span>
+            <span className="text-xs text-muted-foreground dark:text-slate-400" onClick={() => navigate("/business/account")} title="View profile">View profile</span>
           </div>
         </div>
       }
@@ -255,15 +255,15 @@ export default function BusinessDashboard() {
             {[1,].map((n) => (
               <Card
                 key={n}
-                className={`rounded-2xl overflow-hidden ${selectedTemplate === ('t' + n) ? "ring-2 ring-blue-500 border-blue-500" : ""}`}
+                className={`rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 ${selectedTemplate === ('t' + n) ? "ring-2 ring-blue-500 border-blue-500" : ""}`}
               >
                 <CardHeader>
-                  <CardTitle>Template {n}</CardTitle>
-                  <CardDescription>Select to create your website home</CardDescription>
+                  <CardTitle className="text-slate-900 dark:text-slate-100">Template {n}</CardTitle>
+                  <CardDescription className="text-slate-600 dark:text-slate-400">Select to create your website home</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="h-32 rounded-lg border bg-gradient-to-r from-slate-100 to-slate-200">
-                    <h1 className="text-3xl font-bold text-center m-10">Choose your Template</h1>
+                  <div className="h-32 rounded-lg border border-slate-200 dark:border-slate-700 bg-gradient-to-r from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800">
+                    <h1 className="text-3xl font-bold text-center m-10 text-slate-800 dark:text-slate-200">Choose your Template</h1>
                   </div>
                   <div className="flex justify-end gap-3">
                     <Button
@@ -286,10 +286,10 @@ export default function BusinessDashboard() {
           </div>
         ) : location.pathname.startsWith("/business/website") ? (
           <div className="grid gap-6">
-            <Card className="rounded-2xl">
+            <Card className="rounded-2xl bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
               <CardHeader>
-                <CardTitle>Your Business Website</CardTitle>
-                <CardDescription>Public home generated from your selected template.</CardDescription>
+                <CardTitle className="text-slate-900 dark:text-slate-100">Your Business Website</CardTitle>
+                <CardDescription className="text-slate-600 dark:text-slate-400">Public home generated from your selected template.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 {(() => {
@@ -304,10 +304,10 @@ export default function BusinessDashboard() {
           </div>
         ) : location.pathname.startsWith("/business/account") ? (
           <div className="grid md:grid-cols-2 gap-6">
-            <Card className="rounded-2xl">
+            <Card className="rounded-2xl bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
               <CardHeader>
-                <CardTitle>Organization Profile</CardTitle>
-                <CardDescription>Your business account information</CardDescription>
+                <CardTitle className="text-slate-900 dark:text-slate-100">Organization Profile</CardTitle>
+                <CardDescription className="text-slate-600 dark:text-slate-400">Your business account information</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-4 mb-4">
@@ -317,7 +317,7 @@ export default function BusinessDashboard() {
                   </Avatar>
                   <div className="grid gap-2">
                     <div>
-                      <Label htmlFor="biz-avatar">Profile picture</Label>
+                      <Label htmlFor="biz-avatar" className="text-slate-900 dark:text-slate-100">Profile picture</Label>
                       <Input id="biz-avatar" type="file" accept="image/*" onChange={(e) => setAvatarFile(e.target.files?.[0] || null)} />
                     </div>
                     <div>
@@ -326,31 +326,31 @@ export default function BusinessDashboard() {
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <p><strong>Admin:</strong> {profile?.name || "-"}</p>
-                  <p><strong>Email:</strong> {profile?.email || "-"}</p>
-                  <p><strong>Role:</strong> {profile?.role || "business"}</p>
+                  <p className="text-slate-700 dark:text-slate-300"><strong>Admin:</strong> {profile?.name || "-"}</p>
+                  <p className="text-slate-700 dark:text-slate-300"><strong>Email:</strong> {profile?.email || "-"}</p>
+                  <p className="text-slate-700 dark:text-slate-300"><strong>Role:</strong> {profile?.role || "business"}</p>
                 </div>
               </CardContent>
             </Card>
-            <Card className="rounded-2xl">
+            <Card className="rounded-2xl bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
               <CardHeader>
-                <CardTitle>Team & Analytics</CardTitle>
-                <CardDescription>Manage members and view reports</CardDescription>
+                <CardTitle className="text-slate-900 dark:text-slate-100">Team & Analytics</CardTitle>
+                <CardDescription className="text-slate-600 dark:text-slate-400">Manage members and view reports</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-slate-600">No data yet. Invite your team to get started.</p>
+                <p className="text-slate-600 dark:text-slate-400">No data yet. Invite your team to get started.</p>
               </CardContent>
             </Card>
           </div>
         ) : location.pathname.startsWith("/business/setup") ? (
           <div className="grid gap-6">
-            <Card className="rounded-2xl">
+            <Card className="rounded-2xl bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
               <CardHeader>
-                <CardTitle>Setup Details</CardTitle>
-                <CardDescription>Complete your business profile and onboarding</CardDescription>
+                <CardTitle className="text-slate-900 dark:text-slate-100">Setup Details</CardTitle>
+                <CardDescription className="text-slate-600 dark:text-slate-400">Complete your business profile and onboarding</CardDescription>
               </CardHeader>
               <CardContent>
-                <ul className="list-disc pl-5 space-y-1 text-slate-700">
+                <ul className="list-disc pl-5 space-y-1 text-slate-700 dark:text-slate-300">
                   <li>Business profile configuration</li>
                   <li>Payment setup</li>
                   <li>Branding and contact info</li>
@@ -360,25 +360,25 @@ export default function BusinessDashboard() {
           </div>
         ) : location.pathname.startsWith("/business/subscription-details") ? (
           <div className="grid md:grid-cols-2 gap-6">
-            <Card className="rounded-2xl">
+            <Card className="rounded-2xl bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
               <CardHeader>
-                <CardTitle>Subscription Details</CardTitle>
-                <CardDescription>Your current plan and billing history</CardDescription>
+                <CardTitle className="text-slate-900 dark:text-slate-100">Subscription Details</CardTitle>
+                <CardDescription className="text-slate-600 dark:text-slate-400">Your current plan and billing history</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex justify-end mb-3">
                   <Button size="sm" variant="outline" onClick={() => { refreshSubscription(); refreshPurchases(); }}>Refresh</Button>
                 </div>
                 {subLoading ? (
-                  <p className="text-slate-700">Loading subscription...</p>
+                  <p className="text-slate-700 dark:text-slate-300">Loading subscription...</p>
                 ) : subError ? (
-                  <p className="text-slate-700">{subError}</p>
+                  <p className="text-slate-700 dark:text-slate-300">{subError}</p>
                 ) : (
                   <div className="space-y-1">
-                    <p className="text-slate-700"><strong>Plan:</strong> {subscription?.plan || "—"}</p>
-                    <p className="text-slate-700"><strong>Status:</strong> {(subscription?.status || "—").toString()}</p>
-                    <p className="text-slate-700"><strong>Start date:</strong> {subscription?.subscriptionStartAt ? new Date(subscription.subscriptionStartAt).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric" }) : "—"}</p>
-                    <p className="text-slate-700"><strong>Next billing:</strong> {subscription?.expiresAt ? new Date(subscription.expiresAt).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric" }) : "—"}</p>
+                    <p className="text-slate-700 dark:text-slate-300"><strong>Plan:</strong> {subscription?.plan || "—"}</p>
+                    <p className="text-slate-700 dark:text-slate-300"><strong>Status:</strong> {(subscription?.status || "—").toString()}</p>
+                    <p className="text-slate-700 dark:text-slate-300"><strong>Start date:</strong> {subscription?.subscriptionStartAt ? new Date(subscription.subscriptionStartAt).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric" }) : "—"}</p>
+                    <p className="text-slate-700 dark:text-slate-300"><strong>Next billing:</strong> {subscription?.expiresAt ? new Date(subscription.expiresAt).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric" }) : "—"}</p>
                   </div>
                 )}
               </CardContent>
@@ -418,39 +418,39 @@ export default function BusinessDashboard() {
           </div>
         ) : location.pathname.startsWith("/business/contact") ? (
           <div className="grid gap-6">
-            <Card className="rounded-2xl">
+            <Card className="rounded-2xl bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
               <CardHeader>
-                <CardTitle>Help & Contact Us</CardTitle>
-                <CardDescription>We are here to help you</CardDescription>
+                <CardTitle className="text-slate-900 dark:text-slate-100">Help & Contact Us</CardTitle>
+                <CardDescription className="text-slate-600 dark:text-slate-400">We are here to help you</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-slate-700 mb-2">Email: support@example.com</p>
-                <p className="text-slate-700">You can also reach us via the contact page.</p>
+                <p className="text-slate-700 dark:text-slate-300 mb-2">Email: support@example.com</p>
+                <p className="text-slate-700 dark:text-slate-300">You can also reach us via the contact page.</p>
               </CardContent>
             </Card>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 gap-6">
-            <Card className="rounded-2xl">
+            <Card className="rounded-2xl bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
               <CardHeader>
-                <CardTitle>Profile</CardTitle>
-                <CardDescription>Organization profile</CardDescription>
+                <CardTitle className="text-slate-900 dark:text-slate-100">Profile</CardTitle>
+                <CardDescription className="text-slate-600 dark:text-slate-400">Organization profile</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-1">
-                  <p><strong>Admin:</strong> {profile?.name || "-"}</p>
-                  <p><strong>Email:</strong> {profile?.email || "-"}</p>
-                  <p><strong>Role:</strong> {profile?.role || "business"}</p>
+                  <p className="text-slate-700 dark:text-slate-300"><strong>Admin:</strong> {profile?.name || "-"}</p>
+                  <p className="text-slate-700 dark:text-slate-300"><strong>Email:</strong> {profile?.email || "-"}</p>
+                  <p className="text-slate-700 dark:text-slate-300"><strong>Role:</strong> {profile?.role || "business"}</p>
                 </div>
               </CardContent>
             </Card>
-            <Card className="rounded-2xl">
+            <Card className="rounded-2xl bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
               <CardHeader>
-                <CardTitle>Team & Analytics</CardTitle>
-                <CardDescription>Manage members and view reports</CardDescription>
+                <CardTitle className="text-slate-900 dark:text-slate-100">Team & Analytics</CardTitle>
+                <CardDescription className="text-slate-600 dark:text-slate-400">Manage members and view reports</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-slate-600">No data yet. Invite your team to get started.</p>
+                <p className="text-slate-600 dark:text-slate-400">No data yet. Invite your team to get started.</p>
               </CardContent>
             </Card>
           </div>

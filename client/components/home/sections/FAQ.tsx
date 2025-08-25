@@ -31,10 +31,10 @@ export default function FAQ() {
   return (
     <section className="container max-w-4xl mx-auto px-4 py-20">
       <div className="text-center mb-16">
-        <h2 className="text-3xl md:text-4xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+        <h2 className="text-3xl md:text-4xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent mb-4">
           Frequently asked questions
         </h2>
-        <p className="text-xl text-muted-foreground">
+        <p className="text-xl text-muted-foreground dark:text-slate-300">
           Everything you need to know about Edusathi
         </p>
       </div>
@@ -44,12 +44,12 @@ export default function FAQ() {
           <AccordionItem
             key={index}
             value={`item-${index}`}
-            className="border rounded-2xl px-6 bg-white/70 backdrop-blur-sm"
+            className="border border-slate-200 dark:border-slate-700 rounded-2xl px-6 bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm"
           >
-            <AccordionTrigger className="text-left font-semibold hover:no-underline">
+            <AccordionTrigger className="text-left font-semibold hover:no-underline text-slate-900 dark:text-slate-100">
               {faq.q}
             </AccordionTrigger>
-            <AccordionContent className="text-slate-600 pb-4">
+            <AccordionContent className="text-slate-600 dark:text-slate-300 pb-4">
               {faq.a}
             </AccordionContent>
           </AccordionItem>

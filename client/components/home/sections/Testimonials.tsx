@@ -30,10 +30,10 @@ export default function Testimonials() {
   return (
     <section className="container max-w-7xl mx-auto px-4 py-20">
       <div className="text-center mb-16">
-        <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent mb-6 leading-tight">
+        <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-700 to-purple-700 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent mb-6 leading-tight">
           Trusted by educators worldwide
         </h2>
-        <p className="text-xl text-slate-700 leading-relaxed">
+        <p className="text-xl text-slate-700 dark:text-slate-300 leading-relaxed">
           See what our users have to say about Edusathi
         </p>
       </div>
@@ -45,7 +45,7 @@ export default function Testimonials() {
             className="animate-in fade-in slide-in-from-bottom-8 duration-700"
             style={{ animationDelay: `${index * 200}ms` }}
           >
-            <Card className="rounded-2xl border-0 shadow-sm hover:shadow-lg transition-shadow duration-300 bg-white/70 backdrop-blur-sm">
+            <Card className="rounded-2xl border-0 shadow-sm hover:shadow-lg dark:shadow-slate-900/20 dark:hover:shadow-slate-900/40 transition-shadow duration-300 bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm">
               <CardContent className="p-6">
                 <div className="flex items-center gap-1 mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
@@ -55,7 +55,7 @@ export default function Testimonials() {
                     />
                   ))}
                 </div>
-                <p className="text-slate-700 mb-6 italic">
+                <p className="text-slate-700 dark:text-slate-300 mb-6 italic">
                   "{testimonial.quote}"
                 </p>
                 <div className="flex items-center gap-3">
@@ -69,10 +69,10 @@ export default function Testimonials() {
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-semibold text-slate-900">
+                    <p className="font-semibold text-slate-900 dark:text-slate-100">
                       {testimonial.name}
                     </p>
-                    <p className="text-sm text-slate-600">
+                    <p className="text-sm text-slate-600 dark:text-slate-400">
                       {testimonial.role}
                     </p>
                   </div>

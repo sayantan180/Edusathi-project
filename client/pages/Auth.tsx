@@ -141,16 +141,16 @@ export default function Auth() {
   // OTP verification removed
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 px-4">
-      <Card className="w-full max-w-md rounded-2xl border-0 shadow-xl">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-slate-900 dark:to-slate-800 px-4">
+      <Card className="w-full max-w-md rounded-2xl border-0 shadow-xl dark:shadow-slate-900/50 bg-white dark:bg-slate-800">
         <CardHeader className="text-center pb-4">
           <div className="flex justify-center mb-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white">
               <GraduationCap className="h-6 w-6" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold">{mode === "register" ? "Create account" : "Welcome back"}</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-2xl font-bold text-slate-900 dark:text-slate-100">{mode === "register" ? "Create account" : "Welcome back"}</CardTitle>
+          <CardDescription className="text-slate-600 dark:text-slate-400">
             {roleTitle} • {mode === "register" ? "Register to continue" : "Login to continue"}
           </CardDescription>
         </CardHeader>
@@ -177,7 +177,7 @@ export default function Auth() {
                 <Input id="password" type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="••••••••" autoComplete={mode === "register" ? "new-password" : "current-password"} />
                 <button
                   type="button"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-500 hover:text-slate-700"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
                   onClick={() => setShowPassword((s) => !s)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
@@ -193,7 +193,7 @@ export default function Auth() {
                   <Input id="confirm" type={showConfirm ? "text" : "password"} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required placeholder="••••••••" autoComplete="new-password" />
                   <button
                     type="button"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-500 hover:text-slate-700"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
                     onClick={() => setShowConfirm((s) => !s)}
                     aria-label={showConfirm ? "Hide password" : "Show password"}
                   >
@@ -206,7 +206,7 @@ export default function Auth() {
             {mode === "login" && (
               <div className="flex items-center space-x-2 pt-1">
                 <Checkbox id="remember" checked={remember} onCheckedChange={(v) => setRemember(!!v)} />
-                <Label htmlFor="remember" className="text-sm text-slate-700">Remember me</Label>
+                <Label htmlFor="remember" className="text-sm text-slate-700 dark:text-slate-300">Remember me</Label>
               </div>
             )}
 
@@ -214,8 +214,8 @@ export default function Auth() {
               {isLoading ? (mode === "register" ? "Creating..." : "Signing in...") : (mode === "register" ? "Create account" : "Sign in")}
             </Button>
 
-            <div className="text-center text-sm text-slate-600">
-              <Link to={`/get-started`} className="hover:underline">Change role</Link>
+            <div className="text-center text-sm text-slate-600 dark:text-slate-400">
+              <Link to={`/get-started`} className="hover:underline text-blue-600 dark:text-blue-400">Change role</Link>
             </div>
           </form>
         </CardContent>
