@@ -126,6 +126,7 @@ export const PaymentAPI = {
   createOrder: (order: any) => apiPost<any>("/api/payment/create-order", order),
   getConfig: () => apiGet<any>("/api/payment/config"),
   verify: (payload: any) => apiPost<any>("/api/payment/verify", payload),
+  myPurchases: () => apiGet<any>("/api/payment/purchases/my"),
 };
 
 // Templates
@@ -147,4 +148,14 @@ export const AuthAPI = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     }),
+};
+
+// Businesses
+export const BusinessesAPI = {
+  count: () => apiGet<any>("/api/businesses/count"),
+};
+
+// Admin
+export const AdminAPI = {
+  roleStats: () => apiGet<any>("/api/admin/role-stats"),
 };

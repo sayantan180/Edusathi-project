@@ -56,3 +56,15 @@ export const getBusinesses = async (_req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+export const getBusinessCount = async (_req, res) => {
+  try {
+    const total = await Business.countDocuments({});
+    const active = await Business.countDocuments({ isActive: true });
+    const inactive = total - active;
+    res.json({ total, active, inactive });
+  } catch (error) {
+    console.error('Get business count error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};

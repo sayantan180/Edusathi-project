@@ -6,9 +6,6 @@ import Admin from '../models/Admin.js';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/jwt.js';
 import { getFileUrl } from '../middleware/upload.js';
 
-function generateOtp() {
-  return String(Math.floor(100000 + Math.random() * 900000)); // 6-digit
-}
 
 export const register = async (req, res) => {
   try {
@@ -24,31 +21,17 @@ export const register = async (req, res) => {
 
     const hash = await bcrypt.hash(password, 10);
     const base = { name, email: String(email).toLowerCase(), password: hash };
-    let created;
-    if (newRole === 'admin') {
-      // Admins skip OTP
-      created = await Model.create({ ...base, isVerified: true });
-      const access_token = signAccessToken({ sub: created._id.toString(), role: newRole });
-      const refresh_token = signRefreshToken({ sub: created._id.toString(), role: newRole });
-      return res.status(201).json({
-        user: sanitizeRoleUser(created, newRole),
-        access_token,
-        refresh_token,
-      });
-    } else {
-      // Business/Student/Creator require OTP
-      const otp = generateOtp();
-      const expires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
-      created = await Model.create({ ...base, isVerified: false, otpCode: otp, otpExpiresAt: expires });
-      // TODO: integrate email/SMS service. For now, log to server console.
-      console.log(`[OTP] ${newRole} ${created.email} -> ${otp} (expires ${expires.toISOString()})`);
-      return res.status(201).json({
-        message: 'OTP sent to your email. Please verify to complete registration.',
-        otp_required: true,
-        email: created.email,
-        role: newRole,
-      });
-    }
+
+    // OTP removed: directly verify and issue tokens for all roles
+    const created = await Model.create({ ...base, isVerified: true });
+
+    const access_token = signAccessToken({ sub: created._id.toString(), role: newRole });
+    const refresh_token = signRefreshToken({ sub: created._id.toString(), role: newRole });
+    return res.status(201).json({
+      user: sanitizeRoleUser(created, newRole),
+      access_token,
+      refresh_token,
+    });
   } catch (err) {
     if (err && (err.code === 11000 || String(err?.message || '').toLowerCase().includes('duplicate key'))) {
       return res.status(409).json({ message: 'Email already registered' });
@@ -79,11 +62,6 @@ export const login = async (req, res) => {
 
     const ok = await bcrypt.compare(password, account.password || '');
     if (!ok) return res.status(401).json({ message: 'Invalid credentials' });
-
-    // Block login until verified for non-admin roles
-    if (selectedRole !== 'admin' && account.isVerified === false) {
-      return res.status(403).json({ message: 'Please verify your account via OTP', otp_required: true });
-    }
 
     const access_token = signAccessToken({ sub: account._id.toString(), role: selectedRole });
     const refresh_token = signRefreshToken({ sub: account._id.toString(), role: selectedRole });
@@ -162,42 +140,7 @@ export const updateAvatar = async (req, res) => {
   }
 };
 
-export const verifyOtp = async (req, res) => {
-  try {
-    const { email, role, otp } = req.body || {};
-    if (!email || !role || !otp) return res.status(400).json({ message: 'Missing email/role/otp' });
-    const selectedRole = String(role).toLowerCase();
-    const Model = getRoleModel(selectedRole);
-    if (!Model) return res.status(400).json({ message: 'Invalid role' });
 
-    const account = await Model.findOne({ email: String(email).toLowerCase() });
-    if (!account) return res.status(404).json({ message: 'Account not found' });
-
-    if (account.isVerified) {
-      // Already verified, just return tokens
-      const access_token = signAccessToken({ sub: account._id.toString(), role: selectedRole });
-      const refresh_token = signRefreshToken({ sub: account._id.toString(), role: selectedRole });
-      return res.json({ user: sanitizeRoleUser(account, selectedRole), access_token, refresh_token });
-    }
-
-    const now = new Date();
-    if (!account.otpCode || !account.otpExpiresAt || now > new Date(account.otpExpiresAt) || String(account.otpCode) !== String(otp)) {
-      return res.status(400).json({ message: 'Invalid or expired OTP' });
-    }
-
-    account.isVerified = true;
-    account.otpCode = '';
-    account.otpExpiresAt = undefined;
-    await account.save();
-
-    const access_token = signAccessToken({ sub: account._id.toString(), role: selectedRole });
-    const refresh_token = signRefreshToken({ sub: account._id.toString(), role: selectedRole });
-    res.json({ user: sanitizeRoleUser(account, selectedRole), access_token, refresh_token });
-  } catch (error) {
-    console.error('verifyOtp error', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
 
 function sanitizeRoleUser(doc, role) {
   return { id: String(doc._id), name: doc.name, email: doc.email, role: role, roles: [role], avatarUrl: doc.avatarUrl || '' };

@@ -12,7 +12,7 @@ import InstituteLanding from "@/components/templates/InstituteLanding";
 import SplitLanding from "@/components/templates/SplitLanding";
 import MinimalSpotlightLanding from "@/components/templates/MinimalSpotlightLanding";
 import FeatureFirstLanding from "@/components/templates/FeatureFirstLanding";
-import { CentersAPI, TemplatesAPI } from "@/Api/api";
+import { CentersAPI, TemplatesAPI, PaymentAPI } from "@/Api/api";
 import { useToast } from "@/hooks/use-toast";
 
 export default function BusinessDashboard() {
@@ -28,6 +28,9 @@ export default function BusinessDashboard() {
     subscriptionStartAt?: string | null;
     expiresAt?: string | null;
   } | null>(null);
+  const [purchases, setPurchases] = useState<any[]>([]);
+  const [purchasesLoading, setPurchasesLoading] = useState<boolean>(false);
+  const [purchasesError, setPurchasesError] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
@@ -107,8 +110,28 @@ export default function BusinessDashboard() {
     })();
   };
 
+  // Fetch purchase history for current business (JWT-protected)
+  const refreshPurchases = () => {
+    setPurchasesError(null);
+    setPurchasesLoading(true);
+    (async () => {
+      try {
+        const res = await PaymentAPI.myPurchases();
+        const list: any[] = Array.isArray(res?.purchases) ? res.purchases : [];
+        setPurchases(list);
+      } catch (e: any) {
+        const msg = typeof e?.message === "string" ? e.message : "Failed to fetch purchases";
+        setPurchasesError(msg);
+        setPurchases([]);
+      } finally {
+        setPurchasesLoading(false);
+      }
+    })();
+  };
+
   useEffect(() => {
     refreshSubscription();
+    refreshPurchases();
   }, [profile?.email]);
 
   // Also refresh subscription when navigating to relevant pages
@@ -120,6 +143,7 @@ export default function BusinessDashboard() {
       p.startsWith("/business/subscription-details")
     ) {
       refreshSubscription();
+      refreshPurchases();
     }
   }, [location.pathname, profile?.email]);
 
@@ -192,7 +216,7 @@ export default function BusinessDashboard() {
   // Build navigation for RoleDashboardLayout
   const navigationItems = [
     { title: "Dashboard", href: "/business", icon: LayoutDashboard, isActive: location.pathname === "/business", isExpandable: false as const },
-    { title: "Profile", href: "/business/account", icon: User, isActive: location.pathname.startsWith("/business/account"), isExpandable: false as const },
+    { title: "View profile", href: "/business/account", icon: User, isActive: location.pathname.startsWith("/business/account"), isExpandable: false as const },
     { title: "Subscription Plan", href: "/business/subscription-plan", icon: CreditCard, isActive: location.pathname.startsWith("/business/subscription-plan"), isExpandable: false as const },
     { title: "Setup Details", href: "/business/setup", icon: Settings, isActive: location.pathname.startsWith("/business/setup"), isExpandable: false as const },
     { title: "Template", href: "/business/templates", icon: LayoutTemplate, isActive: location.pathname.startsWith("/business/templates"), isExpandable: false as const },
@@ -206,7 +230,7 @@ export default function BusinessDashboard() {
       navigationItems={navigationItems}
       sidebarProfile={
         <div className="flex items-center gap-3">
-          <button className="rounded-full" onClick={() => navigate("/business/account")} title="Profile">
+          <button className="rounded-full"  title="Profile">
             <Avatar className="h-10 w-10">
               <AvatarImage src={avatarUrl} alt={profile?.name || "B"} />
               <AvatarFallback>{(profile?.name || profile?.email || "B").slice(0, 1).toUpperCase()}</AvatarFallback>
@@ -214,7 +238,7 @@ export default function BusinessDashboard() {
           </button>
           <div className="flex flex-col">
             <span className="text-sm font-medium line-clamp-1">{profile?.name || "Business User"}</span>
-            <span className="text-xs text-muted-foreground">View profile</span>
+            <span className="text-xs text-muted-foreground" onClick={() => navigate("/business/account")} title="View profile">View profile</span>
           </div>
         </div>
       }
@@ -335,7 +359,7 @@ export default function BusinessDashboard() {
             </Card>
           </div>
         ) : location.pathname.startsWith("/business/subscription-details") ? (
-          <div className="grid gap-6">
+          <div className="grid md:grid-cols-2 gap-6">
             <Card className="rounded-2xl">
               <CardHeader>
                 <CardTitle>Subscription Details</CardTitle>
@@ -343,7 +367,7 @@ export default function BusinessDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="flex justify-end mb-3">
-                  <Button size="sm" variant="outline" onClick={refreshSubscription}>Refresh</Button>
+                  <Button size="sm" variant="outline" onClick={() => { refreshSubscription(); refreshPurchases(); }}>Refresh</Button>
                 </div>
                 {subLoading ? (
                   <p className="text-slate-700">Loading subscription...</p>
@@ -355,6 +379,38 @@ export default function BusinessDashboard() {
                     <p className="text-slate-700"><strong>Status:</strong> {(subscription?.status || "—").toString()}</p>
                     <p className="text-slate-700"><strong>Start date:</strong> {subscription?.subscriptionStartAt ? new Date(subscription.subscriptionStartAt).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric" }) : "—"}</p>
                     <p className="text-slate-700"><strong>Next billing:</strong> {subscription?.expiresAt ? new Date(subscription.expiresAt).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric" }) : "—"}</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-2xl">
+              <CardHeader>
+                <CardTitle>My Purchases</CardTitle>
+                <CardDescription>All plans you have purchased</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {purchasesLoading ? (
+                  <p className="text-slate-700">Loading purchases...</p>
+                ) : purchasesError ? (
+                  <p className="text-slate-700">{purchasesError}</p>
+                ) : purchases.length === 0 ? (
+                  <p className="text-slate-700">No purchases found.</p>
+                ) : (
+                  <div className="space-y-3">
+                    {purchases.map((p: any) => (
+                      <div key={p._id || p.razorpay_order_id} className="rounded-lg border p-3">
+                        <div className="flex items-center justify-between">
+                          <div className="font-medium">{p.plan || "—"}</div>
+                          <div className="text-xs text-slate-500">{p.createdAt ? new Date(p.createdAt).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric" }) : "—"}</div>
+                        </div>
+                        <div className="mt-1 grid grid-cols-2 gap-2 text-sm text-slate-700">
+                          <div><strong>Status:</strong> {(p.status || "—").toString()}</div>
+                          <div><strong>Amount:</strong> {typeof p.amount === 'number' ? p.amount : '—'} {p.currency || ''}</div>
+                          <div className="col-span-2"><strong>Domain:</strong> {p.domain || '—'}</div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
               </CardContent>
