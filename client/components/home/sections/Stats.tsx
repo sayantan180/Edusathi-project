@@ -34,13 +34,13 @@ export default function Stats() {
   ];
 
   return (
-    <section className="bg-gradient-to-b from-blue-50 to-purple-50 py-16 sm:py-20 md:py-24">
+    <section className="bg-gradient-to-b from-blue-50 to-purple-50 dark:from-slate-800 dark:to-slate-900 py-16 sm:py-20 md:py-24">
       <div className="container max-w-7xl mx-auto px-4">
         <div className="text-center mb-12 md:mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent mb-6 leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-700 to-purple-700 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent mb-6 leading-tight">
             Success Stories by Numbers
           </h2>
-          <p className="text-lg sm:text-xl text-slate-600 leading-relaxed">
+          <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed">
             Join thousands of institutes already transforming education
           </p>
         </div>
@@ -52,7 +52,7 @@ export default function Stats() {
               className="animate-in fade-in slide-in-from-bottom-8 duration-700"
               style={{ animationDelay: `${index * 200}ms` }}
             >
-              <Card className="rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white hover:-translate-y-3 group">
+              <Card className="rounded-2xl border-0 shadow-lg hover:shadow-xl dark:shadow-slate-900/50 dark:hover:shadow-slate-900/70 transition-all duration-300 bg-white dark:bg-slate-800 hover:-translate-y-3 group">
                 <CardContent className="p-6 sm:p-8 text-center">
                   <div className="flex justify-center mb-6">
                     <div
@@ -66,10 +66,10 @@ export default function Stats() {
                   >
                     {stat.number}
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-blue-700 transition-colors">
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">
                     {stat.label}
                   </h3>
-                  <p className="text-sm text-slate-600">{stat.description}</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">{stat.description}</p>
                 </CardContent>
               </Card>
             </div>

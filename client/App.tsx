@@ -5,6 +5,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
+import { ThemeProvider } from "@/src/contexts/ThemeContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/EdusathiDashboard/Dashboard";
@@ -200,14 +201,16 @@ const router = createBrowserRouter(
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <RouterProvider
-        router={router}
-        future={{ v7_startTransition: true }}
-      />
-    </TooltipProvider>
+    <ThemeProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <RouterProvider
+          router={router}
+          future={{ v7_startTransition: true }}
+        />
+      </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
