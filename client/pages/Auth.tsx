@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { GraduationCap, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/src/contexts/AuthContext";
+// OTP UI removed
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 
@@ -23,6 +24,7 @@ export default function Auth() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [remember, setRemember] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  // OTP flow removed
 
   const roleTitle = useMemo(() => {
     if (role === "creator") return "Creator";
@@ -39,6 +41,7 @@ export default function Auth() {
     setShowPassword(false);
     setShowConfirm(false);
     setRemember(false);
+    // OTP flow removed
   }, [role]);
   
   useEffect(() => {
@@ -49,20 +52,45 @@ export default function Auth() {
     setShowConfirm(false);
   }, [mode]);
   const { login, register } = useAuth();
+
+  function isValidEmail(v: string) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  }
+
+  function isStrongPassword(v: string) {
+    // Min 8 chars, at least 1 uppercase, 1 lowercase, 1 number
+    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(v);
+  }
+
+  const validateRegister = () => {
+    if (!name.trim()) {
+      toast({ title: "Name required", description: "Please enter your full name.", variant: "destructive" });
+      return false;
+    }
+    if (!isValidEmail(email)) {
+      toast({ title: "Invalid email", description: "Enter a valid email address.", variant: "destructive" });
+      return false;
+    }
+    if (!isStrongPassword(password)) {
+      toast({
+        title: "Weak password",
+        description: "Use at least 8 chars with uppercase, lowercase and a number.",
+        variant: "destructive",
+      });
+      return false;
+    }
+    if (password !== confirmPassword) {
+      toast({ title: "Passwords do not match", description: "Please re-enter the same password.", variant: "destructive" });
+      return false;
+    }
+    return true;
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     try {
       if (mode === "register") {
-        if (password !== confirmPassword) {
-          toast({
-            title: "Passwords do not match",
-            description: "Please re-enter the same password in both fields.",
-            variant: "destructive",
-          });
-          setIsLoading(false);
-          return;
-        }
+        if (!validateRegister()) { setIsLoading(false); return; }
         await register(name, email, password, role, remember);
       } else {
         await login(email, password, remember, role);
@@ -109,6 +137,8 @@ export default function Auth() {
       setIsLoading(false);
     }
   };
+
+  // OTP verification removed
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-slate-900 dark:to-slate-800 px-4">
@@ -190,6 +220,7 @@ export default function Auth() {
           </form>
         </CardContent>
       </Card>
+      {/* OTP Step removed */}
     </div>
   );
 }

@@ -6,6 +6,7 @@ import Admin from '../models/Admin.js';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/jwt.js';
 import { getFileUrl } from '../middleware/upload.js';
 
+
 export const register = async (req, res) => {
   try {
     const { name, email, password, role } = req.body || {};
@@ -20,21 +21,13 @@ export const register = async (req, res) => {
 
     const hash = await bcrypt.hash(password, 10);
     const base = { name, email: String(email).toLowerCase(), password: hash };
-    let created;
-    if (newRole === 'business') {
-      created = await Model.create({ ...base });
-    } else if (newRole === 'student') {
-      created = await Model.create({ ...base });
-    } else if (newRole === 'creator') {
-      created = await Model.create({ ...base });
-    } else if (newRole === 'admin') {
-      created = await Model.create({ ...base });
-    }
+
+    // OTP removed: directly verify and issue tokens for all roles
+    const created = await Model.create({ ...base, isVerified: true });
 
     const access_token = signAccessToken({ sub: created._id.toString(), role: newRole });
     const refresh_token = signRefreshToken({ sub: created._id.toString(), role: newRole });
-
-    res.status(201).json({
+    return res.status(201).json({
       user: sanitizeRoleUser(created, newRole),
       access_token,
       refresh_token,
@@ -146,6 +139,8 @@ export const updateAvatar = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+
 
 function sanitizeRoleUser(doc, role) {
   return { id: String(doc._id), name: doc.name, email: doc.email, role: role, roles: [role], avatarUrl: doc.avatarUrl || '' };

@@ -10,6 +10,10 @@ const BusinessSchema = new Schema({
   address: { type: String },
   password: { type: String, required: true },
   avatarUrl: { type: String, default: '' },
+  // OTP verification fields
+  isVerified: { type: Boolean, default: false },
+  otpCode: { type: String, default: '' },
+  otpExpiresAt: { type: Date },
   isActive: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now }
 });
